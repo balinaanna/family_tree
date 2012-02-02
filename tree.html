@@ -109,7 +109,7 @@ canvas.observe('object:moving', function(e) {
     p.line2 && p.line2.set({ 'x1': p.left, 'y1': p.top });
     p.line3 && p.line3.set({ 'x1': p.left, 'y1': p.top });
     p.line4 && p.line4.set({ 'x1': p.left, 'y1': p.top });
-    p.text.left = p.left; p.text.top = p.top;
+    p.text && p.text.set({ 'left': p.left, 'top': p.top });
     canvas.renderAll();
 });
 </script>
