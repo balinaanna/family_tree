@@ -1,5 +1,6 @@
 <script src="/js/libs/Three.js"></script>
 		<script src="/js/libs/js/Stats.js"></script>
+		<script src="/js/libs/js/helvetiker_regular.typeface.js"></script>
 
 <script>
 			var container, stats;
@@ -55,10 +56,46 @@
 				cube.overdraw = true;
 				scene.add( cube );
 				
-				cube2 = new THREE.Mesh( new THREE.CubeGeometry( 200, 200, 200, 1, 1, 1, materials2 ), new THREE.MeshFaceMaterial() );
-				cube2.position.y = 300;
-				cube2.overdraw = true;
+				cube1 = new THREE.Mesh( new THREE.CubeGeometry( 200, 200, 200, 1, 1, 1, materials2 ), new THREE.MeshFaceMaterial() );
+				cube1.position.y = 300;
+				cube1.scale.x = 2;
+				cube1.scale.z = 0.10;
+				cube1.overdraw = true;
+				
+				
+				
+				var text3d = new THREE.TextGeometry( 'Last Name', {
+
+					size: 20,
+					height: 10,
+					curveSegments: 2,
+					font: "helvetiker"
+
+				});
+
+				text3d.computeBoundingBox();
+				var centerOffset = -0.5 * ( text3d.boundingBox.max.x - text3d.boundingBox.min.x );
+
+				var textMaterial = new THREE.MeshBasicMaterial( { color: Math.random() * 0xffffff, overdraw: true } );
+				text = new THREE.Mesh( text3d, textMaterial );
+
+				text.doubleSided = false;
+
+				text.position.x = centerOffset;
+				text.position.y = 250;
+				text.position.z = 10;
+
+				text.rotation.x = 0;
+				text.rotation.y = Math.PI * 2;
+
+				cube2 = new THREE.Object3D();
+				cube2.add( text );
+				cube2.add( cube1 );
 				scene.add( cube2 );
+				
+				
+				
+				
 				// Plane
 
 				plane = new THREE.Mesh( new THREE.PlaneGeometry( 200, 200 ), new THREE.MeshBasicMaterial( { color: 0xe0e0e0 } ) );
