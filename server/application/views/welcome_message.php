@@ -93,7 +93,30 @@
 				cube2.add( cube1 );
 				scene.add( cube2 );
 				
-				
+				/*
+				 **
+				 ** Creating new texture from text
+				 ** 
+					var x = document.createElement( "canvas" );
+					var xc = x.getContext("2d");
+					x.width = x.height = 128;
+					xc.shadowColor = "#000";
+					xc.shadowBlur = 7;
+					xc.fillStyle = "orange";
+					xc.font = "50pt arial bold";
+					xc.fillText( i, 10, 64 );
+
+					var xm = new THREE.MeshBasicMaterial( { map: new THREE.Texture( x ), transparent: true  } );
+					xm.map.needsUpdate = true;
+
+					mesh = new THREE.Mesh( new THREE.PlaneGeometry( size, size ), xm );
+					mesh.position.x = i * ( size + 5 ) - ( ( materials.length - 1 ) * ( size + 5 ) / 2 );
+					mesh.position.y = FLOOR + size / 2 + bottom;
+					mesh.position.z = - 99;
+					mesh.scale.x = mesh.scale.y = mesh.scale.z = 1;
+					mesh.doubleSided = true;
+					scene.add( mesh );
+				*/
 				
 				
 				// Plane
