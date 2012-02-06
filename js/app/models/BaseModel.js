@@ -8,9 +8,9 @@
 			var re;
 			this.url = '/server';
 			this.save().complete(function(rest){
-				console.log(rest);
+				//console.log(rest);
 				re=rest;
-				console.log(rest.responseText);
+				//console.log(rest.responseText);
 				//var result =  eval( '(' + rest.responseText + ')');
 				root.setLocal(key, rest.responseText);
 				//root.setLocal(key,JSON.parse(rest.responseText));
