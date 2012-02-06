@@ -15,7 +15,7 @@ $(document).ready(function () {
             
             this._currentController = new BaseController();
 			this._currentController.start();
-			console.log('offLineWebApplication');
+			console.log('offLineWebApplication router start');
         },
 		
 		sync : function () {
