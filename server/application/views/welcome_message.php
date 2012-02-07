@@ -7,13 +7,15 @@
 
 			var camera, scene, renderer;
 
-			var cube, plane;
+			var cube, plane, c;
 
 			var targetRotation = 0;
 			var targetRotationOnMouseDown = 0;
 
 			var mouseX = 0;
 			var mouseXOnMouseDown = 0;
+			var mouseY = 0;
+			var mouseYOnMouseDown = 0;
 
 			var windowHalfX = window.innerWidth / 2;
 			var windowHalfY = window.innerHeight / 2;
@@ -50,78 +52,63 @@
 					materials.push( new THREE.MeshBasicMaterial( { color: Math.random() * 0xffffff } ) );
 					materials2.push( new THREE.MeshBasicMaterial( { color: Math.random() * 0xffffff } ) );
 				}
+				
+				
+				
+				
+				
+				c = create_element("Last", "First");
+				
+				function create_element(l_name, f_name){
+				   var canvas = document.createElement('canvas');
+				   var width = 300;
+				   var height = 200;
+				   canvas.width = width;
+				   canvas.height = height;
+				   var context = canvas.getContext("2d");
+				   
+	
+				   context.beginPath();
+				   context.rect(0, 0, width, height);
+				   context.fillStyle = "#8ED6FF";
+				   context.fill();
+				   context.fillStyle = "orange";
+				   context.font = '24px Arial';
+				   context.fillText(l_name+" "+f_name, 100, 180);
+				   var tex = new THREE.Texture(canvas);
+				   tex.needsUpdate = true;
+				   var mat = new THREE.MeshBasicMaterial({map: tex});
+				   mat.transparent = true;
+				   var item = new THREE.Mesh(  new THREE.PlaneGeometry(canvas.width, canvas.height), mat);
+				   return item;
+				};
+    
+				c.position.x=-300;
+				scene.add( c );
 
-				cube = new THREE.Mesh( new THREE.CubeGeometry( 200, 200, 200, 1, 1, 1, materials ), new THREE.MeshFaceMaterial() );
+
+
+
+				cube = new THREE.Mesh( new THREE.CubeGeometry( 200, 200, 200, 1, 1, 1, materials2 ), new THREE.MeshFaceMaterial() );
 				cube.position.y = 80;
 				cube.overdraw = true;
 				scene.add( cube );
 				
-				cube1 = new THREE.Mesh( new THREE.CubeGeometry( 200, 200, 200, 1, 1, 1, materials2 ), new THREE.MeshFaceMaterial() );
+				cube1 = new THREE.Mesh( new THREE.CubeGeometry( 200, 200, 200, 1, 1, 1, materials ), new THREE.MeshFaceMaterial() );
 				cube1.position.y = 300;
 				cube1.scale.x = 2;
 				cube1.scale.z = 0.10;
 				cube1.overdraw = true;
-				
-				
-				
-				var text3d = new THREE.TextGeometry( 'Last Name', {
 
-					size: 20,
-					height: 10,
-					curveSegments: 2,
-					font: "helvetiker"
-
-				});
-
-				text3d.computeBoundingBox();
-				var centerOffset = -0.5 * ( text3d.boundingBox.max.x - text3d.boundingBox.min.x );
-
-				var textMaterial = new THREE.MeshBasicMaterial( { color: Math.random() * 0xffffff, overdraw: true } );
-				text = new THREE.Mesh( text3d, textMaterial );
-
-				text.doubleSided = false;
-
-				text.position.x = centerOffset;
-				text.position.y = 250;
-				text.position.z = 10;
-
-				text.rotation.x = 0;
-				text.rotation.y = Math.PI * 2;
 
 				cube2 = new THREE.Object3D();
-				cube2.add( text );
+				
 				cube2.add( cube1 );
 				scene.add( cube2 );
 				
-				/*
-				 **
-				 ** Creating new texture from text
-				 ** 
-					var x = document.createElement( "canvas" );
-					var xc = x.getContext("2d");
-					x.width = x.height = 128;
-					xc.shadowColor = "#000";
-					xc.shadowBlur = 7;
-					xc.fillStyle = "orange";
-					xc.font = "50pt arial bold";
-					xc.fillText( i, 10, 64 );
-
-					var xm = new THREE.MeshBasicMaterial( { map: new THREE.Texture( x ), transparent: true  } );
-					xm.map.needsUpdate = true;
-
-					mesh = new THREE.Mesh( new THREE.PlaneGeometry( size, size ), xm );
-					mesh.position.x = i * ( size + 5 ) - ( ( materials.length - 1 ) * ( size + 5 ) / 2 );
-					mesh.position.y = FLOOR + size / 2 + bottom;
-					mesh.position.z = - 99;
-					mesh.scale.x = mesh.scale.y = mesh.scale.z = 1;
-					mesh.doubleSided = true;
-					scene.add( mesh );
-				*/
-				
-				
 				// Plane
 
-				plane = new THREE.Mesh( new THREE.PlaneGeometry( 200, 200 ), new THREE.MeshBasicMaterial( { color: 0xe0e0e0 } ) );
+				plane = new THREE.Mesh( new THREE.PlaneGeometry( 200, 200 ), new THREE.MeshBasicMaterial( { color: 0xe9a0e0 } ) );
 				plane.rotation.x = - 90 * ( Math.PI / 180 );
 				plane.overdraw = true;
 				scene.add( plane );
@@ -158,6 +145,7 @@
 			function onDocumentMouseMove( event ) {
 
 				mouseX = event.clientX - windowHalfX;
+				mouseY = event.clientY - windowHalfY;
 
 				targetRotation = targetRotationOnMouseDown + ( mouseX - mouseXOnMouseDown ) * 0.02;
 			}
@@ -214,7 +202,8 @@
 			function render() {
 
 				plane.rotation.z = cube.rotation.y += ( targetRotation - cube.rotation.y ) * 0.05;
-				plane.rotation.z = cube2.rotation.y += ( targetRotation - cube2.rotation.y ) * 0.05;
+				c.position.x = mouseX-120;
+				c.position.y = -mouseY+150;
 				renderer.render( scene, camera );
 
 			}
