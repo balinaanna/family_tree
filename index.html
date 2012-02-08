@@ -31,9 +31,24 @@
 
 
 <script>
+			var programStroke = function ( context ) {
+				context.lineWidth = 0.05;
+				context.beginPath();
+				context.arc( 0, 0, 1, 0, PI2, true );
+				context.closePath();
+				context.stroke();
+			}
+			var programFill = function ( context ) {
+				context.beginPath();
+				context.arc( 0, 0, 1, 0, PI2, true );
+				context.closePath();
+				context.fill();
+			}
+			var PI2 = Math.PI * 2;
 			var container, stats;
 
-			var camera, scene, projector, renderer;
+			var camera, scene, projector, renderer, particle;
+			
 
 			var cube, plane, c, cube2;
 			var objects = []; // array of NODES
@@ -45,6 +60,10 @@
 			var mouseXOnMouseDown = 0;
 			var mouseY = 0;
 			var mouseYOnMouseDown = 0;
+			
+			//S. camera move
+			var isMouseDown = false;
+			var onMouseDownPosition;
 
 			var windowHalfX = window.innerWidth / 2;
 			var windowHalfY = window.innerHeight / 2;
@@ -82,7 +101,7 @@
 
 				scene = new THREE.Scene();
 
-				camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 1000 );
+				camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 10000 );
 				camera.position.y = 150;
 				camera.position.z = 500;
 				//camera.position.x = 200;
@@ -131,9 +150,16 @@
 				  };
 				  
 				  cube2.add(texture('node.jpg', width, height));
+				  
 				  var photo = texture('image.jpg', 128, 128);
 				  photo.position.x = -100;
 				  photo.position.y = 20;
+				  
+				  particle = new THREE.Particle( new THREE.ParticleCanvasMaterial( { color: Math.random() * 0x808080 + 0x808080, program: programStroke } ) );
+				  particle.scale.x = particle.scale.y = 10;
+				  particle.position.x=0;cube
+				  particle.position.y=-125;
+				  
 				  cube2.add(photo);
 				  cube2.add(text(l_name, f_name));
 				  
@@ -165,6 +191,9 @@
 					child_voxel.visible = false;
 					child_voxel.name = 'child';
 					cube2.add(child_voxel);
+
+				  cube2.add( particle );
+
 				  return cube2;
 				}
 				
@@ -176,8 +205,13 @@
 				objects.push(c);
 				
 				scene.add(c);
+				cube2.children[0].on('dblclick', function(){ OSX.init(); });
+				cube2.children[3].on('click', function(){ particle.material.program =  programFill; OSX.init(); });
 				
 				projector = new THREE.Projector();
+				
+				//S. camera move
+				onMouseDownPosition = new THREE.Vector2();
 		
 				renderer = new THREE.CanvasRenderer();
 				renderer.setSize( window.innerWidth, window.innerHeight );
@@ -194,6 +228,7 @@
 				document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 				document.addEventListener( 'touchstart', onDocumentTouchStart, false );
 				document.addEventListener( 'touchmove', onDocumentTouchMove, false );
+				document.addEventListener( 'mousewheel', onDocumentMouseWheel, false );
 				
 			}
 				
@@ -218,6 +253,9 @@
 
 				if ( intersects.length > 0 ) {
 					mouseHover = true;
+					
+					onMouseDownPosition.x = event.clientX;
+					onMouseDownPosition.y = event.clientY;
 					//SELECTED = intersects[ 0 ].object;
 					//var intersects = ray.intersectObject( plane );
 					//offset.copy( intersects[ 0 ].point ).subSelf( plane.position );
@@ -225,6 +263,12 @@
 				else
 				{
 					mouseHover = false;
+					
+					//S. camera move
+					isMouseDown = true;
+					container.style.cursor = 'move';
+					onMouseDownPosition.x = event.clientX;
+					onMouseDownPosition.y = event.clientY;
 				}
 
 			}
@@ -246,9 +290,17 @@
 					container.style.cursor = 'pointer';
 					if(mouseHover)
 					{
-						container.style.cursor = 'move';
-						mouseX = event.clientX - windowHalfX;
-						mouseY = event.clientY - windowHalfY;
+						//container.style.cursor = 'move';
+						//mouseX = event.clientX - windowHalfX;
+						//mouseY = event.clientY - windowHalfY;
+						
+						var deltaX = -(event.clientX - onMouseDownPosition.x);
+						var deltaY = event.clientY - onMouseDownPosition.y;
+						mouseX -= deltaX;
+						mouseY += deltaY;
+						onMouseDownPosition.x = event.clientX;
+						onMouseDownPosition.y = event.clientY;
+						
 						targetRotation = targetRotationOnMouseDown + ( mouseX - mouseXOnMouseDown ) * 0.02;
 					}
 					
@@ -274,15 +326,22 @@
 						}
 					}
 					container.style.cursor = 'auto';
+										
+					//S. camera move
+					if ( isMouseDown ) {
+						container.style.cursor = 'move';
+						var deltaX = -(event.clientX - onMouseDownPosition.x);
+						var deltaY = event.clientY - onMouseDownPosition.y;
+						camera.position.x += deltaX;
+						camera.position.y += deltaY;
+						onMouseDownPosition.x = event.clientX;
+						onMouseDownPosition.y = event.clientY;
+						camera.updateMatrix();
+					}
+					else{
+						container.style.cursor = 'auto';
+					}
 				}
-				//mouseX = event.clientX - windowHalfX;
-				//mouseY = event.clientY - windowHalfY;
-
-				//targetRotation = targetRotationOnMouseDown + ( mouseX - mouseXOnMouseDown ) * 0.02;
-				
-				/*mouseX = mouse.x;
-				mouseY = mouse.y;
-				targetRotation = targetRotationOnMouseDown + ( mouseX - mouseXOnMouseDown ) * 0.02;*/
 				
 			}
 
@@ -303,6 +362,11 @@
 				else
 				{
 					container.style.cursor = 'auto';
+										
+					//S. camera move
+					isMouseDown = false;
+					onMouseDownPosition.x = event.clientX - onMouseDownPosition.x;
+					onMouseDownPosition.y = event.clientY - onMouseDownPosition.y;
 				}
 				mouseHover = false;
 				
@@ -341,7 +405,17 @@
 
 				}
 			}
+			
+			//S. camera zoom
+			function onDocumentMouseWheel( event ) {
 
+				if(camera.position.z > 0) camera.position.z -= event.wheelDeltaY;
+				if(camera.position.z < 100) camera.position.z = 101;
+				if(camera.position.z > 10000) camera.position.z = 9999;
+				camera.updateMatrix();
+
+			}
+			
 			//
 
 			function animate() {
@@ -351,7 +425,6 @@
 			}
 
 			function render() {
-				//cube.rotation.y += ( targetRotation - cube.rotation.y ) * 0.05;
 				cube2.position.x = mouseX;
 				cube2.position.y = -mouseY+150;
 				renderer.render( scene, camera );

@@ -1,21 +1,7 @@
-/*
- * SimpleModal OSX Style Modal Dialog
- * http://www.ericmmartin.com/projects/simplemodal/
- * http://code.google.com/p/simplemodal/
- *
- * Copyright (c) 2010 Eric Martin - http://ericmmartin.com
- *
- * Licensed under the MIT license:
- *   http://www.opensource.org/licenses/mit-license.php
- *
- * Revision: $Id: osx.js 238 2010-03-11 05:56:57Z emartin24 $
- */
-
-jQuery(function ($) {
-	var OSX = {
+var OSX = {
 		container: null,
 		init: function () {
-			c.children[0].on('dblclick', function(e){
+			//c.children[0].on('dblclick', function(e){
 				//e.preventDefault();	
 
 				$("#osx-modal-content").modal({
@@ -29,7 +15,7 @@ jQuery(function ($) {
 					onOpen: OSX.open,
 					onClose: OSX.close
 				});
-			});
+			//});
 		},
 		open: function (d) {
 			var self = this;
@@ -66,7 +52,3 @@ jQuery(function ($) {
 			);
 		}
 	};
-
-	OSX.init();
-
-});
