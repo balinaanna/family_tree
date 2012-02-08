@@ -5,6 +5,8 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
     <link href="data:image/x-icon;base64,AAABAAEAEBAAAAAAAABoBQAAFgAAACgAAAAQAAAAIAAAAAEACAAAAAAAAAEAAAAAAAAAAAAAAAEAAAAAAAAAAAAAEkYuABNKMQAfk2gAITwrABlJLgAVeVEA2fPoABp8UQAaelQA+P38ABRdPQAno2sA/v7/AP/+/wAVjWAAIoVaACWGXQA2oW4AH41gAB+RYwARSS8AF3NJABhzSQAWd0wAE1E1AGKrggAtZEkAF39SABAwGwAhd0wAFVs4ABxTOwAdg1UAK3NSAC6ebwBBiWYAKadvAFGngAAlhl4AEHNKAEO8iQARSTAAEkkwABdJMAAZRzMAKY5kACqOZAAhbUoAMVpHABJUNgDh7+cAHKd5ADKVZwAbhFkA5vTtADVxVgAjilkAMUs/AEKScAAac0sAGXROABlHNAAgc0sA9/v5APr++QAdTT0AF1s6ABaHWgAqTDoANpVxAB+PYAAVQykAGz8mACOIZgAVcEwAsO/YAChhQwAmYkYAI5dmABRQNQA4iF0ADjMeACFKNQAJjmcADjchABpYOwAqn2wAEGU+AD2JaQAUPCcAH4pbABdqRABYo4AAY5Z9ACmJYQAXRy0AGEswABdNNgAml2cAFlU8ABdXOQAgpnAAIXtTABBlPwDO49kAEGg/AB2DWQAaiVkAGVpCABtcPwAkqXkAGWBCAB5cPwAiWDwAFZZlABJDKwBLq5AA1OvfABduSABil4EAEUouACuDYgAUeEsAOKl5AB9vSwD1/fkAM4dlABCIYAD9/vwAI3pRAP///wAeglcAFy8mAByHXQASa0AAFmNDABqOYABFi2gAMKlxABlqRgAvr3oAHHJMAB5zTwAfSDIAG3pSABl+VQASXTsAF1c7AB2AUgAcg1sAHIlbAC0kDwAVOCcAFz0kACFfQQC+3coAG2pHABhwRwAlEQQAFU0wAA0qGQALMRwAGnxQAPj9+wAcUDkACzwiAP3+/gDM6NAA/v7+AA5rQgAlUDkA5/fzABJBKAAXZkUANZ9wACCMXACJmYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIODg4ODg4OYg4ODg4ODg4ODg6mBfqepn6RpNwqDg4ODqXReU5A4EUsiZ2VxGwVMg3grbj4EOjEclg8hL6piVDN2Mh1tRZmiQoWIE5Iph291hosnAXkCUK2aFUctlz1YgH8IC2tVEGiJZmOdkWByrnpdhHCeaqUuSKE/r09fQ5M7QDCmd0QgFFeVKKtkjY59JKk0ik5hIxlalCo5CTw2EqyDB4xJo1KgUXtcj7AGViaDg4OoFx4fGCxNsZsWNQOpg4ODg4NGggwlbFtzfEGDg4ODg4ODDakaSlmcqQ6Dg4ODAAAAAAAAAAAAAAAAAAAAAP//AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP//AAA=" rel="icon" type="image/x-icon" />
     <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
+	<!-- OSX Style CSS files -->
+	<link type='text/css' href='assets/css/osx.css' rel='stylesheet' media='screen' />
     <script type="text/javascript" src="/js/libs/jquery-1.7.1.min.js"></script>
     <script type="text/javascript" src="/js/libs/json2.js"></script>
     <script type="text/javascript" src="/js/libs/underscore-min.js"></script>
@@ -24,6 +26,8 @@
 	<script src="/js/libs/Three.js"></script>
 <script src="/js/libs/js/Stats.js"></script>
 <script src="/js/libs/js/helvetiker_regular.typeface.js"></script>
+<script src='/js/libs/threex.domevent.js'></script>
+<script src='/js/libs/threex.domevent.object3d.js'></script>
 
 
 <script>
@@ -31,7 +35,7 @@
 
 			var camera, scene, renderer;
 
-			var cube, plane, c;
+			var cube, plane, c, cube2;
 
 			var targetRotation = 0;
 			var targetRotationOnMouseDown = 0;
@@ -53,11 +57,7 @@
 				document.body.appendChild( container );
 
 				var info = document.createElement( 'div' );
-				info.style.position = 'absolute';
-				info.style.top = '10px';
-				info.style.width = '100%';
-				info.style.textAlign = 'center';
-				info.innerHTML = 'Drag to spin the cube';
+
 				container.appendChild( info );
 
 				scene = new THREE.Scene();
@@ -67,76 +67,65 @@
 				camera.position.z = 500;
 				//camera.position.x = 200;
 				scene.add( camera );
-
+				THREE.Object3D._threexDomEvent.camera(camera);
 				// Cube
 
-				var materials = [], materials2 = [];
+				var materials = [];
 
 				for ( var i = 0; i < 6; i ++ ) {
 					materials.push( new THREE.MeshBasicMaterial( { color: Math.random() * 0xffffff } ) );
-					materials2.push( new THREE.MeshBasicMaterial( { color: Math.random() * 0xffffff } ) );
 				}
 				
+				c = create_node("Last_Name", "First_Name", "08-08-88", "09-09-99");
 				
 				
+				// Image mesh
+				function create_node(l_name, f_name, b_date, d_date) {
+				  var cube2 = new THREE.Object3D();
+				  var width = 350;
+				  var height = 250;
+				  function text(l_name, f_name, b_date, d_date){
+					var canvas = document.createElement('canvas');
+					canvas.width = width;
+					canvas.height = height;
+					var context = canvas.getContext("2d");
+					context.fillStyle = "orange";
+					context.font = '24px Arial';
+					context.fillText(l_name, 180, 70);
+					context.fillText(f_name, 180, 100);
+					context.fillText(b_date, 180, 130);
+					context.fillText(d_date, 180, 160);
+					var tex = new THREE.Texture(canvas);
+					tex.needsUpdate = true;
+					var mat = new THREE.MeshBasicMaterial({map: tex, overdraw: true});
+					mat.transparent = true;
+					var item = new THREE.Mesh(  new THREE.PlaneGeometry(canvas.width, canvas.height), mat);
+					return item;
+				  }
+				  function texture(path, size_x, size_y){
+					var tex = THREE.ImageUtils.loadTexture(path);
+					var mat = new THREE.MeshBasicMaterial({map: tex, overdraw: true});
+					mat.transparent = true;
+					var item = new THREE.Mesh(  new THREE.PlaneGeometry(size_x, size_y), mat);
+					return item;
+				  };
+				  cube2.add(texture('node.jpg', width, height));
+				  var photo = texture('image.jpg', 128, 128);
+				  photo.position.x = -100;
+				  photo.position.y = 20;
+				  cube2.add(photo);
+				  cube2.add(text(l_name, f_name));
+				  return cube2;
+				}
+				c.scale.x=c.scale.y=0.7;
 				
 				
-				c = create_element("Last", "First");
+				cube2=c;
 				
-				function create_element(l_name, f_name){
-				   var canvas = document.createElement('canvas');
-				   var width = 300;
-				   var height = 200;
-				   canvas.width = width;
-				   canvas.height = height;
-				   var context = canvas.getContext("2d");
-				   
-	
-				   context.beginPath();
-				   context.rect(0, 0, width, height);
-				   context.fillStyle = "#8ED6FF";
-				   context.fill();
-				   context.fillStyle = "orange";
-				   context.font = '24px Arial';
-				   context.fillText(l_name+" "+f_name, 100, 180);
-				   var tex = new THREE.Texture(canvas);
-				   tex.needsUpdate = true;
-				   var mat = new THREE.MeshBasicMaterial({map: tex});
-				   mat.transparent = true;
-				   var item = new THREE.Mesh(  new THREE.PlaneGeometry(canvas.width, canvas.height), mat);
-				   return item;
-				};
-    
-				c.position.x=-300;
-				scene.add( c );
-
-
-
-
-				cube = new THREE.Mesh( new THREE.CubeGeometry( 200, 200, 200, 1, 1, 1, materials2 ), new THREE.MeshFaceMaterial() );
-				cube.position.y = 80;
-				cube.overdraw = true;
-				scene.add( cube );
+				scene.add(c);
 				
-				cube1 = new THREE.Mesh( new THREE.CubeGeometry( 200, 200, 200, 1, 1, 1, materials ), new THREE.MeshFaceMaterial() );
-				cube1.position.y = 300;
-				cube1.scale.x = 2;
-				cube1.scale.z = 0.10;
-				cube1.overdraw = true;
 
-
-				cube2 = new THREE.Object3D();
-				
-				cube2.add( cube1 );
-				scene.add( cube2 );
-				
-				// Plane
-
-				plane = new THREE.Mesh( new THREE.PlaneGeometry( 200, 200 ), new THREE.MeshBasicMaterial( { color: 0xe9a0e0 } ) );
-				plane.rotation.x = - 90 * ( Math.PI / 180 );
-				plane.overdraw = true;
-				scene.add( plane );
-
+		
 				renderer = new THREE.CanvasRenderer();
 				renderer.setSize( window.innerWidth, window.innerHeight );
 
@@ -150,6 +139,7 @@
 				document.addEventListener( 'mousedown', onDocumentMouseDown, false );
 				document.addEventListener( 'touchstart', onDocumentTouchStart, false );
 				document.addEventListener( 'touchmove', onDocumentTouchMove, false );
+				
 			}
 
 			//
@@ -215,23 +205,29 @@
 			//
 
 			function animate() {
-
 				requestAnimationFrame( animate );
-
 				render();
 				stats.update();
-
 			}
 
 			function render() {
-
-				plane.rotation.z = cube.rotation.y += ( targetRotation - cube.rotation.y ) * 0.05;
-				c.position.x = mouseX-120;
-				c.position.y = -mouseY+150;
+				//cube.rotation.y += ( targetRotation - cube.rotation.y ) * 0.05;
+				cube2.position.x = mouseX;
+				cube2.position.y = -mouseY+150;
 				renderer.render( scene, camera );
-
 			}
 </script>
+<div id="osx-modal-content">
+			<div id="osx-modal-title">OSX Style Modal Dialog</div>
+			<div class="close"><a href="#" class="simplemodal-close">x</a></div>
+			<div id="osx-modal-data">
+				<h2>Hello! I'm SimpleModal!</h2>
+				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eu dolor lacus. Praesent et metus eleifend erat viverra rutrum. Maecenas rutrum, velit vel placerat dapibus, mi lacus sodales velit, nec iaculis felis magna a velit. Pellentesque vitae luctus turpis. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Integer placerat mattis tellus, nec eleifend sapien pulvinar in. Cras sit amet luctus leo. Quisque vitae neque enim. In sit amet nisi nisl, pulvinar tincidunt felis. Vivamus id diam in turpis auctor tristique non quis elit. Ut scelerisque porta justo eget vulputate. Praesent magna odio, dignissim nec blandit sodales, elementum sit amet ipsum.</p>
+				<p><button class="simplemodal-close">Close</button> <span>(or press ESC or click the overlay)</span></p>
+			</div>
+</div>
+<script type='text/javascript' src='/js/libs/jquery.simplemodal.js'></script>
+<script type='text/javascript' src='/js/libs/osx.js'></script>
 <a href="#" id="uLogin" style="position:absolute; bottom:0px"><img src="http://ulogin.ru/img/button.png" width=187 height=30 alt="МультиВход"/></a>
 <script src="http://ulogin.ru/js/widget.js?display=window&fields=first_name,last_name,photo&redirect_uri=http%3A%2F%2Fstudia-vektor.org.ua%2Fserver%2Fapi%2Flogin"></script>
 </body>
