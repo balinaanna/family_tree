@@ -31,9 +31,24 @@
 
 
 <script>
+			var programStroke = function ( context ) {
+				context.lineWidth = 0.05;
+				context.beginPath();
+				context.arc( 0, 0, 1, 0, PI2, true );
+				context.closePath();
+				context.stroke();
+			}
+			var programFill = function ( context ) {
+				context.beginPath();
+				context.arc( 0, 0, 1, 0, PI2, true );
+				context.closePath();
+				context.fill();
+			}
+			var PI2 = Math.PI * 2;
 			var container, stats;
 
-			var camera, scene, projector, renderer;
+			var camera, scene, projector, renderer, particle;
+			
 
 			var cube, plane, c, cube2;
 			var objects = []; // array of NODES
@@ -117,12 +132,22 @@
 					var item = new THREE.Mesh(  new THREE.PlaneGeometry(size_x, size_y), mat);
 					return item;
 				  };
+				  
 				  cube2.add(texture('node.jpg', width, height));
+				  
 				  var photo = texture('image.jpg', 128, 128);
 				  photo.position.x = -100;
 				  photo.position.y = 20;
+				  
+				  particle = new THREE.Particle( new THREE.ParticleCanvasMaterial( { color: Math.random() * 0x808080 + 0x808080, program: programStroke } ) );
+				  particle.scale.x = particle.scale.y = 10;
+				  particle.position.x=0;cube
+				  particle.position.y=-125;
+				  
 				  cube2.add(photo);
 				  cube2.add(text(l_name, f_name));
+				  cube2.add( particle );
+				  
 				  return cube2;
 				}
 				c.scale.x=c.scale.y=0.7;
@@ -133,6 +158,8 @@
 				objects.push(c);
 				
 				scene.add(c);
+				cube2.children[0].on('dblclick', function(){ OSX.init(); });
+				cube2.children[3].on('click', function(){ particle.material.program =  programFill; OSX.init(); });
 				
 				projector = new THREE.Projector();
 				
@@ -341,7 +368,6 @@
 			}
 
 			function render() {
-				//cube.rotation.y += ( targetRotation - cube.rotation.y ) * 0.05;
 				cube2.position.x = mouseX;
 				cube2.position.y = -mouseY+150;
 				renderer.render( scene, camera );
