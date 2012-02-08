@@ -45,6 +45,10 @@
 			var mouseXOnMouseDown = 0;
 			var mouseY = 0;
 			var mouseYOnMouseDown = 0;
+			
+			//S. camera move
+			var isMouseDown = false;
+			var onMouseDownPosition;
 
 			var windowHalfX = window.innerWidth / 2;
 			var windowHalfY = window.innerHeight / 2;
@@ -66,7 +70,7 @@
 
 				scene = new THREE.Scene();
 
-				camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 1000 );
+				camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 10000 );
 				camera.position.y = 150;
 				camera.position.z = 500;
 				//camera.position.x = 200;
@@ -131,6 +135,9 @@
 				scene.add(c);
 				
 				projector = new THREE.Projector();
+				
+				//S. camera move
+				onMouseDownPosition = new THREE.Vector2();
 		
 				renderer = new THREE.CanvasRenderer();
 				renderer.setSize( window.innerWidth, window.innerHeight );
@@ -147,6 +154,7 @@
 				document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 				document.addEventListener( 'touchstart', onDocumentTouchStart, false );
 				document.addEventListener( 'touchmove', onDocumentTouchMove, false );
+				document.addEventListener( 'mousewheel', onDocumentMouseWheel, false );
 				
 			}
 
@@ -173,6 +181,9 @@
 
 				if ( intersects.length > 0 ) {
 					mouseHover = true;
+					
+					onMouseDownPosition.x = event.clientX;
+					onMouseDownPosition.y = event.clientY;
 					//SELECTED = intersects[ 0 ].object;
 					//var intersects = ray.intersectObject( plane );
 					//offset.copy( intersects[ 0 ].point ).subSelf( plane.position );
@@ -180,6 +191,12 @@
 				else
 				{
 					mouseHover = false;
+					
+					//S. camera move
+					isMouseDown = true;
+					container.style.cursor = 'move';
+					onMouseDownPosition.x = event.clientX;
+					onMouseDownPosition.y = event.clientY;
 				}
 
 			}
@@ -201,15 +218,37 @@
 					container.style.cursor = 'pointer';
 					if(mouseHover)
 					{
-						container.style.cursor = 'move';
-						mouseX = event.clientX - windowHalfX;
-						mouseY = event.clientY - windowHalfY;
+						//container.style.cursor = 'move';
+						//mouseX = event.clientX - windowHalfX;
+						//mouseY = event.clientY - windowHalfY;
+						
+						var deltaX = -(event.clientX - onMouseDownPosition.x);
+						var deltaY = event.clientY - onMouseDownPosition.y;
+						mouseX -= deltaX;
+						mouseY += deltaY;
+						onMouseDownPosition.x = event.clientX;
+						onMouseDownPosition.y = event.clientY;
+						
 						targetRotation = targetRotationOnMouseDown + ( mouseX - mouseXOnMouseDown ) * 0.02;
 					}
 				}
 				else
 				{
-					container.style.cursor = 'auto';
+										
+					//S. camera move
+					if ( isMouseDown ) {
+						container.style.cursor = 'move';
+						var deltaX = -(event.clientX - onMouseDownPosition.x);
+						var deltaY = event.clientY - onMouseDownPosition.y;
+						camera.position.x += deltaX;
+						camera.position.y += deltaY;
+						onMouseDownPosition.x = event.clientX;
+						onMouseDownPosition.y = event.clientY;
+						camera.updateMatrix();
+					}
+					else{
+						container.style.cursor = 'auto';
+					}
 				}
 				//mouseX = event.clientX - windowHalfX;
 				//mouseY = event.clientY - windowHalfY;
@@ -239,6 +278,11 @@
 				else
 				{
 					container.style.cursor = 'auto';
+										
+					//S. camera move
+					isMouseDown = false;
+					onMouseDownPosition.x = event.clientX - onMouseDownPosition.x;
+					onMouseDownPosition.y = event.clientY - onMouseDownPosition.y;
 				}
 				mouseHover = false;
 				
@@ -277,7 +321,17 @@
 
 				}
 			}
+			
+			//S. camera zoom
+			function onDocumentMouseWheel( event ) {
 
+				if(camera.position.z > 0) camera.position.z -= event.wheelDeltaY;
+				if(camera.position.z < 100) camera.position.z = 101;
+				if(camera.position.z > 10000) camera.position.z = 9999;
+				camera.updateMatrix();
+
+			}
+			
 			//
 
 			function animate() {
