@@ -33,9 +33,10 @@
 <script>
 			var container, stats;
 
-			var camera, scene, renderer;
+			var camera, scene, projector, renderer;
 
 			var cube, plane, c, cube2;
+			var objects = []; // array of NODES
 
 			var targetRotation = 0;
 			var targetRotationOnMouseDown = 0;
@@ -47,6 +48,9 @@
 
 			var windowHalfX = window.innerWidth / 2;
 			var windowHalfY = window.innerHeight / 2;
+
+			var mouse = new THREE.Vector2();
+			var mouseHover = false;
 
 			init();
 			animate();
@@ -122,9 +126,11 @@
 				
 				cube2=c;
 				
+				objects.push(c);
+				
 				scene.add(c);
 				
-
+				projector = new THREE.Projector();
 		
 				renderer = new THREE.CanvasRenderer();
 				renderer.setSize( window.innerWidth, window.innerHeight );
@@ -137,6 +143,8 @@
 				container.appendChild( stats.domElement );
 
 				document.addEventListener( 'mousedown', onDocumentMouseDown, false );
+				document.addEventListener( 'mouseup', onDocumentMouseUp, false );
+				document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 				document.addEventListener( 'touchstart', onDocumentTouchStart, false );
 				document.addEventListener( 'touchmove', onDocumentTouchMove, false );
 				
@@ -146,29 +154,97 @@
 
 			function onDocumentMouseDown( event ) {
 
-				event.preventDefault();
+				/*event.preventDefault();
 
 				document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 				document.addEventListener( 'mouseup', onDocumentMouseUp, false );
 				document.addEventListener( 'mouseout', onDocumentMouseOut, false );
 
 				mouseXOnMouseDown = event.clientX - windowHalfX;
-				targetRotationOnMouseDown = targetRotation;
+				targetRotationOnMouseDown = targetRotation;*/
+				event.preventDefault();
+
+				var vector = new THREE.Vector3( mouse.x, mouse.y, 0.5 );
+				projector.unprojectVector( vector, camera );
+
+				var ray = new THREE.Ray( camera.position, vector.subSelf( camera.position ).normalize() );
+
+				var intersects = ray.intersectObjects( objects );
+
+				if ( intersects.length > 0 ) {
+					mouseHover = true;
+					//SELECTED = intersects[ 0 ].object;
+					//var intersects = ray.intersectObject( plane );
+					//offset.copy( intersects[ 0 ].point ).subSelf( plane.position );
+				}
+				else
+				{
+					mouseHover = false;
+				}
+
 			}
 
 			function onDocumentMouseMove( event ) {
 
-				mouseX = event.clientX - windowHalfX;
-				mouseY = event.clientY - windowHalfY;
+				event.preventDefault();
+				mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+				mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+				
+				var vector = new THREE.Vector3( mouse.x, mouse.y, 0.5 );
+				projector.unprojectVector( vector, camera );
+				var ray = new THREE.Ray( camera.position, vector.subSelf( camera.position ).normalize() );
+				var intersects = ray.intersectObjects( objects );
+				//console.log(intersects.length);
+				
+				if ( intersects.length > 0 ) 
+				{
+					container.style.cursor = 'pointer';
+					if(mouseHover)
+					{
+						container.style.cursor = 'move';
+						mouseX = event.clientX - windowHalfX;
+						mouseY = event.clientY - windowHalfY;
+						targetRotation = targetRotationOnMouseDown + ( mouseX - mouseXOnMouseDown ) * 0.02;
+					}
+				}
+				else
+				{
+					container.style.cursor = 'auto';
+				}
+				//mouseX = event.clientX - windowHalfX;
+				//mouseY = event.clientY - windowHalfY;
 
-				targetRotation = targetRotationOnMouseDown + ( mouseX - mouseXOnMouseDown ) * 0.02;
+				//targetRotation = targetRotationOnMouseDown + ( mouseX - mouseXOnMouseDown ) * 0.02;
+				
+				/*mouseX = mouse.x;
+				mouseY = mouse.y;
+				targetRotation = targetRotationOnMouseDown + ( mouseX - mouseXOnMouseDown ) * 0.02;*/
+				
 			}
 
 			function onDocumentMouseUp( event ) {
-
-				document.removeEventListener( 'mousemove', onDocumentMouseMove, false );
+				event.preventDefault();
+				mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+				mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+				
+				var vector = new THREE.Vector3( mouse.x, mouse.y, 0.5 );
+				projector.unprojectVector( vector, camera );
+				var ray = new THREE.Ray( camera.position, vector.subSelf( camera.position ).normalize() );
+				var intersects = ray.intersectObjects( objects );
+				
+				if ( intersects.length > 0 ) 
+				{
+					container.style.cursor = 'pointer';
+				}
+				else
+				{
+					container.style.cursor = 'auto';
+				}
+				mouseHover = false;
+				
+				/*document.removeEventListener( 'mousemove', onDocumentMouseMove, false );
 				document.removeEventListener( 'mouseup', onDocumentMouseUp, false );
-				document.removeEventListener( 'mouseout', onDocumentMouseOut, false );
+				document.removeEventListener( 'mouseout', onDocumentMouseOut, false );*/
 			}
 
 			function onDocumentMouseOut( event ) {
