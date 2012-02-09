@@ -1,455 +1,457 @@
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
 <html>
-  <head>
+<head>
     <title>BASE FAMILY TREE WEB APPLICATION</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
-    <link href="data:image/x-icon;base64,AAABAAEAEBAAAAAAAABoBQAAFgAAACgAAAAQAAAAIAAAAAEACAAAAAAAAAEAAAAAAAAAAAAAAAEAAAAAAAAAAAAAEkYuABNKMQAfk2gAITwrABlJLgAVeVEA2fPoABp8UQAaelQA+P38ABRdPQAno2sA/v7/AP/+/wAVjWAAIoVaACWGXQA2oW4AH41gAB+RYwARSS8AF3NJABhzSQAWd0wAE1E1AGKrggAtZEkAF39SABAwGwAhd0wAFVs4ABxTOwAdg1UAK3NSAC6ebwBBiWYAKadvAFGngAAlhl4AEHNKAEO8iQARSTAAEkkwABdJMAAZRzMAKY5kACqOZAAhbUoAMVpHABJUNgDh7+cAHKd5ADKVZwAbhFkA5vTtADVxVgAjilkAMUs/AEKScAAac0sAGXROABlHNAAgc0sA9/v5APr++QAdTT0AF1s6ABaHWgAqTDoANpVxAB+PYAAVQykAGz8mACOIZgAVcEwAsO/YAChhQwAmYkYAI5dmABRQNQA4iF0ADjMeACFKNQAJjmcADjchABpYOwAqn2wAEGU+AD2JaQAUPCcAH4pbABdqRABYo4AAY5Z9ACmJYQAXRy0AGEswABdNNgAml2cAFlU8ABdXOQAgpnAAIXtTABBlPwDO49kAEGg/AB2DWQAaiVkAGVpCABtcPwAkqXkAGWBCAB5cPwAiWDwAFZZlABJDKwBLq5AA1OvfABduSABil4EAEUouACuDYgAUeEsAOKl5AB9vSwD1/fkAM4dlABCIYAD9/vwAI3pRAP///wAeglcAFy8mAByHXQASa0AAFmNDABqOYABFi2gAMKlxABlqRgAvr3oAHHJMAB5zTwAfSDIAG3pSABl+VQASXTsAF1c7AB2AUgAcg1sAHIlbAC0kDwAVOCcAFz0kACFfQQC+3coAG2pHABhwRwAlEQQAFU0wAA0qGQALMRwAGnxQAPj9+wAcUDkACzwiAP3+/gDM6NAA/v7+AA5rQgAlUDkA5/fzABJBKAAXZkUANZ9wACCMXACJmYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIODg4ODg4OYg4ODg4ODg4ODg6mBfqepn6RpNwqDg4ODqXReU5A4EUsiZ2VxGwVMg3grbj4EOjEclg8hL6piVDN2Mh1tRZmiQoWIE5Iph291hosnAXkCUK2aFUctlz1YgH8IC2tVEGiJZmOdkWByrnpdhHCeaqUuSKE/r09fQ5M7QDCmd0QgFFeVKKtkjY59JKk0ik5hIxlalCo5CTw2EqyDB4xJo1KgUXtcj7AGViaDg4OoFx4fGCxNsZsWNQOpg4ODg4NGggwlbFtzfEGDg4ODg4ODDakaSlmcqQ6Dg4ODAAAAAAAAAAAAAAAAAAAAAP//AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP//AAA=" rel="icon" type="image/x-icon" />
-    <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
-	<!-- OSX Style CSS files -->
-	<link type='text/css' href='assets/css/osx.css' rel='stylesheet' media='screen' />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link href="data:image/x-icon;base64,AAABAAEAEBAAAAAAAABoBQAAFgAAACgAAAAQAAAAIAAAAAEACAAAAAAAAAEAAAAAAAAAAAAAAAEAAAAAAAAAAAAAEkYuABNKMQAfk2gAITwrABlJLgAVeVEA2fPoABp8UQAaelQA+P38ABRdPQAno2sA/v7/AP/+/wAVjWAAIoVaACWGXQA2oW4AH41gAB+RYwARSS8AF3NJABhzSQAWd0wAE1E1AGKrggAtZEkAF39SABAwGwAhd0wAFVs4ABxTOwAdg1UAK3NSAC6ebwBBiWYAKadvAFGngAAlhl4AEHNKAEO8iQARSTAAEkkwABdJMAAZRzMAKY5kACqOZAAhbUoAMVpHABJUNgDh7+cAHKd5ADKVZwAbhFkA5vTtADVxVgAjilkAMUs/AEKScAAac0sAGXROABlHNAAgc0sA9/v5APr++QAdTT0AF1s6ABaHWgAqTDoANpVxAB+PYAAVQykAGz8mACOIZgAVcEwAsO/YAChhQwAmYkYAI5dmABRQNQA4iF0ADjMeACFKNQAJjmcADjchABpYOwAqn2wAEGU+AD2JaQAUPCcAH4pbABdqRABYo4AAY5Z9ACmJYQAXRy0AGEswABdNNgAml2cAFlU8ABdXOQAgpnAAIXtTABBlPwDO49kAEGg/AB2DWQAaiVkAGVpCABtcPwAkqXkAGWBCAB5cPwAiWDwAFZZlABJDKwBLq5AA1OvfABduSABil4EAEUouACuDYgAUeEsAOKl5AB9vSwD1/fkAM4dlABCIYAD9/vwAI3pRAP///wAeglcAFy8mAByHXQASa0AAFmNDABqOYABFi2gAMKlxABlqRgAvr3oAHHJMAB5zTwAfSDIAG3pSABl+VQASXTsAF1c7AB2AUgAcg1sAHIlbAC0kDwAVOCcAFz0kACFfQQC+3coAG2pHABhwRwAlEQQAFU0wAA0qGQALMRwAGnxQAPj9+wAcUDkACzwiAP3+/gDM6NAA/v7+AA5rQgAlUDkA5/fzABJBKAAXZkUANZ9wACCMXACJmYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIODg4ODg4OYg4ODg4ODg4ODg6mBfqepn6RpNwqDg4ODqXReU5A4EUsiZ2VxGwVMg3grbj4EOjEclg8hL6piVDN2Mh1tRZmiQoWIE5Iph291hosnAXkCUK2aFUctlz1YgH8IC2tVEGiJZmOdkWByrnpdhHCeaqUuSKE/r09fQ5M7QDCmd0QgFFeVKKtkjY59JKk0ik5hIxlalCo5CTw2EqyDB4xJo1KgUXtcj7AGViaDg4OoFx4fGCxNsZsWNQOpg4ODg4NGggwlbFtzfEGDg4ODg4ODDakaSlmcqQ6Dg4ODAAAAAAAAAAAAAAAAAAAAAP//AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP//AAA=" rel="icon" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css"><!-- OSX Style CSS files -->
+    <link type='text/css' href='assets/css/osx.css' rel='stylesheet' media='screen'>
     <script type="text/javascript" src="/js/libs/jquery-1.7.1.min.js"></script>
     <script type="text/javascript" src="/js/libs/json2.js"></script>
     <script type="text/javascript" src="/js/libs/underscore-min.js"></script>
     <script type="text/javascript" src="/js/libs/backbone-min.js"></script>
- 
     <script type="text/javascript" src="/js/app/controllers/BaseController.js"></script>
     <script type="text/javascript" src="/js/app/models/BaseModel.js"></script>
     <script type="text/javascript" src="/js/app/views/BaseView.js"></script>
-	
-    <script type="text/javascript" src="/js/app/router.js"></script>	
-  </head>
-  <body>
-    
-    <div id="home">
-      
-    </div>
-	<script src="/js/libs/Three.js"></script>
-<script src="/js/libs/js/Stats.js"></script>
-<script src="/js/libs/js/helvetiker_regular.typeface.js"></script>
-<script src='/js/libs/threex.domevent.js'></script>
-<script src='/js/libs/threex.domevent.object3d.js'></script>
+    <script type="text/javascript" src="/js/app/router.js"></script>
+    <script src="/js/libs/Three.js" type="text/javascript"></script>
+    <script src="/js/libs/js/Stats.js" type="text/javascript"></script>
+    <script src="/js/libs/js/helvetiker_regular.typeface.js" type="text/javascript"></script>
+    <script src='/js/libs/threex.domevent.js' type="text/javascript"></script>
+    <script src='/js/libs/threex.domevent.object3d.js' type="text/javascript">
+</script>
+</head>
 
+<body>
+    <div id="home"></div>
+    <script type="text/javascript">
+        var programStroke = function ( context ) {
+                context.lineWidth = 0.05;
+                context.beginPath();
+                context.arc( 0, 0, 1, 0, PI2, true );
+                context.closePath();
+                context.stroke();
+            }
+            var programFill = function ( context ) {
+                context.beginPath();
+                context.arc( 0, 0, 1, 0, PI2, true );
+                context.closePath();
+                context.fill();
+            }
+            var PI2 = Math.PI * 2;
+            var container, stats;
 
-<script>
-			var programStroke = function ( context ) {
-				context.lineWidth = 0.05;
-				context.beginPath();
-				context.arc( 0, 0, 1, 0, PI2, true );
-				context.closePath();
-				context.stroke();
-			}
-			var programFill = function ( context ) {
-				context.beginPath();
-				context.arc( 0, 0, 1, 0, PI2, true );
-				context.closePath();
-				context.fill();
-			}
-			var PI2 = Math.PI * 2;
-			var container, stats;
+            var camera, scene, projector, renderer, particle;
+            
 
-			var camera, scene, projector, renderer, particle;
-			
+            var cube, plane, c, cube2;
+            var objects = []; // array of NODES
 
-			var cube, plane, c, cube2;
-			var objects = []; // array of NODES
+            var targetRotation = 0;
+            var targetRotationOnMouseDown = 0;
 
-			var targetRotation = 0;
-			var targetRotationOnMouseDown = 0;
+            var mouseX = 0;
+            var mouseXOnMouseDown = 0;
+            var mouseY = 0;
+            var mouseYOnMouseDown = 0;
+            
+            //S. camera move
+            var isMouseDown = false;
+            var onMouseDownPosition;
 
-			var mouseX = 0;
-			var mouseXOnMouseDown = 0;
-			var mouseY = 0;
-			var mouseYOnMouseDown = 0;
-			
-			//S. camera move
-			var isMouseDown = false;
-			var onMouseDownPosition;
+            var windowHalfX = window.innerWidth / 2;
+            var windowHalfY = window.innerHeight / 2;
 
-			var windowHalfX = window.innerWidth / 2;
-			var windowHalfY = window.innerHeight / 2;
+            var mouse = new THREE.Vector2();
+            var mouseHover = false;
 
-			var mouse = new THREE.Vector2();
-			var mouseHover = false;
-
-			var programStroke = function ( context ) {
+            var programStroke = function ( context ) {
                                 context.lineWidth = 0.0001;
                                 context.beginPath();
                                 context.arc( 0, 0, 15, 0, PI2, true );
                                 context.closePath();
                                 context.stroke();
                         }
-			var programFill = function ( context ) {
-					context.beginPath();
-					context.arc( 0, 0, 1, 0, PI2, true );
-					context.closePath();
-					context.fill();
-			}
-			var PI2 = Math.PI * 2;
-			
-			
-			init();
-			animate();
+            var programFill = function ( context ) {
+                    context.beginPath();
+                    context.arc( 0, 0, 1, 0, PI2, true );
+                    context.closePath();
+                    context.fill();
+            }
+            var PI2 = Math.PI * 2;
+            
+            
+            init();
+            animate();
 
-			function init() {
+            function init() {
 
-				container = document.createElement( 'div' );
-				document.body.appendChild( container );
+                container = document.createElement( 'div' );
+                document.body.appendChild( container );
 
-				var info = document.createElement( 'div' );
+                var info = document.createElement( 'div' );
 
-				container.appendChild( info );
+                container.appendChild( info );
 
-				scene = new THREE.Scene();
+                scene = new THREE.Scene();
 
-				camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 10000 );
-				camera.position.y = 150;
-				camera.position.z = 500;
-				//camera.position.x = 200;
-				scene.add( camera );
-				THREE.Object3D._threexDomEvent.camera(camera);
-				// Cube
+                camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 10000 );
+                camera.position.y = 150;
+                camera.position.z = 500;
+                //camera.position.x = 200;
+                scene.add( camera );
+                THREE.Object3D._threexDomEvent.camera(camera);
+                // Cube
 
-				var materials = [];
+                var materials = [];
 
-				for ( var i = 0; i < 6; i ++ ) {
-					materials.push( new THREE.MeshBasicMaterial( { color: Math.random() * 0xffffff } ) );
-				}
-				
-				c = create_node("Last_Name", "First_Name", "08.08.88", "09.09.99");
-				particle = create_node("Last_Name", "First_Name", "08.08.88", "09.09.99");
-				
-				// Image mesh
-				function create_node(l_name, f_name, b_date, d_date) {
-				  var cube2 = new THREE.Object3D();
-				  var width = 350;
-				  var height = 250;
-				  function text(l_name, f_name, b_dat, d_dat){
-					var canvas = document.createElement('canvas');
-					canvas.width = width;
-					canvas.height = height;
-					var context = canvas.getContext("2d");
-					context.fillStyle = "orange";
-					context.font = '24px Arial';
-					context.fillText(l_name, 180, 70);
-					context.fillText(f_name, 180, 100);
-					context.fillText(b_date, 180, 130);
-					context.fillText(d_date, 180, 160);
-					var tex = new THREE.Texture(canvas);
-					tex.needsUpdate = true;
-					var mat = new THREE.MeshBasicMaterial({map: tex, overdraw: true});
-					mat.transparent = true;
-					var item = new THREE.Mesh(  new THREE.PlaneGeometry(canvas.width, canvas.height), mat);
-					return item;
-				  }
-				  function texture(path, size_x, size_y){
-					var tex = THREE.ImageUtils.loadTexture(path);
-					var mat = new THREE.MeshBasicMaterial({map: tex, overdraw: true});
-					mat.transparent = true;
-					var item = new THREE.Mesh(  new THREE.PlaneGeometry(size_x, size_y), mat);
-					return item;
-				  };
-				  
-				  cube2.add(texture('node.jpg', width, height));
-				  
-				  var photo = texture('image.jpg', 128, 128);
-				  photo.position.x = -100;
-				  photo.position.y = 20;
-				  
-				  /*
-				  ** particle
-				  particle = new THREE.Particle( new THREE.ParticleCanvasMaterial( { color: Math.random() * 0x808080 + 0x808080, program: programStroke } ) );
-				  particle.scale.x = particle.scale.y = 10;
-				  particle.position.x=0;cube
-				  particle.position.y=-125;
-				  **
-				  */
-				  
-				  cube2.add(photo);
-				  cube2.add(text(l_name, f_name, b_date, d_date));
-				  
-				  //parent "+"
-					par_voxel = new THREE.Particle( new THREE.ParticleCanvasMaterial( { color: 000000, program: programStroke } ) );
-					par_voxel.add(texture('plus_par.png', 80, 80));
-				  //par_voxel = new THREE.Mesh( new THREE. SphereGeometry(20, 20 ), new THREE.MeshLambertMaterial( { color: 0x000000, opacity: 0.3, shading: THREE.FlatShading } ) );
-					par_voxel.position.x = mouseX;
-					par_voxel.position.y = mouseY+Math.floor(height/2);
-					//par_voxel.position.z = 10;
-					par_voxel.matrixAutoUpdate = false;
-					par_voxel.updateMatrix();
-					par_voxel.overdraw = true;
-					par_voxel.visible = false;
-					par_voxel.name = 'parent';
-					cube2.add(par_voxel);
-					
-					
-					//child "+"
-				    //child_voxel = new THREE.Mesh( new THREE.SphereGeometry(20, 20 ), new THREE.MeshLambertMaterial( { color: 0x000000, opacity: 0.3, shading: THREE.FlatShading } ) );
-					child_voxel = new THREE.Particle( new THREE.ParticleCanvasMaterial( { color: 000000, program: programStroke } ) );
-					child_voxel.add(texture('plus_child.png', 80, 80));
-					child_voxel.position.x = mouseX;
-					child_voxel.position.y = mouseY-Math.floor(height/2);
-					//child_voxel.position.z = 10;
-					child_voxel.matrixAutoUpdate = false;
-					child_voxel.updateMatrix();
-					child_voxel.overdraw = true;
-					child_voxel.visible = false;
-					child_voxel.name = 'child';
-					cube2.add(child_voxel);
+                for ( var i = 0; i < 6; i ++ ) {
+                    materials.push( new THREE.MeshBasicMaterial( { color: Math.random() * 0xffffff } ) );
+                }
+                
+                c = create_node("Last_Name", "First_Name", "08.08.88", "09.09.99");
+                particle = create_node("Last_Name", "First_Name", "08.08.88", "09.09.99");
+                
+                // Image mesh
+                function create_node(l_name, f_name, b_date, d_date) {
+                  var cube2 = new THREE.Object3D();
+                  var width = 350;
+                  var height = 250;
+                  function text(l_name, f_name, b_dat, d_dat){
+                    var canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    var context = canvas.getContext("2d");
+                    context.fillStyle = "orange";
+                    context.font = '24px Arial';
+                    context.fillText(l_name, 180, 70);
+                    context.fillText(f_name, 180, 100);
+                    context.fillText(b_date, 180, 130);
+                    context.fillText(d_date, 180, 160);
+                    var tex = new THREE.Texture(canvas);
+                    tex.needsUpdate = true;
+                    var mat = new THREE.MeshBasicMaterial({map: tex, overdraw: true});
+                    mat.transparent = true;
+                    var item = new THREE.Mesh(  new THREE.PlaneGeometry(canvas.width, canvas.height), mat);
+                    return item;
+                  }
+                  function texture(path, size_x, size_y){
+                    var tex = THREE.ImageUtils.loadTexture(path);
+                    var mat = new THREE.MeshBasicMaterial({map: tex, overdraw: true});
+                    mat.transparent = true;
+                    var item = new THREE.Mesh(  new THREE.PlaneGeometry(size_x, size_y), mat);
+                    return item;
+                  };
+                  
+                  cube2.add(texture('node.jpg', width, height));
+                  
+                  var photo = texture('image.jpg', 128, 128);
+                  photo.position.x = -100;
+                  photo.position.y = 20;
+                  
+                  /*
+                  ** particle
+                  particle = new THREE.Particle( new THREE.ParticleCanvasMaterial( { color: Math.random() * 0x808080 + 0x808080, program: programStroke } ) );
+                  particle.scale.x = particle.scale.y = 10;
+                  particle.position.x=0;cube
+                  particle.position.y=-125;
+                  **
+                  */
+                  
+                  cube2.add(photo);
+                  cube2.add(text(l_name, f_name, b_date, d_date));
+                  
+                  //parent "+"
+                    par_voxel = new THREE.Particle( new THREE.ParticleCanvasMaterial( { color: 000000, program: programStroke } ) );
+                    par_voxel.add(texture('plus_par.png', 80, 80));
+                  //par_voxel = new THREE.Mesh( new THREE. SphereGeometry(20, 20 ), new THREE.MeshLambertMaterial( { color: 0x000000, opacity: 0.3, shading: THREE.FlatShading } ) );
+                    par_voxel.position.x = mouseX;
+                    par_voxel.position.y = mouseY+Math.floor(height/2);
+                    //par_voxel.position.z = 10;
+                    par_voxel.matrixAutoUpdate = false;
+                    par_voxel.updateMatrix();
+                    par_voxel.overdraw = true;
+                    par_voxel.visible = false;
+                    par_voxel.name = 'parent';
+                    cube2.add(par_voxel);
+                    
+                    
+                    //child "+"
+                    //child_voxel = new THREE.Mesh( new THREE.SphereGeometry(20, 20 ), new THREE.MeshLambertMaterial( { color: 0x000000, opacity: 0.3, shading: THREE.FlatShading } ) );
+                    child_voxel = new THREE.Particle( new THREE.ParticleCanvasMaterial( { color: 000000, program: programStroke } ) );
+                    child_voxel.add(texture('plus_child.png', 80, 80));
+                    child_voxel.position.x = mouseX;
+                    child_voxel.position.y = mouseY-Math.floor(height/2);
+                    //child_voxel.position.z = 10;
+                    child_voxel.matrixAutoUpdate = false;
+                    child_voxel.updateMatrix();
+                    child_voxel.overdraw = true;
+                    child_voxel.visible = false;
+                    child_voxel.name = 'child';
+                    cube2.add(child_voxel);
 
-				  return cube2;
-				}
-				
-				
-				
-				cube2=c;
-				
-				objects.push(c);
-				objects.push(particle);
-				
-				scene.add(c);
-				scene.add(particle);
-				cube2.children[0].on('dblclick', function(){ OSX.init(); });
-				cube2.children[3].on('click', function(){ particle.material.program =  programFill; OSX.init(); });
-				
-				projector = new THREE.Projector();
-				
-				//S. camera move
-				onMouseDownPosition = new THREE.Vector2();
-		
-				renderer = new THREE.CanvasRenderer();
-				renderer.setSize( window.innerWidth, window.innerHeight );
+                  return cube2;
+                }
+                
+                
+                
+                cube2=c;
+                
+                objects.push(c);
+                objects.push(particle);
+                
+                scene.add(c);
+                scene.add(particle);
+                cube2.children[0].on('dblclick', function(){ OSX.init(); });
+                cube2.children[3].on('click', function(){ particle.material.program =  programFill; OSX.init(); });
+                
+                projector = new THREE.Projector();
+                
+                //S. camera move
+                onMouseDownPosition = new THREE.Vector2();
+        
+                renderer = new THREE.CanvasRenderer();
+                renderer.setSize( window.innerWidth, window.innerHeight );
 
-				container.appendChild( renderer.domElement );
+                container.appendChild( renderer.domElement );
 
-				stats = new Stats();
-				stats.domElement.style.position = 'absolute';
-				stats.domElement.style.top = '0px';
-				container.appendChild( stats.domElement );
+                stats = new Stats();
+                stats.domElement.style.position = 'absolute';
+                stats.domElement.style.top = '0px';
+                container.appendChild( stats.domElement );
 
-				document.addEventListener( 'mousedown', onDocumentMouseDown, false );
-				document.addEventListener( 'mouseup', onDocumentMouseUp, false );
-				document.addEventListener( 'mousemove', onDocumentMouseMove, false );
-				document.addEventListener( 'touchstart', onDocumentTouchStart, false );
-				document.addEventListener( 'touchmove', onDocumentTouchMove, false );
-				document.addEventListener( 'mousewheel', onDocumentMouseWheel, false );
-				
-			}
-				
-			function onDocumentMouseDown( event ) {
+                document.addEventListener( 'mousedown', onDocumentMouseDown, false );
+                document.addEventListener( 'mouseup', onDocumentMouseUp, false );
+                document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+                document.addEventListener( 'touchstart', onDocumentTouchStart, false );
+                document.addEventListener( 'touchmove', onDocumentTouchMove, false );
+                document.addEventListener( 'mousewheel', onDocumentMouseWheel, false );
+                
+            }
+                
+            function onDocumentMouseDown( event ) {
 
-				/*event.preventDefault();
+                /*event.preventDefault();
 
-				document.addEventListener( 'mousemove', onDocumentMouseMove, false );
-				document.addEventListener( 'mouseup', onDocumentMouseUp, false );
-				document.addEventListener( 'mouseout', onDocumentMouseOut, false );
+                document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+                document.addEventListener( 'mouseup', onDocumentMouseUp, false );
+                document.addEventListener( 'mouseout', onDocumentMouseOut, false );
 
-				mouseXOnMouseDown = event.clientX - windowHalfX;
-				targetRotationOnMouseDown = targetRotation;*/
-				event.preventDefault();
+                mouseXOnMouseDown = event.clientX - windowHalfX;
+                targetRotationOnMouseDown = targetRotation;*/
+                event.preventDefault();
 
-				var vector = new THREE.Vector3( mouse.x, mouse.y, 0.5 );
-				projector.unprojectVector( vector, camera );
+                var vector = new THREE.Vector3( mouse.x, mouse.y, 0.5 );
+                projector.unprojectVector( vector, camera );
 
-				var ray = new THREE.Ray( camera.position, vector.subSelf( camera.position ).normalize() );
+                var ray = new THREE.Ray( camera.position, vector.subSelf( camera.position ).normalize() );
 
-				var intersects = ray.intersectObjects( objects );
+                var intersects = ray.intersectObjects( objects );
 
-				if ( intersects.length > 0 ) {
-					mouseHover = true;
-					
-					onMouseDownPosition.x = event.clientX;
-					onMouseDownPosition.y = event.clientY;
-					//SELECTED = intersects[ 0 ].object;
-					//var intersects = ray.intersectObject( plane );
-					//offset.copy( intersects[ 0 ].point ).subSelf( plane.position );
-				}
-				else
-				{
-					mouseHover = false;
-					
-					//S. camera move
-					isMouseDown = true;
-					container.style.cursor = 'move';
-					onMouseDownPosition.x = event.clientX;
-					onMouseDownPosition.y = event.clientY;
-				}
+                if ( intersects.length > 0 ) {
+                    mouseHover = true;
+                    
+                    onMouseDownPosition.x = event.clientX;
+                    onMouseDownPosition.y = event.clientY;
+                    //SELECTED = intersects[ 0 ].object;
+                    //var intersects = ray.intersectObject( plane );
+                    //offset.copy( intersects[ 0 ].point ).subSelf( plane.position );
+                }
+                else
+                {
+                    mouseHover = false;
+                    
+                    //S. camera move
+                    isMouseDown = true;
+                    container.style.cursor = 'move';
+                    onMouseDownPosition.x = event.clientX;
+                    onMouseDownPosition.y = event.clientY;
+                }
 
-			}
+            }
 
-			function onDocumentMouseMove( event ) {
+            function onDocumentMouseMove( event ) {
 
-				event.preventDefault();
-				mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-				mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-				
-				var vector = new THREE.Vector3( mouse.x, mouse.y, 0.5 );
-				projector.unprojectVector( vector, camera );
-				var ray = new THREE.Ray( camera.position, vector.subSelf( camera.position ).normalize() );
-				var intersects = ray.intersectObjects( objects );
-				//console.log(intersects.length);
-				
-				if ( intersects.length > 0 ) 
-				{
-					container.style.cursor = 'pointer';
-					if(mouseHover)
-					{
-						//container.style.cursor = 'move';
-						//mouseX = event.clientX - windowHalfX;
-						//mouseY = event.clientY - windowHalfY;
-						
-						var deltaX = -(event.clientX - onMouseDownPosition.x);
-						var deltaY = event.clientY - onMouseDownPosition.y;
-						mouseX -= deltaX;
-						mouseY += deltaY;
-						onMouseDownPosition.x = event.clientX;
-						onMouseDownPosition.y = event.clientY;
-						
-						targetRotation = targetRotationOnMouseDown + ( mouseX - mouseXOnMouseDown ) * 0.02;
-					}
-					
-					par = intersects[0].object.parent;
-					for(j = 0; j<par.children.length; j++)
-					{
-						if(par.children[j].name == 'child' || par.children[j].name == 'parent') 
-						{
-							par.children[j].visible = true;
-						}
-					}
-				}
-				else
-				{
-					for(i = 0; i<objects.length; i++)
-					{
-						for(j = 0; j<objects[i].children.length; j++)
-						{
-							if(objects[i].children[j].name == 'child' || objects[i].children[j].name == 'parent') 
-							{
-								objects[i].children[j].visible = false;
-							}
-						}
-					}
-					container.style.cursor = 'auto';
-										
-					//S. camera move
-					if ( isMouseDown ) {
-						container.style.cursor = 'move';
-						var deltaX = -(event.clientX - onMouseDownPosition.x);
-						var deltaY = event.clientY - onMouseDownPosition.y;
-						camera.position.x += deltaX;
-						camera.position.y += deltaY;
-						onMouseDownPosition.x = event.clientX;
-						onMouseDownPosition.y = event.clientY;
-						camera.updateMatrix();
-					}
-					else{
-						container.style.cursor = 'auto';
-					}
-				}
-				
-			}
+                event.preventDefault();
+                mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+                mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+                
+                var vector = new THREE.Vector3( mouse.x, mouse.y, 0.5 );
+                projector.unprojectVector( vector, camera );
+                var ray = new THREE.Ray( camera.position, vector.subSelf( camera.position ).normalize() );
+                var intersects = ray.intersectObjects( objects );
+                //console.log(intersects.length);
+                
+                if ( intersects.length > 0 ) 
+                {
+                    container.style.cursor = 'pointer';
+                    if(mouseHover)
+                    {
+                        //container.style.cursor = 'move';
+                        //mouseX = event.clientX - windowHalfX;
+                        //mouseY = event.clientY - windowHalfY;
+                        
+                        var deltaX = -(event.clientX - onMouseDownPosition.x);
+                        var deltaY = event.clientY - onMouseDownPosition.y;
+                        mouseX -= deltaX;
+                        mouseY += deltaY;
+                        onMouseDownPosition.x = event.clientX;
+                        onMouseDownPosition.y = event.clientY;
+                        
+                        targetRotation = targetRotationOnMouseDown + ( mouseX - mouseXOnMouseDown ) * 0.02;
+                    }
+                    
+                    par = intersects[0].object.parent;
+                    for(j = 0; j<par.children.length; j++)
+                    {
+                        if(par.children[j].name == 'child' || par.children[j].name == 'parent') 
+                        {
+                            par.children[j].visible = true;
+                        }
+                    }
+                }
+                else
+                {
+                    for(i = 0; i<objects.length; i++)
+                    {
+                        for(j = 0; j<objects[i].children.length; j++)
+                        {
+                            if(objects[i].children[j].name == 'child' || objects[i].children[j].name == 'parent') 
+                            {
+                                objects[i].children[j].visible = false;
+                            }
+                        }
+                    }
+                    container.style.cursor = 'auto';
+                                        
+                    //S. camera move
+                    if ( isMouseDown ) {
+                        container.style.cursor = 'move';
+                        var deltaX = -(event.clientX - onMouseDownPosition.x);
+                        var deltaY = event.clientY - onMouseDownPosition.y;
+                        camera.position.x += deltaX;
+                        camera.position.y += deltaY;
+                        onMouseDownPosition.x = event.clientX;
+                        onMouseDownPosition.y = event.clientY;
+                        camera.updateMatrix();
+                    }
+                    else{
+                        container.style.cursor = 'auto';
+                    }
+                }
+                
+            }
 
-			function onDocumentMouseUp( event ) {
-				event.preventDefault();
-				mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-				mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-				
-				var vector = new THREE.Vector3( mouse.x, mouse.y, 0.5 );
-				projector.unprojectVector( vector, camera );
-				var ray = new THREE.Ray( camera.position, vector.subSelf( camera.position ).normalize() );
-				var intersects = ray.intersectObjects( objects );
-				
-				if ( intersects.length > 0 ) 
-				{
-					container.style.cursor = 'pointer';
-				}
-				else
-				{
-					container.style.cursor = 'auto';
-										
-					//S. camera move
-					isMouseDown = false;
-					onMouseDownPosition.x = event.clientX - onMouseDownPosition.x;
-					onMouseDownPosition.y = event.clientY - onMouseDownPosition.y;
-				}
-				mouseHover = false;
-				
-				/*document.removeEventListener( 'mousemove', onDocumentMouseMove, false );
-				document.removeEventListener( 'mouseup', onDocumentMouseUp, false );
-				document.removeEventListener( 'mouseout', onDocumentMouseOut, false );*/
-			}
+            function onDocumentMouseUp( event ) {
+                event.preventDefault();
+                mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+                mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+                
+                var vector = new THREE.Vector3( mouse.x, mouse.y, 0.5 );
+                projector.unprojectVector( vector, camera );
+                var ray = new THREE.Ray( camera.position, vector.subSelf( camera.position ).normalize() );
+                var intersects = ray.intersectObjects( objects );
+                
+                if ( intersects.length > 0 ) 
+                {
+                    container.style.cursor = 'pointer';
+                }
+                else
+                {
+                    container.style.cursor = 'auto';
+                                        
+                    //S. camera move
+                    isMouseDown = false;
+                    onMouseDownPosition.x = event.clientX - onMouseDownPosition.x;
+                    onMouseDownPosition.y = event.clientY - onMouseDownPosition.y;
+                }
+                mouseHover = false;
+                
+                /*document.removeEventListener( 'mousemove', onDocumentMouseMove, false );
+                document.removeEventListener( 'mouseup', onDocumentMouseUp, false );
+                document.removeEventListener( 'mouseout', onDocumentMouseOut, false );*/
+            }
 
-			function onDocumentMouseOut( event ) {
+            function onDocumentMouseOut( event ) {
 
-				document.removeEventListener( 'mousemove', onDocumentMouseMove, false );
-				document.removeEventListener( 'mouseup', onDocumentMouseUp, false );
-				document.removeEventListener( 'mouseout', onDocumentMouseOut, false );
-			}
+                document.removeEventListener( 'mousemove', onDocumentMouseMove, false );
+                document.removeEventListener( 'mouseup', onDocumentMouseUp, false );
+                document.removeEventListener( 'mouseout', onDocumentMouseOut, false );
+            }
 
-			function onDocumentTouchStart( event ) {
+            function onDocumentTouchStart( event ) {
 
-				if ( event.touches.length == 1 ) {
+                if ( event.touches.length == 1 ) {
 
-					event.preventDefault();
+                    event.preventDefault();
 
-					mouseXOnMouseDown = event.touches[ 0 ].pageX - windowHalfX;
-					targetRotationOnMouseDown = targetRotation;
+                    mouseXOnMouseDown = event.touches[ 0 ].pageX - windowHalfX;
+                    targetRotationOnMouseDown = targetRotation;
 
-				}
-			}
+                }
+            }
 
-			function onDocumentTouchMove( event ) {
+            function onDocumentTouchMove( event ) {
 
-				if ( event.touches.length == 1 ) {
+                if ( event.touches.length == 1 ) {
 
-					event.preventDefault();
+                    event.preventDefault();
 
-					mouseX = event.touches[ 0 ].pageX - windowHalfX;
-					targetRotation = targetRotationOnMouseDown + ( mouseX - mouseXOnMouseDown ) * 0.05;
+                    mouseX = event.touches[ 0 ].pageX - windowHalfX;
+                    targetRotation = targetRotationOnMouseDown + ( mouseX - mouseXOnMouseDown ) * 0.05;
 
-				}
-			}
-			
-			//S. camera zoom
-			function onDocumentMouseWheel( event ) {
+                }
+            }
+            
+            //S. camera zoom
+            function onDocumentMouseWheel( event ) {
 
-				if(camera.position.z > 0) camera.position.z -= event.wheelDeltaY;
-				if(camera.position.z < 100) camera.position.z = 101;
-				if(camera.position.z > 10000) camera.position.z = 9999;
-				camera.updateMatrix();
+                if(camera.position.z > 0) camera.position.z -= event.wheelDeltaY;
+                if(camera.position.z < 100) camera.position.z = 101;
+                if(camera.position.z > 10000) camera.position.z = 9999;
+                camera.updateMatrix();
 
-			}
-			
-			//
+            }
+            
+            //
 
-			function animate() {
-				requestAnimationFrame( animate );
-				render();
-				stats.update();
-			}
+            function animate() {
+                requestAnimationFrame( animate );
+                render();
+                stats.update();
+            }
 
-			function render() {
-				cube2.position.x = mouseX * (camera.position.z/500);
-				cube2.position.y = (-mouseY+150)* (camera.position.z/500);
-				renderer.render( scene, camera );
-			}
-			
-			//clear canvas
-			function clear() {
+            function render() {
+                cube2.position.x = mouseX * (camera.position.z/500);
+                cube2.position.y = (-mouseY+150)* (camera.position.z/500);
+                renderer.render( scene, camera );
+            }
+            
+            //clear canvas
+            function clear() {
                 context.clearRect(0,0,document.getElementsByTagName('canvas').width,document.getElementsByTagName('canvas').height);
             }
-</script>
-<div id="osx-modal-content">
-			<div id="osx-modal-title">OSX Style Modal Dialog</div>
-			<div class="close"><a href="#" class="simplemodal-close">x</a></div>
-			<div id="osx-modal-data">
-				<h2>Hello! I'm SimpleModal!</h2>
-				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eu dolor lacus. Praesent et metus eleifend erat viverra rutrum. Maecenas rutrum, velit vel placerat dapibus, mi lacus sodales velit, nec iaculis felis magna a velit. Pellentesque vitae luctus turpis. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Integer placerat mattis tellus, nec eleifend sapien pulvinar in. Cras sit amet luctus leo. Quisque vitae neque enim. In sit amet nisi nisl, pulvinar tincidunt felis. Vivamus id diam in turpis auctor tristique non quis elit. Ut scelerisque porta justo eget vulputate. Praesent magna odio, dignissim nec blandit sodales, elementum sit amet ipsum.</p>
-				<p><button class="simplemodal-close">Close</button> <span>(or press ESC or click the overlay)</span></p>
-			</div>
-</div>
-<script type='text/javascript' src='/js/libs/jquery.simplemodal.js'></script>
-<script type='text/javascript' src='/js/libs/osx.js'></script>
-<a href="#" id="uLogin" style="position:absolute; bottom:0px"><img src="http://ulogin.ru/img/button.png" width=187 height=30 alt="МультиВход"/></a>
-<script src="http://ulogin.ru/js/widget.js?display=window&fields=first_name,last_name,photo&redirect_uri=http%3A%2F%2Fstudia-vektor.org.ua%2Fserver%2Fapi%2Flogin"></script>
+    </script>
+
+    <div id="osx-modal-content">
+        <div id="osx-modal-title">
+            OSX Style Modal Dialog
+        </div>
+
+        <div class="close">
+            <a href="#" class="simplemodal-close">x</a>
+        </div>
+
+        <div id="osx-modal-data">
+            <h2>Hello! I'm SimpleModal!</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eu dolor lacus. Praesent et metus eleifend erat viverra rutrum. Maecenas rutrum, velit vel placerat dapibus, mi lacus sodales velit, nec iaculis felis magna a velit. Pellentesque vitae luctus turpis. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Integer placerat mattis tellus, nec eleifend sapien pulvinar in. Cras sit amet luctus leo. Quisque vitae neque enim. In sit amet nisi nisl, pulvinar tincidunt felis. Vivamus id diam in turpis auctor tristique non quis elit. Ut scelerisque porta justo eget vulputate. Praesent magna odio, dignissim nec blandit sodales, elementum sit amet ipsum.</p>
+            <p><button class="simplemodal-close">Close</button> <span>(or press ESC or click the overlay)</span></p>
+        </div>
+    </div>
+    <script type='text/javascript' src='/js/libs/jquery.simplemodal.js'></script>
+    <script type='text/javascript' src='/js/libs/osx.js'></script>
+    <a href="#" id="uLogin" style="position:absolute; bottom:0px"><img src="http://ulogin.ru/img/button.png" width="187" height="30" alt="МультиВход"></a>
+    <script src="http://ulogin.ru/js/widget.js?display=window&fields=first_name,last_name,photo&redirect_uri=http%3A%2F%2Fstudia-vektor.org.ua%2Fserver%2Fapi%2Flogin" type="text/javascript"></script>
 </body>
 </html>
