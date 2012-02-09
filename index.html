@@ -35,183 +35,174 @@
 	</div>
     <div id="home"></div>
 <script type="text/javascript">
-    var programStroke = function(context) {
-    	context.lineWidth = 0.05;
-    	context.beginPath();
-    	context.arc(0, 0, 1, 0, PI2, true);
-    	context.closePath();
-    	context.stroke();
-    }
-    var programFill = function(context) {
-    	context.beginPath();
-    	context.arc(0, 0, 1, 0, PI2, true);
-    	context.closePath();
-    	context.fill();
-    }
-    var PI2 = Math.PI * 2;
-    var container, stats;
-    var camera, scene, projector, renderer, particle;
-    var cube, plane, c;
-    var objects = []; // array of NODES
-    var targetRotation = 0;
-    var targetRotationOnMouseDown = 0;
-    var mouseX = 0;
-    var mouseXOnMouseDown = 0;
-    var mouseY = 0;
-    var mouseYOnMouseDown = 0;
-    //S. camera move
-    var isMouseDown = false;
-    //Number of Nodes
-    var numNodes = 2;
-    var onMouseDownPosition;
-    var windowHalfX = window.innerWidth / 2;
-    var windowHalfY = window.innerHeight / 2;
-    var mouse = new THREE.Vector2();
-    var mouseHover = false;
-    var programStroke = function(context) {
-    	context.lineWidth = 0.0001;
-    	context.beginPath();
-    	context.arc(0, 0, 15, 0, PI2, true);
-    	context.closePath();
-    	context.stroke();
-    }
-    var programFill = function(context) {
-    	context.beginPath();
-    	context.arc(0, 0, 1, 0, PI2, true);
-    	context.closePath();
-    	context.fill();
-    }
-    var PI2 = Math.PI * 2;
-    
-    //navigation
-    $("#slider").slider({
-			orientation: "vertical",
-			value: 0,
-			min: 100,
-			max: 9999,
-			
-			slide: function( event, ui ) {
-				camera.position.z =  10099-ui.value;
-				}
+var programStroke = function(context) {
+	context.lineWidth = 0.05;
+	context.beginPath();
+	context.arc(0, 0, 1, 0, PI2, true);
+	context.closePath();
+	context.stroke();
+}
+var programFill = function(context) {
+	context.beginPath();
+	context.arc(0, 0, 1, 0, PI2, true);
+	context.closePath();
+	context.fill();
+}
+var PI2 = Math.PI * 2;
+var container, stats;
+var camera, scene, projector, renderer, particle;
+var cube, plane, c;
+var objects = []; // array of NODES
+var targetRotation = 0;
+var targetRotationOnMouseDown = 0;
+var mouseX = 0;
+var mouseXOnMouseDown = 0;
+var mouseY = 0;
+var mouseYOnMouseDown = 0;
+//S. camera move
+var isMouseDown = false;
+//Number of Nodes
+var numNodes = 2;
+var onMouseDownPosition;
+var windowHalfX = window.innerWidth / 2;
+var windowHalfY = window.innerHeight / 2;
+var mouse = new THREE.Vector2();
+var mouseHover = false;
+var programStroke = function(context) {
+	context.lineWidth = 0.0001;
+	context.beginPath();
+	context.arc(0, 0, 15, 0, PI2, true);
+	context.closePath();
+	context.stroke();
+}
+var programFill = function(context) {
+	context.beginPath();
+	context.arc(0, 0, 1, 0, PI2, true);
+	context.closePath();
+	context.fill();
+}
+var PI2 = Math.PI * 2;
+//navigation
+$("#slider").slider({
+	orientation: "vertical",
+	value: 0,
+	min: 100,
+	max: 9999,
+	slide: function(event, ui) {
+		camera.position.z = 10099 - ui.value;
+	}
+});
+$('#navigator').on("click", "div", navigation);
+init();
+animate();
+
+function init() {
+	container = document.createElement('div');
+	document.body.appendChild(container);
+	var info = document.createElement('div');
+	container.appendChild(info);
+	scene = new THREE.Scene();
+	camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 10000);
+	camera.position.y = 150;
+	camera.position.z = 500;
+	//camera.position.x = 200;
+	scene.add(camera);
+	THREE.Object3D._threexDomEvent.camera(camera);
+	// Cube
+	var materials = [];
+	for (var i = 0; i < 6; i++) {
+		materials.push(new THREE.MeshBasicMaterial({
+			color: Math.random() * 0xffffff
+		}));
+	}
+	// Image mesh
+
+	function create_node(l_name, f_name, b_date, d_date) {
+		var cube = new THREE.Object3D();
+		var width = 350;
+		var height = 250;
+		function text(l_name, f_name, b_dat, d_dat) {
+			var canvas = document.createElement('canvas');
+			canvas.width = width;
+			canvas.height = height;
+			var context = canvas.getContext("2d");
+			context.fillStyle = "orange";
+			context.font = '24px Arial';
+			context.fillText(l_name, 180, 70);
+			context.fillText(f_name, 180, 100);
+			context.fillText(b_date, 180, 130);
+			context.fillText(d_date, 180, 160);
+			var tex = new THREE.Texture(canvas);
+			tex.needsUpdate = true;
+			var mat = new THREE.MeshBasicMaterial({
+				map: tex,
+				overdraw: true
 			});
-    $('#navigator').on("click", "div", navigation);
-    
-    init();
-    animate();
-    function init() {
-    	container = document.createElement('div');
-    	document.body.appendChild(container);
-    	var info = document.createElement('div');
-    	container.appendChild(info);
-    	scene = new THREE.Scene();
-    	camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 10000);
-    	camera.position.y = 150;
-    	camera.position.z = 500;
-    	//camera.position.x = 200;
-    	scene.add(camera);
-    	THREE.Object3D._threexDomEvent.camera(camera);
-    	// Cube
-    	var materials = [];
-    	for (var i = 0; i < 6; i++) {
-    		materials.push(new THREE.MeshBasicMaterial({
-    			color: Math.random() * 0xffffff
-    		}));
-    	}
-        
-        // Image mesh
-    	function create_node(l_name, f_name, b_date, d_date) {
-    		var cube = new THREE.Object3D();
-    		var width = 350;
-    		var height = 250;
-    
-    		function text(l_name, f_name, b_dat, d_dat) {
-    			var canvas = document.createElement('canvas');
-    			canvas.width = width;
-    			canvas.height = height;
-    			var context = canvas.getContext("2d");
-    			context.fillStyle = "orange";
-    			context.font = '24px Arial';
-    			context.fillText(l_name, 180, 70);
-    			context.fillText(f_name, 180, 100);
-    			context.fillText(b_date, 180, 130);
-    			context.fillText(d_date, 180, 160);
-    			var tex = new THREE.Texture(canvas);
-    			tex.needsUpdate = true;
-    			var mat = new THREE.MeshBasicMaterial({
-    				                map: tex,
-    				                overdraw: true
-	                           });
-    			mat.transparent = true;
-    			var item = new THREE.Mesh(new THREE.PlaneGeometry(canvas.width, canvas.height), mat);
-    			return item;
-    		}
-    
-    		function texture(path, size_x, size_y) {
-    			var tex = THREE.ImageUtils.loadTexture(path);
-    			var mat = new THREE.MeshBasicMaterial({
-    				map: tex,
-    				overdraw: true
-    			});
-    			mat.transparent = true;
-    			var item = new THREE.Mesh(new THREE.PlaneGeometry(size_x, size_y), mat);
-    			return item;
-    		};
-    		
-    		var photo = texture('image.jpg', 128, 128);
-    		photo.position.x = -100;
-    		photo.position.y = 20;
-    		
-    		//parent "+"
-    		par_voxel = new THREE.Particle(new THREE.ParticleCanvasMaterial({
-    			color: 000000,
-    			program: programStroke
-    		}));
-    		par_voxel.add(texture('plus_par.png', 80, 80));
-    		par_voxel.position.x = mouseX;
-    		par_voxel.position.y = mouseY + Math.floor(height / 2);
-    		par_voxel.matrixAutoUpdate = false;
-    		par_voxel.updateMatrix();
-    		par_voxel.overdraw = true;
-    		par_voxel.visible = false;
-    		par_voxel.name = 'parent';
-			
-    		//child "+"
-    		child_voxel = new THREE.Particle(new THREE.ParticleCanvasMaterial({
-    			color: 000000,
-    			program: programStroke
-    		}));
-    		child_voxel.add(texture('plus_child.png', 80, 80));
-    		child_voxel.position.x = mouseX;
-    		child_voxel.position.y = mouseY - Math.floor(height / 2);
-    		child_voxel.matrixAutoUpdate = false;
-    		child_voxel.updateMatrix();
-    		child_voxel.overdraw = true;
-    		child_voxel.visible = false;
-    		child_voxel.name = 'child';
-			
-		cube.add(texture('node.jpg', width, height)); 			// children[0]
-		cube.add(photo);								// children[1]
-    		cube.add(text(l_name, f_name, b_date, d_date));		// children[2]
-		cube.add(par_voxel);							// children[3]
-    		cube.add(child_voxel);							// children[4]
-    		return cube;
-    	}
-        
-		function create_tree(json, id, i){
-		  var data = JSON.parse(json);
-		  if(i==1){
+			mat.transparent = true;
+			var item = new THREE.Mesh(new THREE.PlaneGeometry(canvas.width, canvas.height), mat);
+			return item;
+		}
+		function texture(path, size_x, size_y) {
+			var tex = THREE.ImageUtils.loadTexture(path);
+			var mat = new THREE.MeshBasicMaterial({
+				map: tex,
+				overdraw: true
+			});
+			mat.transparent = true;
+			var item = new THREE.Mesh(new THREE.PlaneGeometry(size_x, size_y), mat);
+			return item;
+		};
+		var photo = texture('image.jpg', 128, 128);
+		photo.position.x = -100;
+		photo.position.y = 20;
+		//parent "+"
+		par_voxel = new THREE.Particle(new THREE.ParticleCanvasMaterial({
+			color: 000000,
+			program: programStroke
+		}));
+		par_voxel.add(texture('plus_par.png', 80, 80));
+		par_voxel.position.x = mouseX;
+		par_voxel.position.y = mouseY + Math.floor(height / 2);
+		par_voxel.matrixAutoUpdate = false;
+		par_voxel.updateMatrix();
+		par_voxel.overdraw = true;
+		par_voxel.visible = false;
+		par_voxel.name = 'parent';
+		//child "+"
+		child_voxel = new THREE.Particle(new THREE.ParticleCanvasMaterial({
+			color: 000000,
+			program: programStroke
+		}));
+		child_voxel.add(texture('plus_child.png', 80, 80));
+		child_voxel.position.x = mouseX;
+		child_voxel.position.y = mouseY - Math.floor(height / 2);
+		child_voxel.matrixAutoUpdate = false;
+		child_voxel.updateMatrix();
+		child_voxel.overdraw = true;
+		child_voxel.visible = false;
+		child_voxel.name = 'child';
+		cube.add(texture('node.jpg', width, height)); // children[0]
+		cube.add(photo); // children[1]
+		cube.add(text(l_name, f_name, b_date, d_date)); // children[2]
+		cube.add(par_voxel); // children[3]
+		cube.add(child_voxel); // children[4]
+		return cube;
+	}
+	function create_tree(json, id, i) {
+		var data = JSON.parse(json);
+		if (i == 1) {
 			var node = create_node(data[id].l_name, data[id].l_name, data[id].b_date, data[id].d_date);
-			node.position.set((0,0,0);
+			node.position.set(0, 0, 0);
 			objects.push(node);
 			scene.add(node);
-		  }
-		  if(i<4){
+		}
+		if (i < 4) {
 			var f_id = data[id].f_id;
 			var m_id = data[id].m_id;
 			var f_node = create_node(data[f_id].l_name, data[f_id].l_name, data[f_id].b_date, data[f_id].d_date);
-			f_node.position.set((Math.pow((4-i),2))*(-350),(i-1)*(-280),0);
+			f_node.position.set((Math.pow((4 - i), 2)) * (-350), (i - 1) * (-280), 0);
 			var m_node = create_node(data[m_id].l_name, data[m_id].l_name, data[m_id].b_date, data[m_id].d_date);
-			m_node.position.set((Math.pow((4-i),2))*350,(i-1)*(-280),0);
+			m_node.position.set((Math.pow((4 - i), 2)) * 350, (i - 1) * (-280), 0);
 			objects.push(f_node);
 			scene.add(f_node);
 			objects.push(m_node);
@@ -219,47 +210,42 @@
 			++i;
 			create_tree(json, f_id, i);
 			create_tree(json, m_id, i);
-		  }
 		}
-		
-        //Nodes
-        for (var i = 0; i < numNodes; i++) {
-    	   var node = create_node("Last_Name", "First_Name", i, "");
-           node.position.set(i*200,i*200,0)
-           objects.push(node);
-           scene.add(node);
-    	}
-        	
-    	cube = node;
-    	
-    	for (var key in objects){
-    	   objects[key].children[0].on('dblclick', function() {
-    	       OSX.init();
-    	   });
-    	}
-        
-        projector = new THREE.Projector();
-    	
-        //S. camera move
-    	onMouseDownPosition = new THREE.Vector2();
-    	renderer = new THREE.CanvasRenderer();
-    	renderer.setSize(window.innerWidth, window.innerHeight);
-    	container.appendChild(renderer.domElement);
-    	stats = new Stats();
-    	stats.domElement.style.position = 'absolute';
-    	stats.domElement.style.top = '0px';
-    	stats.domElement.style.right = '0px';
-    	container.appendChild(stats.domElement);
-    	
-        renderer.domElement.addEventListener('mousedown', onDocumentMouseDown, false);
-    	renderer.domElement.addEventListener('mouseup', onDocumentMouseUp, false);
-    	renderer.domElement.addEventListener('mousemove', onDocumentMouseMove, false);
-    	renderer.domElement.addEventListener('touchstart', onDocumentTouchStart, false);
-    	renderer.domElement.addEventListener('touchmove', onDocumentTouchMove, false);
-        renderer.domElement.addEventListener('mousewheel', onDocumentMouseWheel, false);
-    }
-    function onDocumentMouseDown(event) {
-    /*event.preventDefault();
+	}
+	//Nodes
+	for (var i = 0; i < numNodes; i++) {
+		var node = create_node("Last_Name", "First_Name", i, "");
+		node.position.set(i * 200, i * 200, 0)
+		objects.push(node);
+		scene.add(node);
+	}
+	cube = node;
+	for (var key in objects) {
+		objects[key].children[0].on('dblclick', function() {
+			OSX.init();
+		});
+	}
+	projector = new THREE.Projector();
+	//S. camera move
+	onMouseDownPosition = new THREE.Vector2();
+	renderer = new THREE.CanvasRenderer();
+	renderer.setSize(window.innerWidth, window.innerHeight);
+	container.appendChild(renderer.domElement);
+	stats = new Stats();
+	stats.domElement.style.position = 'absolute';
+	stats.domElement.style.top = '0px';
+	stats.domElement.style.right = '0px';
+	container.appendChild(stats.domElement);
+	renderer.domElement.addEventListener('mousedown', onDocumentMouseDown, false);
+	renderer.domElement.addEventListener('mouseup', onDocumentMouseUp, false);
+	renderer.domElement.addEventListener('mousemove', onDocumentMouseMove, false);
+	renderer.domElement.addEventListener('touchstart', onDocumentTouchStart, false);
+	renderer.domElement.addEventListener('touchmove', onDocumentTouchMove, false);
+	renderer.domElement.addEventListener('mousewheel', onDocumentMouseWheel, false);
+}
+
+function onDocumentMouseDown(event) {
+/*event.preventDefault();
     
                     document.addEventListener( 'mousemove', onDocumentMouseMove, false );
                     document.addEventListener( 'mouseup', onDocumentMouseUp, false );
@@ -267,163 +253,179 @@
     
                     mouseXOnMouseDown = event.clientX - windowHalfX;
                     targetRotationOnMouseDown = targetRotation;*/
-    	event.preventDefault();
-    	var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
-    	projector.unprojectVector(vector, camera);
-    	var ray = new THREE.Ray(camera.position, vector.subSelf(camera.position).normalize());
-    	var intersects = ray.intersectObjects(objects);
-    	if (intersects.length > 0) {
-    		mouseHover = true;
-    		onMouseDownPosition.x = event.clientX;
-    		onMouseDownPosition.y = event.clientY;
-    		//SELECTED = intersects[ 0 ].object;
-    		//var intersects = ray.intersectObject( plane );
-    		//offset.copy( intersects[ 0 ].point ).subSelf( plane.position );
-    	}
-    	else {
-    		mouseHover = false;
-    		//S. camera move
-    		isMouseDown = true;
-    		container.style.cursor = 'move';
-    		onMouseDownPosition.x = event.clientX;
-    		onMouseDownPosition.y = event.clientY;
-    	}
-    }
-    function onDocumentMouseMove(event) {
-    	event.preventDefault();
-    	mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    	mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-    	var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
-    	projector.unprojectVector(vector, camera);
-    	var ray = new THREE.Ray(camera.position, vector.subSelf(camera.position).normalize());
-    	var intersects = ray.intersectObjects(objects);
-    	//console.log(intersects);
-    	if (intersects.length > 0) {
-    		container.style.cursor = 'pointer';
-    		if (mouseHover) {
-    			//container.style.cursor = 'move';
-    			//mouseX = event.clientX - windowHalfX;
-    			//mouseY = event.clientY - windowHalfY;
-    			var deltaX = -(event.clientX - onMouseDownPosition.x);// * camera.position.z / 500;
-    			var deltaY = (event.clientY - onMouseDownPosition.y);// * camera.position.z / 500;
-    			mouseX -= deltaX* camera.position.z / 500;
-    			mouseY += deltaY* camera.position.z / 500;
-    			onMouseDownPosition.x = event.clientX;
-    			onMouseDownPosition.y = event.clientY;
-    			targetRotation = targetRotationOnMouseDown + (mouseX - mouseXOnMouseDown) * 0.02;
-			    
-                intersects[0].object.parent.position.x -= deltaX;
-    			intersects[0].object.parent.position.y -= deltaY;
-    		}
-    		par = intersects[0].object.parent;
-    		for (j = 0; j < par.children.length; j++) {
-    			if (par.children[j].name == 'child' || par.children[j].name == 'parent') {
-    				par.children[j].visible = true;
-    			}
-    		}
-    	}
-    	else {
-    		for (i = 0; i < objects.length; i++) {
-    			for (j = 0; j < objects[i].children.length; j++) {
-    				if (objects[i].children[j].name == 'child' || objects[i].children[j].name == 'parent') {
-    					objects[i].children[j].visible = false;
-    				}
-    			}
-    		}
-    		container.style.cursor = 'auto';
-    		//S. camera move
-    		if (isMouseDown) {
-    			container.style.cursor = 'move';
-    			var deltaX = -(event.clientX - onMouseDownPosition.x);
-    			var deltaY = event.clientY - onMouseDownPosition.y;
-    			camera.position.x += deltaX * camera.position.z / 500;
-    			camera.position.y += deltaY * camera.position.z / 500;
-    			onMouseDownPosition.x = event.clientX;
-    			onMouseDownPosition.y = event.clientY;
-    			camera.updateMatrix();
-    		}
-    		else {
-    			container.style.cursor = 'auto';
-    		}
-    	}
-    }
-    function onDocumentMouseUp(event) {
-    	event.preventDefault();
-    	mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    	mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-    	var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
-    	projector.unprojectVector(vector, camera);
-    	var ray = new THREE.Ray(camera.position, vector.subSelf(camera.position).normalize());
-    	var intersects = ray.intersectObjects(objects);
-    	if (intersects.length > 0) {
-    		container.style.cursor = 'pointer';
-    	}
-    	else {
-    		container.style.cursor = 'auto';
-    		//S. camera move
-    		isMouseDown = false;
-    		onMouseDownPosition.x = event.clientX - onMouseDownPosition.x;
-    		onMouseDownPosition.y = event.clientY - onMouseDownPosition.y;
-    	}
-    	mouseHover = false;
-    /*document.removeEventListener( 'mousemove', onDocumentMouseMove, false );
+	event.preventDefault();
+	var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
+	projector.unprojectVector(vector, camera);
+	var ray = new THREE.Ray(camera.position, vector.subSelf(camera.position).normalize());
+	var intersects = ray.intersectObjects(objects);
+	if (intersects.length > 0) {
+		mouseHover = true;
+		onMouseDownPosition.x = event.clientX;
+		onMouseDownPosition.y = event.clientY;
+		//SELECTED = intersects[ 0 ].object;
+		//var intersects = ray.intersectObject( plane );
+		//offset.copy( intersects[ 0 ].point ).subSelf( plane.position );
+	}
+	else {
+		mouseHover = false;
+		//S. camera move
+		isMouseDown = true;
+		container.style.cursor = 'move';
+		onMouseDownPosition.x = event.clientX;
+		onMouseDownPosition.y = event.clientY;
+	}
+}
+
+function onDocumentMouseMove(event) {
+	event.preventDefault();
+	mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+	mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+	var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
+	projector.unprojectVector(vector, camera);
+	var ray = new THREE.Ray(camera.position, vector.subSelf(camera.position).normalize());
+	var intersects = ray.intersectObjects(objects);
+	//console.log(intersects);
+	if (intersects.length > 0) {
+		container.style.cursor = 'pointer';
+		if (mouseHover) {
+			//container.style.cursor = 'move';
+			//mouseX = event.clientX - windowHalfX;
+			//mouseY = event.clientY - windowHalfY;
+			var deltaX = -(event.clientX - onMouseDownPosition.x); // * camera.position.z / 500;
+			var deltaY = (event.clientY - onMouseDownPosition.y); // * camera.position.z / 500;
+			mouseX -= deltaX * camera.position.z / 500;
+			mouseY += deltaY * camera.position.z / 500;
+			onMouseDownPosition.x = event.clientX;
+			onMouseDownPosition.y = event.clientY;
+			targetRotation = targetRotationOnMouseDown + (mouseX - mouseXOnMouseDown) * 0.02;
+			intersects[0].object.parent.position.x -= deltaX;
+			intersects[0].object.parent.position.y -= deltaY;
+		}
+		par = intersects[0].object.parent;
+		for (j = 0; j < par.children.length; j++) {
+			if (par.children[j].name == 'child' || par.children[j].name == 'parent') {
+				par.children[j].visible = true;
+			}
+		}
+	}
+	else {
+		for (i = 0; i < objects.length; i++) {
+			for (j = 0; j < objects[i].children.length; j++) {
+				if (objects[i].children[j].name == 'child' || objects[i].children[j].name == 'parent') {
+					objects[i].children[j].visible = false;
+				}
+			}
+		}
+		container.style.cursor = 'auto';
+		//S. camera move
+		if (isMouseDown) {
+			container.style.cursor = 'move';
+			var deltaX = -(event.clientX - onMouseDownPosition.x);
+			var deltaY = event.clientY - onMouseDownPosition.y;
+			camera.position.x += deltaX * camera.position.z / 500;
+			camera.position.y += deltaY * camera.position.z / 500;
+			onMouseDownPosition.x = event.clientX;
+			onMouseDownPosition.y = event.clientY;
+			camera.updateMatrix();
+		}
+		else {
+			container.style.cursor = 'auto';
+		}
+	}
+}
+
+function onDocumentMouseUp(event) {
+	event.preventDefault();
+	mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+	mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+	var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
+	projector.unprojectVector(vector, camera);
+	var ray = new THREE.Ray(camera.position, vector.subSelf(camera.position).normalize());
+	var intersects = ray.intersectObjects(objects);
+	if (intersects.length > 0) {
+		container.style.cursor = 'pointer';
+	}
+	else {
+		container.style.cursor = 'auto';
+		//S. camera move
+		isMouseDown = false;
+		onMouseDownPosition.x = event.clientX - onMouseDownPosition.x;
+		onMouseDownPosition.y = event.clientY - onMouseDownPosition.y;
+	}
+	mouseHover = false;
+/*document.removeEventListener( 'mousemove', onDocumentMouseMove, false );
                     document.removeEventListener( 'mouseup', onDocumentMouseUp, false );
                     document.removeEventListener( 'mouseout', onDocumentMouseOut, false );*/
-    }
-    function onDocumentMouseOut(event) {
-    	document.removeEventListener('mousemove', onDocumentMouseMove, false);
-    	document.removeEventListener('mouseup', onDocumentMouseUp, false);
-    	document.removeEventListener('mouseout', onDocumentMouseOut, false);
-    }
-    function onDocumentTouchStart(event) {
-    	if (event.touches.length == 1) {
-    		event.preventDefault();
-    		mouseXOnMouseDown = event.touches[0].pageX - windowHalfX;
-    		targetRotationOnMouseDown = targetRotation;
-    	}
-    }
-    function onDocumentTouchMove(event) {
-    	if (event.touches.length == 1) {
-    		event.preventDefault();
-    		mouseX = event.touches[0].pageX - windowHalfX;
-    		targetRotation = targetRotationOnMouseDown + (mouseX - mouseXOnMouseDown) * 0.05;
-    	}
-    }
-    //S. camera zoom
-    
-    function onDocumentMouseWheel(event) {
-    	if (camera.position.z > 0) camera.position.z -= event.wheelDeltaY;
-    	if (camera.position.z < 100) camera.position.z = 101;
-    	if (camera.position.z > 10000) camera.position.z = 9999;
-    	camera.updateMatrix();
-    }
-    function navigation(event){
-				event.preventDefault();
-				switch(this.id){
-					case "arrowdown": camera.position.y -=10; break;
-					case "arrowup":	camera.position.y +=10; break;
-					case "arrowright": camera.position.x +=10; break;
-					case "arrowleft": camera.position.x -=10; break;
-					case "plus": if(camera.position.z>10) camera.position.z -=10; break;
-					case "minus": if(camera.position.z<9999) camera.position.z +=10; break;
-					
-				};
+}
+
+function onDocumentMouseOut(event) {
+	document.removeEventListener('mousemove', onDocumentMouseMove, false);
+	document.removeEventListener('mouseup', onDocumentMouseUp, false);
+	document.removeEventListener('mouseout', onDocumentMouseOut, false);
+}
+
+function onDocumentTouchStart(event) {
+	if (event.touches.length == 1) {
+		event.preventDefault();
+		mouseXOnMouseDown = event.touches[0].pageX - windowHalfX;
+		targetRotationOnMouseDown = targetRotation;
+	}
+}
+
+function onDocumentTouchMove(event) {
+	if (event.touches.length == 1) {
+		event.preventDefault();
+		mouseX = event.touches[0].pageX - windowHalfX;
+		targetRotation = targetRotationOnMouseDown + (mouseX - mouseXOnMouseDown) * 0.05;
+	}
+}
+//S. camera zoom
+function onDocumentMouseWheel(event) {
+	if (camera.position.z > 0) camera.position.z -= event.wheelDeltaY;
+	if (camera.position.z < 100) camera.position.z = 101;
+	if (camera.position.z > 10000) camera.position.z = 9999;
+	camera.updateMatrix();
+}
+
+function navigation(event) {
+	event.preventDefault();
+	switch (this.id) {
+	case "arrowdown":
+		camera.position.y -= 10;
+		break;
+	case "arrowup":
+		camera.position.y += 10;
+		break;
+	case "arrowright":
+		camera.position.x += 10;
+		break;
+	case "arrowleft":
+		camera.position.x -= 10;
+		break;
+	case "plus":
+		if (camera.position.z > 10) camera.position.z -= 10;
+		break;
+	case "minus":
+		if (camera.position.z < 9999) camera.position.z += 10;
+		break;
 	};
-    //
-    function animate() {
-    	requestAnimationFrame(animate);
-    	render();
-    	stats.update();
-    }
-    function render() {
-    	$( "#slider" ).slider( "value", 10099-camera.position.z );
-    	renderer.render(scene, camera);
-    }
-    //clear canvas
-    
-    function clear() {
-    	context.clearRect(0, 0, document.getElementsByTagName('canvas').width, document.getElementsByTagName('canvas').height);
-    }
+};
+//
+
+function animate() {
+	requestAnimationFrame(animate);
+	render();
+	stats.update();
+}
+
+function render() {
+	$("#slider").slider("value", 10099 - camera.position.z);
+	renderer.render(scene, camera);
+}
+//clear canvas
+function clear() {
+	context.clearRect(0, 0, document.getElementsByTagName('canvas').width, document.getElementsByTagName('canvas').height);
+}
 </script>
     <div id="osx-modal-content">
         <div id="osx-modal-title">
