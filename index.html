@@ -229,12 +229,12 @@
     	stats.domElement.style.right = '0px';
     	container.appendChild(stats.domElement);
     	
-        document.addEventListener('mousedown', onDocumentMouseDown, false);
-    	document.addEventListener('mouseup', onDocumentMouseUp, false);
-    	document.addEventListener('mousemove', onDocumentMouseMove, false);
-    	document.addEventListener('touchstart', onDocumentTouchStart, false);
-    	document.addEventListener('touchmove', onDocumentTouchMove, false);
-        document.addEventListener('mousewheel', onDocumentMouseWheel, false);
+        renderer.domElement.addEventListener('mousedown', onDocumentMouseDown, false);
+    	renderer.domElement.addEventListener('mouseup', onDocumentMouseUp, false);
+    	renderer.domElement.addEventListener('mousemove', onDocumentMouseMove, false);
+    	renderer.domElement.addEventListener('touchstart', onDocumentTouchStart, false);
+    	renderer.domElement.addEventListener('touchmove', onDocumentTouchMove, false);
+        renderer.domElement.addEventListener('mousewheel', onDocumentMouseWheel, false);
     }
     function onDocumentMouseDown(event) {
     /*event.preventDefault();
