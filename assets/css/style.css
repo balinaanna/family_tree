@@ -1,0 +1,88 @@
+#navigator {
+	position: absolute;
+	width: 100px;
+	height: 410px;
+	background-color: #aaaaaa;
+}
+	
+.circle {
+    float: left;
+    margin: 10px;
+    text-align: center;
+    color: blue;
+    font-family: Helvetica;
+    font-weight: 900;
+    background-color: #fff;
+    background-position: 50% 50%;
+    border-radius: 10px;
+    width: 20px;
+    height: 20px;
+    -webkit-box-shadow:
+        0 0 0 5px #fff,
+        0 0 0 6px #999,
+        0px 1px 1px 7px #bbb;
+    box-shadow:
+        0 0 0 5px #fff,
+        0 0 0 6px #999,
+        0px 1px 1px 7px #bbb;
+    content: '';
+    cursor: pointer;
+}
+.arrow{
+	position:absolute;
+	width: 0;
+	height: 0;
+	left: 3px;
+	border-top: 10px solid transparent;
+	border-bottom: 10px solid transparent; 
+	border-right:10px solid blue;
+}
+.arrow-right {
+	-webkit-transform:rotate(180deg);
+}
+.arrow-left {
+	
+}
+.arrow-down {
+	-webkit-transform:rotate(270deg);
+}
+.arrow-up {
+	-webkit-transform:rotate(90deg);
+}
+
+#slider {
+	position: absolute;
+	left: 42px;
+	top: 160px;
+	height: 200px;
+}
+#arrowup{
+	position: absolute;
+	left: 30px;
+	top: 10px;
+}
+#arrowdown{
+	position: absolute;
+	left: 30px;
+	top: 70px;
+}
+#arrowleft{
+	position: absolute;
+	left: 0px;
+	top: 40px;
+}
+#arrowright{
+	position: absolute;
+	left: 60px;
+	top: 40px;
+}
+#plus{
+	position: absolute;
+	left: 30px;
+	top: 110px;
+}
+#minus{
+	position: absolute;
+	left: 30px;
+	top: 370px;
+}
