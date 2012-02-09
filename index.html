@@ -53,8 +53,6 @@ var container, stats;
 var camera, scene, projector, renderer, particle;
 var cube, plane, c;
 var objects = []; // array of NODES
-var targetRotation = 0;
-var targetRotationOnMouseDown = 0;
 var mouseX = 0;
 var mouseXOnMouseDown = 0;
 var mouseY = 0;
@@ -245,14 +243,7 @@ function init() {
 }
 
 function onDocumentMouseDown(event) {
-/*event.preventDefault();
-    
-                    document.addEventListener( 'mousemove', onDocumentMouseMove, false );
-                    document.addEventListener( 'mouseup', onDocumentMouseUp, false );
-                    document.addEventListener( 'mouseout', onDocumentMouseOut, false );
-    
-                    mouseXOnMouseDown = event.clientX - windowHalfX;
-                    targetRotationOnMouseDown = targetRotation;*/
+
 	event.preventDefault();
 	var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
 	projector.unprojectVector(vector, camera);
@@ -291,13 +282,12 @@ function onDocumentMouseMove(event) {
 			//container.style.cursor = 'move';
 			//mouseX = event.clientX - windowHalfX;
 			//mouseY = event.clientY - windowHalfY;
-			var deltaX = -(event.clientX - onMouseDownPosition.x); // * camera.position.z / 500;
-			var deltaY = (event.clientY - onMouseDownPosition.y); // * camera.position.z / 500;
-			mouseX -= deltaX * camera.position.z / 500;
-			mouseY += deltaY * camera.position.z / 500;
+			var deltaX = -(event.clientX - onMouseDownPosition.x) * camera.position.z / 600;
+			var deltaY = (event.clientY - onMouseDownPosition.y) * camera.position.z / 600;
+			mouseX -= deltaX;
+			mouseY += deltaY;
 			onMouseDownPosition.x = event.clientX;
 			onMouseDownPosition.y = event.clientY;
-			targetRotation = targetRotationOnMouseDown + (mouseX - mouseXOnMouseDown) * 0.02;
 			intersects[0].object.parent.position.x -= deltaX;
 			intersects[0].object.parent.position.y -= deltaY;
 		}
@@ -322,8 +312,8 @@ function onDocumentMouseMove(event) {
 			container.style.cursor = 'move';
 			var deltaX = -(event.clientX - onMouseDownPosition.x);
 			var deltaY = event.clientY - onMouseDownPosition.y;
-			camera.position.x += deltaX * camera.position.z / 500;
-			camera.position.y += deltaY * camera.position.z / 500;
+			camera.position.x += deltaX * camera.position.z / 600;
+			camera.position.y += deltaY * camera.position.z / 600;
 			onMouseDownPosition.x = event.clientX;
 			onMouseDownPosition.y = event.clientY;
 			camera.updateMatrix();
@@ -368,7 +358,6 @@ function onDocumentTouchStart(event) {
 	if (event.touches.length == 1) {
 		event.preventDefault();
 		mouseXOnMouseDown = event.touches[0].pageX - windowHalfX;
-		targetRotationOnMouseDown = targetRotation;
 	}
 }
 
@@ -376,7 +365,6 @@ function onDocumentTouchMove(event) {
 	if (event.touches.length == 1) {
 		event.preventDefault();
 		mouseX = event.touches[0].pageX - windowHalfX;
-		targetRotation = targetRotationOnMouseDown + (mouseX - mouseXOnMouseDown) * 0.05;
 	}
 }
 //S. camera zoom
