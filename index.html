@@ -97,20 +97,20 @@
         // Image mesh
     	function create_node(l_name, f_name, b_date, d_date) {
     		var cube = new THREE.Object3D();
-    		var width = 350;
-    		var height = 250;
+    		var width = 270;
+    		var height = 320;
     
     		function text(l_name, f_name, b_dat, d_dat) {
     			var canvas = document.createElement('canvas');
     			canvas.width = width;
     			canvas.height = height;
     			var context = canvas.getContext("2d");
-    			context.fillStyle = "orange";
-    			context.font = '24px Arial';
-    			context.fillText(l_name, 180, 70);
-    			context.fillText(f_name, 180, 100);
-    			context.fillText(b_date, 180, 130);
-    			context.fillText(d_date, 180, 160);
+    			context.fillStyle = "black";
+    			context.font = '22px Arial Black';
+    			context.fillText(f_name, width*0.35, height*0.68);
+    			context.fillText(l_name, width*0.35, height*0.74);
+    			context.fillText(b_date, width*0.25, height*0.82);
+    			context.fillText(d_date, width*0.5, height*0.82);
     			var tex = new THREE.Texture(canvas);
     			tex.needsUpdate = true;
     			var mat = new THREE.MeshBasicMaterial({
@@ -132,11 +132,12 @@
     			var item = new THREE.Mesh(new THREE.PlaneGeometry(size_x, size_y), mat);
     			return item;
     		};
-    		cube.add(texture('node.jpg', width, height));
-    		var photo = texture('image.jpg', 128, 128);
-    		photo.position.x = -100;
-    		photo.position.y = 20;
-   
+    		cube.add(texture('trash/pergament.png', width*0.8, height));
+    		var photo = texture('trash/image.jpg', 128, 128);
+    		photo.position.x = 0;
+    		photo.position.y =32;
+    		photo.position.z = -1;
+			container.style.background="url('trash/leafs_tr.jpg')";
     		cube.add(photo);
     		cube.add(text(l_name, f_name, b_date, d_date));
     		//parent "+"
@@ -144,7 +145,7 @@
     			color: 000000,
     			program: programStroke
     		}));
-    		par_voxel.add(texture('plus_par.png', 80, 80));
+    		par_voxel.add(texture('trash/man.png', 60, 60));
     		//par_voxel = new THREE.Mesh( new THREE. SphereGeometry(20, 20 ), new THREE.MeshLambertMaterial( { color: 0x000000, opacity: 0.3, shading: THREE.FlatShading } ) );
     		par_voxel.position.x = mouseX;
     		par_voxel.position.y = mouseY + Math.floor(height / 2);
@@ -161,7 +162,7 @@
     			color: 000000,
     			program: programStroke
     		}));
-    		child_voxel.add(texture('plus_child.png', 80, 80));
+    		child_voxel.add(texture('trash/man.png', 60, 60));
     		child_voxel.position.x = mouseX;
     		child_voxel.position.y = mouseY - Math.floor(height / 2);
     		//child_voxel.position.z = 10;
@@ -177,7 +178,7 @@
         //Nodes
         
         for (var i = 0; i < numNodes; i++) {
-    	   var node = create_node("Last_Name", "First_Name", i, "");
+    	   var node = create_node("Vader", "Darth", '1000', '9000');
            node.position.set(i*200,i*200,0)
            objects.push(node);
            scene.add(node);
