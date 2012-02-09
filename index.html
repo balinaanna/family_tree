@@ -132,31 +132,26 @@
     			var item = new THREE.Mesh(new THREE.PlaneGeometry(size_x, size_y), mat);
     			return item;
     		};
-    		cube.add(texture('node.jpg', width, height));
+    		
     		var photo = texture('image.jpg', 128, 128);
     		photo.position.x = -100;
     		photo.position.y = 20;
-   
-    		cube.add(photo);
-    		cube.add(text(l_name, f_name, b_date, d_date));
+    		
     		//parent "+"
     		par_voxel = new THREE.Particle(new THREE.ParticleCanvasMaterial({
     			color: 000000,
     			program: programStroke
     		}));
     		par_voxel.add(texture('plus_par.png', 80, 80));
-    		//par_voxel = new THREE.Mesh( new THREE. SphereGeometry(20, 20 ), new THREE.MeshLambertMaterial( { color: 0x000000, opacity: 0.3, shading: THREE.FlatShading } ) );
     		par_voxel.position.x = mouseX;
     		par_voxel.position.y = mouseY + Math.floor(height / 2);
-    		//par_voxel.position.z = 10;
     		par_voxel.matrixAutoUpdate = false;
     		par_voxel.updateMatrix();
     		par_voxel.overdraw = true;
     		par_voxel.visible = false;
     		par_voxel.name = 'parent';
-    		cube.add(par_voxel);
+			
     		//child "+"
-    		//child_voxel = new THREE.Mesh( new THREE.SphereGeometry(20, 20 ), new THREE.MeshLambertMaterial( { color: 0x000000, opacity: 0.3, shading: THREE.FlatShading } ) );
     		child_voxel = new THREE.Particle(new THREE.ParticleCanvasMaterial({
     			color: 000000,
     			program: programStroke
@@ -164,18 +159,46 @@
     		child_voxel.add(texture('plus_child.png', 80, 80));
     		child_voxel.position.x = mouseX;
     		child_voxel.position.y = mouseY - Math.floor(height / 2);
-    		//child_voxel.position.z = 10;
     		child_voxel.matrixAutoUpdate = false;
     		child_voxel.updateMatrix();
     		child_voxel.overdraw = true;
     		child_voxel.visible = false;
     		child_voxel.name = 'child';
-    		cube.add(child_voxel);
+			
+			cube.add(texture('node.jpg', width, height)); 			// children[0]
+			cube.add(photo);														// children[1]
+    		cube.add(text(l_name, f_name, b_date, d_date));		// children[2]
+			cube.add(par_voxel);												// children[3]
+    		cube.add(child_voxel);												// children[4]
     		return cube;
     	}
         
+		function create_tree(json, id, i){
+		  var data = JSON.parse(json);
+		  if(i==1){
+			var node = create_node(data[id].l_name, data[id].l_name, data[id].b_date, data[id].d_date);
+			node.position.set((0,0,0);
+			objects.push(node);
+			scene.add(node);
+		  }
+		  if(i<4){
+			var f_id = data[id].f_id;
+			var m_id = data[id].m_id;
+			var f_node = create_node(data[f_id].l_name, data[f_id].l_name, data[f_id].b_date, data[f_id].d_date);
+			f_node.position.set((Math.pow((4-i),2))*(-350),(i-1)*(-280),0);
+			var m_node = create_node(data[m_id].l_name, data[m_id].l_name, data[m_id].b_date, data[m_id].d_date);
+			m_node.position.set((Math.pow((4-i),2))*350,(i-1)*(-280),0);
+			objects.push(f_node);
+			scene.add(f_node);
+			objects.push(m_node);
+			scene.add(m_node);
+			++i;
+			create_tree(json, f_id, i);
+			create_tree(json, m_id, i);
+		  }
+		}
+		
         //Nodes
-        
         for (var i = 0; i < numNodes; i++) {
     	   var node = create_node("Last_Name", "First_Name", i, "");
            node.position.set(i*200,i*200,0)
@@ -203,12 +226,12 @@
     	stats.domElement.style.top = '0px';
     	container.appendChild(stats.domElement);
     	
-        document.addEventListener('mousedown', onDocumentMouseDown, false);
-    	document.addEventListener('mouseup', onDocumentMouseUp, false);
-    	document.addEventListener('mousemove', onDocumentMouseMove, false);
-    	document.addEventListener('touchstart', onDocumentTouchStart, false);
-    	document.addEventListener('touchmove', onDocumentTouchMove, false);
-        document.addEventListener('mousewheel', onDocumentMouseWheel, false);
+        renderer.domElement.addEventListener('mousedown', onDocumentMouseDown, false);
+		renderer.domElement.addEventListener('mouseup', onDocumentMouseUp, false);
+		renderer.domElement.addEventListener('mousemove', onDocumentMouseMove, false);
+		renderer.domElement.addEventListener('touchstart', onDocumentTouchStart, false);
+		renderer.domElement.addEventListener('touchmove', onDocumentTouchMove, false);
+		renderer.domElement.addEventListener('mousewheel', onDocumentMouseWheel, false);
     }
     function onDocumentMouseDown(event) {
     /*event.preventDefault();
