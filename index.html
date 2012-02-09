@@ -189,38 +189,46 @@ function init() {
 		cube.add(child_voxel); // children[4]
 		return cube;
 	}
-	function create_tree(json, id, i) {
+	
+	function create_tree(json, id, i, nodex) {
 		var data = JSON.parse(json);
+		console.log(data);
 		if (i == 1) {
 			var node = create_node(data[id].l_name, data[id].l_name, data[id].b_date, data[id].d_date);
 			node.position.set(0, 0, 0);
 			objects.push(node);
 			scene.add(node);
+			nodex = node;
 		}
 		if (i < 4) {
-			var f_id = data[id].f_id;
-			var m_id = data[id].m_id;
-			var f_node = create_node(data[f_id].l_name, data[f_id].l_name, data[f_id].b_date, data[f_id].d_date);
-			f_node.position.set((Math.pow((4 - i), 2)) * (-350), (i - 1) * (-280), 0);
-			var m_node = create_node(data[m_id].l_name, data[m_id].l_name, data[m_id].b_date, data[m_id].d_date);
-			m_node.position.set((Math.pow((4 - i), 2)) * 350, (i - 1) * (-280), 0);
-			objects.push(f_node);
-			scene.add(f_node);
-			objects.push(m_node);
-			scene.add(m_node);
-			++i;
-			create_tree(json, f_id, i);
-			create_tree(json, m_id, i);
+			var a = i + 1;
+			if(data[id].f_id){
+				var f_id = data[id].f_id;
+				var f_node = create_node(data[f_id].l_name, data[f_id].l_name, data[f_id].b_date, data[f_id].d_date);
+				f_node.position.set(nodex.position.x+(Math.pow((4 - i), 2)) * 0.7 * (-350), (i - 1) * (-280), 0);
+				objects.push(f_node);
+				scene.add(f_node);
+				create_tree(json, f_id, a,f_node);
+			};
+			if(data[id].m_id){
+				var m_id = data[id].m_id;
+				var m_node = create_node(data[m_id].l_name, data[m_id].l_name, data[m_id].b_date, data[m_id].d_date);
+				m_node.position.set(nodex.position.x+(Math.pow((4 - i), 2)) * 0.7 * 350, (i - 1) * (-280), 0);
+				objects.push(m_node);
+				scene.add(m_node);
+				create_tree(json, m_id, a,m_node);
+			};
 		}
 	}
+	create_tree('{"1":{"l_name":"ffff","b_date":"123","d_date":"456","f_id":"2","m_id":"3"},"2":{"l_name":"father","b_date":"123","d_date":"456","f_id":"4","m_id":"5"},"3":{"l_name":"mot","b_date":"123","d_date":"456","f_id":"10","m_id":""},"4":{"l_name":"fff1","b_date":"123","d_date":"456","f_id":"6","m_id":"7"},"5":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"8","m_id":"9"},"6":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":""},"7":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":""},"8":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":""},"9":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":""},"10":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":"11"},"11":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":""}}',"1",1);
 	//Nodes
-	for (var i = 0; i < numNodes; i++) {
+	/*for (var i = 0; i < numNodes; i++) {
 		var node = create_node("Vader", "Darth", '1000', '9000');
 		node.position.set(i * 200, i * 200, 0)
 		objects.push(node);
 		scene.add(node);
-	}
-	cube = node;
+	}*/
+	//cube = node;
 	for (var key in objects) {
 		objects[key].children[0].on('dblclick', function() {
 			OSX.init();
