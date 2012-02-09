@@ -425,8 +425,8 @@
 			}
 
 			function render() {
-				cube2.position.x = mouseX;
-				cube2.position.y = -mouseY+150;
+				cube2.position.x = mouseX * (camera.position.z/500);
+				cube2.position.y = (-mouseY+150)* (camera.position.z/500);
 				renderer.render( scene, camera );
 			}
 			
