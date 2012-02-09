@@ -115,15 +115,15 @@
 					materials.push( new THREE.MeshBasicMaterial( { color: Math.random() * 0xffffff } ) );
 				}
 				
-				c = create_node("Last_Name", "First_Name", "08-08-88", "09-09-99");
-				
+				c = create_node("Last_Name", "First_Name", "08.08.88", "09.09.99");
+				particle = create_node("Last_Name", "First_Name", "08.08.88", "09.09.99");
 				
 				// Image mesh
 				function create_node(l_name, f_name, b_date, d_date) {
 				  var cube2 = new THREE.Object3D();
 				  var width = 350;
 				  var height = 250;
-				  function text(l_name, f_name, b_date, d_date){
+				  function text(l_name, f_name, b_dat, d_dat){
 					var canvas = document.createElement('canvas');
 					canvas.width = width;
 					canvas.height = height;
@@ -155,13 +155,17 @@
 				  photo.position.x = -100;
 				  photo.position.y = 20;
 				  
+				  /*
+				  ** particle
 				  particle = new THREE.Particle( new THREE.ParticleCanvasMaterial( { color: Math.random() * 0x808080 + 0x808080, program: programStroke } ) );
 				  particle.scale.x = particle.scale.y = 10;
 				  particle.position.x=0;cube
 				  particle.position.y=-125;
+				  **
+				  */
 				  
 				  cube2.add(photo);
-				  cube2.add(text(l_name, f_name));
+				  cube2.add(text(l_name, f_name, b_date, d_date));
 				  
 				  //parent "+"
 					par_voxel = new THREE.Particle( new THREE.ParticleCanvasMaterial( { color: 000000, program: programStroke } ) );
@@ -192,19 +196,18 @@
 					child_voxel.name = 'child';
 					cube2.add(child_voxel);
 
-				  cube2.add( particle );
-
 				  return cube2;
 				}
 				
-				c.scale.x=c.scale.y=0.7;
 				
 				
 				cube2=c;
 				
 				objects.push(c);
+				objects.push(particle);
 				
 				scene.add(c);
+				scene.add(particle);
 				cube2.children[0].on('dblclick', function(){ OSX.init(); });
 				cube2.children[3].on('click', function(){ particle.material.program =  programFill; OSX.init(); });
 				
