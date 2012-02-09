@@ -2,7 +2,8 @@
 	position: absolute;
 	width: 100px;
 	height: 410px;
-	background-color: #aaaaaa;
+	/*background-color: #aaaaaa;*/
+	background-color: transparent;
 }
 	
 .circle {
@@ -85,4 +86,7 @@
 	position: absolute;
 	left: 30px;
 	top: 370px;
+}
+.body{
+	margin: 0;
 }
