@@ -297,8 +297,8 @@
 						//mouseX = event.clientX - windowHalfX;
 						//mouseY = event.clientY - windowHalfY;
 						
-						var deltaX = -(event.clientX - onMouseDownPosition.x);
-						var deltaY = event.clientY - onMouseDownPosition.y;
+						var deltaX = -(event.clientX - onMouseDownPosition.x)*camera.position.z/500;
+						var deltaY = (event.clientY - onMouseDownPosition.y)*camera.position.z/500;
 						mouseX -= deltaX;
 						mouseY += deltaY;
 						onMouseDownPosition.x = event.clientX;
@@ -335,8 +335,8 @@
 						container.style.cursor = 'move';
 						var deltaX = -(event.clientX - onMouseDownPosition.x);
 						var deltaY = event.clientY - onMouseDownPosition.y;
-						camera.position.x += deltaX;
-						camera.position.y += deltaY;
+						camera.position.x += deltaX*camera.position.z/500;
+						camera.position.y += deltaY*camera.position.z/500;
 						onMouseDownPosition.x = event.clientX;
 						onMouseDownPosition.y = event.clientY;
 						camera.updateMatrix();
