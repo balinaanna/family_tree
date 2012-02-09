@@ -93,6 +93,9 @@ function init() {
 	}
 	c = create_node("Last_Name", "First_Name", "08.08.88", "09.09.99");
 	particle = create_node("Last_Name", "First_Name", "08.08.88", "09.09.99");
+	particle2 = create_node("Last_Name", "First_Name", "08.08.88", "09.09.99");
+	particle3 = create_node("Last_Name", "First_Name", "08.08.88", "09.09.99");
+	particle4 = create_node("Last_Name", "First_Name", "08.08.88", "09.09.99");
 	// Image mesh
 
 	function create_node(l_name, f_name, b_date, d_date) {
@@ -180,11 +183,24 @@ function init() {
 		cube2.add(child_voxel);
 		return cube2;
 	}
+	
+	c.position.set(0,0,0);
+	particle.position.set(360,350,0);
+	particle2.position.set(-360,0,0);
+	particle3.position.set(-360,350,0);
+	particle4.position.set(0,350,0);
+	
 	cube2 = c;
 	objects.push(c);
 	objects.push(particle);
+	objects.push(particle2);
+	objects.push(particle3);
+	objects.push(particle4);
 	scene.add(c);
 	scene.add(particle);
+	scene.add(particle2);
+	scene.add(particle3);
+	scene.add(particle4);
 	cube2.children[0].on('dblclick', function() {
 		OSX.init();
 	});
@@ -262,6 +278,8 @@ function onDocumentMouseMove(event) {
 			onMouseDownPosition.x = event.clientX;
 			onMouseDownPosition.y = event.clientY;
 			targetRotation = targetRotationOnMouseDown + (mouseX - mouseXOnMouseDown) * 0.02;
+			cube2.position.x = mouseX * (camera.position.z / 500);
+			cube2.position.y = (-mouseY + 150) * (camera.position.z / 500);
 		}
 		par = intersects[0].object.parent;
 		for (j = 0; j < par.children.length; j++) {
@@ -352,8 +370,8 @@ function animate() {
 	stats.update();
 }
 function render() {
-	cube2.position.x = mouseX * (camera.position.z / 500);
-	cube2.position.y = (-mouseY + 150) * (camera.position.z / 500);
+	//cube2.position.x = mouseX * (camera.position.z / 500);
+	//cube2.position.y = (-mouseY + 150) * (camera.position.z / 500);
 	renderer.render(scene, camera);
 }
 //clear canvas
