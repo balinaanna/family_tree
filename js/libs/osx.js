@@ -1,6 +1,7 @@
 var OSX = {
 		container: null,
-		init: function () {
+		user_info: null,
+		init: function (info) {
 			//c.children[0].on('dblclick', function(e){
 				//e.preventDefault();	
 
@@ -15,6 +16,7 @@ var OSX = {
 					onOpen: OSX.open,
 					onClose: OSX.close
 				});
+				user_info=info;
 			//});
 		},
 		open: function (d) {
@@ -23,6 +25,7 @@ var OSX = {
 			d.overlay.fadeIn('slow', function () {
 				$("#osx-modal-content", self.container).show();
 				var title = $("#osx-modal-title", self.container);
+				title=$("#osx-modal-title").html(user_info.l_name+" "+user_info.f_name+" ("+user_info.b_date+" - "+user_info.d_date+")");
 				title.show();
 				d.container.slideDown('slow', function () {
 					setTimeout(function () {

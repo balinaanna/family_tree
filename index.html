@@ -93,7 +93,7 @@
                 scene = new THREE.Scene();
                 camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 10000);
                 camera.position.y = 150;
-                camera.position.z = 500;
+                camera.position.z = 1500;
                 scene.add(camera);
                 THREE.Object3D._threexDomEvent.camera(camera);
 
@@ -140,6 +140,7 @@
                     cube.add(text(l_name, f_name, b_date, d_date, nodeWidth, nodeHeight)); // children[2]
                     cube.add(par_voxel); // children[3]
                     cube.add(child_voxel); // children[4]
+		    cube.info={"l_name":l_name, "f_name":f_name, "b_date":b_date, "d_date":d_date};
                     return cube;
                 }
 
@@ -182,17 +183,19 @@
                     if (i == 1) {
                         //TODO f_name
                         var node = create_node(data[id].l_name, data[id].l_name, data[id].b_date, data[id].d_date, nodeWidth, nodeHeight);
-                        node.position.set(0, 0, 0);
+                        node.position.set(0, nodeHeight+50, 0);
+			node.info.user_id=id;
                         objects.push(node);
                         scene.add(node);
                         nodex = node;
                     }
-                    if (i < 4) {
+                    if (i<4) {
                         var a = i + 1;
                         if(data[id].f_id){
                             var f_id = data[id].f_id;
                             var f_node = create_node(data[f_id].l_name, data[f_id].l_name, data[f_id].b_date, data[f_id].d_date, nodeWidth, nodeHeight);
-                            f_node.position.set(nodex.position.x+(Math.pow((4 - i), 2)) * 0.7 * (-350), (i - 1) * (-280), 0);
+                            f_node.position.set(nodex.position.x+(Math.pow((4 - i), 1.25)) * (-nodeWidth), (i - 1) * (-nodeHeight-50), 0);
+			    f_node.info.user_id=f_id;
                             objects.push(f_node);
                             scene.add(f_node);
                             create_tree(json, f_id, a,f_node);
@@ -200,7 +203,8 @@
                         if(data[id].m_id){
                             var m_id = data[id].m_id;
                             var m_node = create_node(data[m_id].l_name, data[m_id].l_name, data[m_id].b_date, data[m_id].d_date, nodeWidth, nodeHeight);
-                            m_node.position.set(nodex.position.x+(Math.pow((4 - i), 2)) * 0.7 * 350, (i - 1) * (-280), 0);
+                            m_node.position.set(nodex.position.x+(Math.pow((4 - i), 1.25)) *  nodeWidth, (i - 1) * (-nodeHeight-50), 0);
+			    m_node.info.user_id=m_id;
                             objects.push(m_node);
                             scene.add(m_node);
                             create_tree(json, m_id, a,m_node);
@@ -211,7 +215,7 @@
                 create_tree('{"1":{"l_name":"ffff","b_date":"123","d_date":"456","f_id":"2","m_id":"3"},"2":{"l_name":"father","b_date":"123","d_date":"456","f_id":"4","m_id":"5"},"3":{"l_name":"mot","b_date":"123","d_date":"456","f_id":"10","m_id":""},"4":{"l_name":"fff1","b_date":"123","d_date":"456","f_id":"6","m_id":"7"},"5":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"8","m_id":"9"},"6":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":""},"7":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":""},"8":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":""},"9":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":""},"10":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":"11"},"11":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":""}}',"1",1);
                 for (var key in objects) {
                     objects[key].children[0].on('dblclick', function() {
-                        OSX.init();
+                        OSX.init(objects[key].info);
                     });
                 }
                 projector = new THREE.Projector();
