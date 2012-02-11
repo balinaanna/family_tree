@@ -32,7 +32,7 @@ var OSX = {
 				onClose: OSX.close,
 				onShow: function() {initMCE();}
 			});
-			user_info=info;
+			data=info;
 		}
 		else if(info.action == 'add_child' || info.action == 'add_parent')
 		{

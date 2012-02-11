@@ -65,7 +65,7 @@
 			var nodeHeight = 320;
             var SELECTED;
 
-			/////////////////////////////////////////////    MODAL WINDOW   ///////////////////////////////////////////////////////////
+			/////////////////////////////////////////////    NAVIGATOR   ///////////////////////////////////////////////////////////
 			$("#slider").slider({
 				orientation : "vertical",
 				value : 0,
@@ -129,7 +129,7 @@
 					arrow.overdraw = true;
 					arrow.name = 'arrow';
 					arrow.visible = false;
-					arrow.on('click', function() { console.log('arrow click');OSX.init(cube.info); }); // Dont work! Why?!!
+					arrow.on('click', function() { console.log('arrow click');OSX.init_view(cube.info); }); // Dont work! Why?!!
 					
 					
 					
@@ -312,7 +312,7 @@
                 
                 for(var key in objects) {
 					objects[key].children[0].on('dblclick', function() {
-						OSX.init(objects[key].info);
+						OSX.init_view(objects[key].info);
 					});
 				}
 			}
@@ -376,14 +376,17 @@
 
 				if( intersects.length > 0 ) {
 					container.style.cursor = 'pointer';
-					
-                    par = intersects[1].object.parent;
-					for( j = 0; j < par.children.length; j++) {
-						if(par.children[j].name == 'child' || par.children[j].name == 'parent') {
-							par.children[j].visible = true;
+					if(intersects.length >1)
+					{
+						par = intersects[1].object.parent;
+						for( j = 0; j < par.children.length; j++) {
+							if(par.children[j].name == 'child' || par.children[j].name == 'parent') {
+								par.children[j].visible = true;
+							}
 						}
 					}
                     if(SELECTED == intersects[0].object.parent) {
+						container.style.cursor = 'move';
 						var deltaX = -(event.clientX - onMouseDownPosition.x) * camera.position.z / 450;
 						var deltaY = (event.clientY - onMouseDownPosition.y) * camera.position.z / 450;
 						mouseX -= deltaX;
@@ -510,6 +513,8 @@
 				<!--h2>Hello! I'm SimpleModal!</h2-->
 				<div id="div-about"></div>
 				<p>
+					<input type="button" id="edit_person" value="Edit" onclick="/* OSX.init_edit({'action': 'edit_person'});*/"> <!-- it doesn't work yet! -->
+					
 					<button class="simplemodal-close">
 						Close
 					</button>
