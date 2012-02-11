@@ -96,7 +96,7 @@
 				function create_node(l_name, f_name, b_date, d_date, width, height) {
 					var cube = new THREE.Object3D();
 					// TODO coords
-					cube.add(texture('trash/pergament.png', width * 0.8, height));
+					
 					var photo = texture('trash/image.jpg', 128, 128);
 					photo.position.set(0, 32, -1);
 					container.style.background = "url('trash/leafs_tr.jpg')";
@@ -121,15 +121,24 @@
 					child_voxel.overdraw = true;
 					child_voxel.visible = false;
 					child_voxel.name = 'child';
-
-					cube.add(photo);
-					// children[1]
-					cube.add(text(l_name, f_name, b_date, d_date, nodeWidth, nodeHeight));
-					// children[2]
-					cube.add(par_voxel);
-					// children[3]
-					cube.add(child_voxel);
-					// children[4]
+					
+					// arrow
+					var arrow = new THREE.Mesh(new THREE.PlaneGeometry(30, 48));
+					arrow.add(texture('trash/arrow.png', 30, 48));
+					arrow.position.set(mouseX, mouseY - 30 - Math.floor(height / 2), 1);
+					arrow.overdraw = true;
+					arrow.name = 'arrow';
+					arrow.visible = false;
+					arrow.on('click', function() { console.log('arrow click');OSX.init(cube.info); }); // Dont work! Why?!!
+					
+					
+					
+					cube.add(texture('trash/pergament.png', width * 0.8, height));			// children[0]
+					cube.add(photo);												// children[1]
+					cube.add(text(l_name, f_name, b_date, d_date, nodeWidth, nodeHeight));	// children[2]
+					cube.add(par_voxel);											// children[3]
+					cube.add(child_voxel);											// children[4]
+					cube.add(arrow);												// children[5]
 					cube.info = {
 						"l_name" : l_name,
 						"f_name" : f_name,
@@ -237,6 +246,9 @@
 							nodex.lineF = lineFc;
 							f_node.lineC = lineFc;
 							f_node.child = nodex;
+							if(i==3){
+								f_node.children[5].visible = true;
+							}
 							create_tree(json, f_id, a, f_node);
 						};
 						if(data[id].m_id) {
@@ -252,12 +264,17 @@
 							nodex.lineM = lineMc;
 							m_node.lineC = lineMc;
 							m_node.child = nodex;
+							if(i==3){
+								m_node.children[5].visible = true;
+							}
 							create_tree(json, m_id, a, m_node);
 						};
+						
 					}
 				}
 
 				create_tree('{"1":{"l_name":"ffff","b_date":"123","d_date":"456","f_id":"2","m_id":"3"},"2":{"l_name":"father","b_date":"123","d_date":"456","f_id":"4","m_id":"5"},"3":{"l_name":"mot","b_date":"123","d_date":"456","f_id":"10","m_id":""},"4":{"l_name":"fff1","b_date":"123","d_date":"456","f_id":"6","m_id":"7"},"5":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"8","m_id":"9"},"6":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":""},"7":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":""},"8":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":""},"9":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":""},"10":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":"11"},"11":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":""}}', "1", 1);
+				
 				for(var key in objects) {
 					objects[key].children[0].on('dblclick', function() {
 						OSX.init(objects[key].info);
