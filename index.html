@@ -47,25 +47,8 @@
 		</div>
 		<div id="home"></div>
 		<script type="text/javascript">
-			/////// delete!!! ///////
-			var programStroke = function(context) {
-				context.lineWidth = 0.0001;
-				context.beginPath();
-				context.arc(0, 0, 15, 0, PI2, true);
-				context.closePath();
-				context.stroke();
-			}
-			var programFill = function(context) {
-				context.beginPath();
-				context.arc(0, 0, 1, 0, PI2, true);
-				context.closePath();
-				context.fill();
-			}
-			var PI2 = Math.PI * 2;
-			//////////////////////////
-
-			var
-			container, stats;
+			
+			var container, stats;
 			var camera, scene, projector, renderer;
 			var cube;
 			var objects = [];
@@ -117,18 +100,12 @@
 					var photo = texture('trash/image.jpg', 128, 128);
 					photo.position.set(0, 32, -1);
 					container.style.background = "url('trash/leafs_tr.jpg')";
-
-					//parent "+"
-					par_voxel = new THREE.Particle(new THREE.ParticleCanvasMaterial({
-						color : 000000,
-						program : programStroke
-					}));
-
-					var imgPlusSize = 60;
-
+					
+					//parent "+"					
+					var imgPlusSize = 70;
+					var par_voxel = new THREE.Mesh(new THREE.PlaneGeometry(imgPlusSize, imgPlusSize));
 					par_voxel.add(texture('trash/man.png', imgPlusSize, imgPlusSize));
-					par_voxel.position.x = mouseX;
-					par_voxel.position.y = mouseY + Math.floor(height / 2);
+					par_voxel.position.set(mouseX, mouseY + Math.floor(height / 2), 1);
 					par_voxel.matrixAutoUpdate = false;
 					par_voxel.updateMatrix();
 					par_voxel.overdraw = true;
@@ -136,13 +113,9 @@
 					par_voxel.name = 'parent';
 
 					//child "+"
-					child_voxel = new THREE.Particle(new THREE.ParticleCanvasMaterial({
-						color : 000000,
-						program : programStroke
-					}));
+					var child_voxel = new THREE.Mesh(new THREE.PlaneGeometry(imgPlusSize, imgPlusSize));
 					child_voxel.add(texture('trash/man.png', imgPlusSize, imgPlusSize));
-					child_voxel.position.x = mouseX;
-					child_voxel.position.y = mouseY - Math.floor(height / 2);
+					child_voxel.position.set(mouseX, mouseY - Math.floor(height / 2), 1);
 					child_voxel.matrixAutoUpdate = false;
 					child_voxel.updateMatrix();
 					child_voxel.overdraw = true;
@@ -207,7 +180,7 @@
 						overdraw : true
 					});
 					mat.transparent = true;
-					var item = new THREE.Mesh(new THREE.PlaneGeometry(width, height), mat);
+					var item = new THREE.Mesh(new THREE.PlaneGeometry(width, height, 6), mat);
 
 					return item;
 				}
@@ -347,9 +320,8 @@
 						intersects[0].object.parent.position.x -= deltaX;
 						intersects[0].object.parent.position.y -= deltaY;
 						intersects[0].object.parent.redrawLine();
-						console.log(intersects[0]);
 					}
-					par = intersects[0].object.parent;
+					par = intersects[1].object.parent;
 					for( j = 0; j < par.children.length; j++) {
 						if(par.children[j].name == 'child' || par.children[j].name == 'parent') {
 							par.children[j].visible = true;
