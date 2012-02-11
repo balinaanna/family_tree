@@ -47,27 +47,25 @@
 		</div>
 		<div id="home"></div>
 		<script type="text/javascript">
-			
+			/////////////////////////////////////////////    VARIABLES   ///////////////////////////////////////////////////////////
 			var container, stats;
 			var camera, scene, projector, renderer;
 			var cube;
+            
 			var objects = [];
-			// array of NODES
-			var mouseX = 0;
-			var mouseXOnMouseDown = 0;
+			
+            var mouseX = 0;
 			var mouseY = 0;
-			var mouseYOnMouseDown = 0;
 			var isMouseDown = false;
 			var onMouseDownPosition;
-			var windowHalfX = window.innerWidth / 2;
-			var windowHalfY = window.innerHeight / 2;
-			var mouse = new THREE.Vector2();
+			
+            var mouse = new THREE.Vector2();
 			var mouseHover = false;
 			var nodeWidth = 270;
 			var nodeHeight = 320;
             var SELECTED;
 
-			//navigation
+			/////////////////////////////////////////////    MODAL WINDOW   ///////////////////////////////////////////////////////////
 			$("#slider").slider({
 				orientation : "vertical",
 				value : 0,
@@ -78,7 +76,7 @@
 				}
 			});
 			$('#navigator').on("click", "div", navigation);
-
+            /////////////////////////////////////////////    INIT   ///////////////////////////////////////////////////////////
 			init();
 			animate();
 
@@ -93,7 +91,7 @@
 				camera.position.z = 1500;
 				scene.add(camera);
 				THREE.Object3D._threexDomEvent.camera(camera);
-
+                /////////////////////////////////////////////    NODE CREATION   ///////////////////////////////////////////////////////////
 				function create_node(l_name, f_name, b_date, d_date, width, height) {
 					var cube = new THREE.Object3D();
 					// TODO coords
@@ -170,7 +168,7 @@
 					}
 					return cube;
 				}
-
+                /////////////////////////////////////////////    TEXT   ///////////////////////////////////////////////////////////
 				function text(l_name, f_name, b_date, d_date, width, height) {
 					var canvas = document.createElement('canvas');
 					canvas.width = width;
@@ -194,7 +192,7 @@
 
 					return item;
 				}
-
+                /////////////////////////////////////////////    TEXTURE   ///////////////////////////////////////////////////////////
 				function texture(path, size_x, size_y) {
 					var tex = THREE.ImageUtils.loadTexture(path);
 					var mat = new THREE.MeshBasicMaterial({
@@ -205,7 +203,7 @@
 					var item = new THREE.Mesh(new THREE.PlaneGeometry(size_x, size_y), mat);
 					return item;
 				};
-
+                /////////////////////////////////////////////    LINES   ///////////////////////////////////////////////////////////
 				function create_line_c(color,child,parent) {
 					var lineMat = new THREE.LineBasicMaterial({
 						color : color,
@@ -221,7 +219,7 @@
 					line = new THREE.Line(geom, lineMat);
 					return line;
 				};
-					
+				/////////////////////////////////////////////    TREE CREATION   ///////////////////////////////////////////////////////////
 				function create_tree(json, id, i, nodex) {
 					var data = JSON.parse(json);
 					if(i == 1) {//TODO f_name
@@ -273,30 +271,33 @@
 						
 					}
 				}
-
+                /////////////////////////////////////////////    CALL TREE   ///////////////////////////////////////////////////////////
 				create_tree('{"1":{"l_name":"ffff","b_date":"123","d_date":"456","f_id":"2","m_id":"3"},"2":{"l_name":"father","b_date":"123","d_date":"456","f_id":"4","m_id":"5"},"3":{"l_name":"mot","b_date":"123","d_date":"456","f_id":"10","m_id":""},"4":{"l_name":"fff1","b_date":"123","d_date":"456","f_id":"6","m_id":"7"},"5":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"8","m_id":"9"},"6":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":""},"7":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":""},"8":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":""},"9":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":""},"10":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":"11"},"11":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":""}}', "1", 1);
-				
-				for(var key in objects) {
-					objects[key].children[0].on('dblclick', function() {
-						OSX.init(objects[key].info);
-					});
-				}
+				                
 				projector = new THREE.Projector();
 				onMouseDownPosition = new THREE.Vector2();
 				renderer = new THREE.CanvasRenderer();
 				renderer.setSize(window.innerWidth, window.innerHeight);
 				container.appendChild(renderer.domElement);
+                
 				stats = new Stats();
 				stats.domElement.style.position = 'absolute';
 				stats.domElement.style.top = '0px';
 				stats.domElement.style.right = '0px';
 				container.appendChild(stats.domElement);
+                /////////////////////////////////////////////    EVENTS   ///////////////////////////////////////////////////////////
 				renderer.domElement.addEventListener('mousedown', onDocumentMouseDown, false);
 				renderer.domElement.addEventListener('mouseup', onDocumentMouseUp, false);
 				renderer.domElement.addEventListener('mousemove', onDocumentMouseMove, false);
 				renderer.domElement.addEventListener('mousewheel', onDocumentMouseWheel, false);
+                
+                for(var key in objects) {
+					objects[key].children[0].on('dblclick', function() {
+						OSX.init(objects[key].info);
+					});
+				}
 			}
-
+            /////////////////////////////////////////////    MOUSE DOWN   ///////////////////////////////////////////////////////////
 			function onDocumentMouseDown(event) {
 
 				event.preventDefault();
@@ -318,7 +319,7 @@
                     SELECTED = null;
 				}
 			}
-
+            /////////////////////////////////////////////    MOUSE MOVE   ///////////////////////////////////////////////////////////
 			function onDocumentMouseMove(event) {
 				event.preventDefault();
 				mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
@@ -383,7 +384,7 @@
                     
 				}
 			}
-
+            /////////////////////////////////////////////    MOUSE UP   ///////////////////////////////////////////////////////////
 			function onDocumentMouseUp(event) {
 				event.preventDefault();
                 SELECTED = null;
@@ -403,7 +404,7 @@
 				}
 				mouseHover = false;
 			}
-
+            /////////////////////////////////////////////    MOUSE WHEEL   ///////////////////////////////////////////////////////////
 			function onDocumentMouseWheel(event) {
 				if(camera.position.z > 0)
 					camera.position.z -= event.wheelDeltaY;
@@ -413,7 +414,7 @@
 					camera.position.z = 9999;
 				camera.updateMatrix();
 			}
-
+            /////////////////////////////////////////////    NAVIGATION   ///////////////////////////////////////////////////////////
 			function navigation(event) {
 				event.preventDefault();
 				switch (this.id) {
@@ -439,13 +440,13 @@
 						break;
 				};
 			};
-
+            /////////////////////////////////////////////    ANIMATE   ///////////////////////////////////////////////////////////
 			function animate() {
 				requestAnimationFrame(animate);
 				render();
 				stats.update();
 			}
-
+            /////////////////////////////////////////////    RENDER   ///////////////////////////////////////////////////////////
 			function render() {
 				$("#slider").slider("value", 10099 - camera.position.z);
 				renderer.render(scene, camera);
