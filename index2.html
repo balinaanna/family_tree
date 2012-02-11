@@ -1,0 +1,147 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+	<head>
+		<title>BASE FAMILY TREE WEB APPLICATION</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<link href="data:image/x-icon;base64,AAABAAEAEBAAAAAAAABoBQAAFgAAACgAAAAQAAAAIAAAAAEACAAAAAAAAAEAAAAAAAAAAAAAAAEAAAAAAAAAAAAAEkYuABNKMQAfk2gAITwrABlJLgAVeVEA2fPoABp8UQAaelQA+P38ABRdPQAno2sA/v7/AP/+/wAVjWAAIoVaACWGXQA2oW4AH41gAB+RYwARSS8AF3NJABhzSQAWd0wAE1E1AGKrggAtZEkAF39SABAwGwAhd0wAFVs4ABxTOwAdg1UAK3NSAC6ebwBBiWYAKadvAFGngAAlhl4AEHNKAEO8iQARSTAAEkkwABdJMAAZRzMAKY5kACqOZAAhbUoAMVpHABJUNgDh7+cAHKd5ADKVZwAbhFkA5vTtADVxVgAjilkAMUs/AEKScAAac0sAGXROABlHNAAgc0sA9/v5APr++QAdTT0AF1s6ABaHWgAqTDoANpVxAB+PYAAVQykAGz8mACOIZgAVcEwAsO/YAChhQwAmYkYAI5dmABRQNQA4iF0ADjMeACFKNQAJjmcADjchABpYOwAqn2wAEGU+AD2JaQAUPCcAH4pbABdqRABYo4AAY5Z9ACmJYQAXRy0AGEswABdNNgAml2cAFlU8ABdXOQAgpnAAIXtTABBlPwDO49kAEGg/AB2DWQAaiVkAGVpCABtcPwAkqXkAGWBCAB5cPwAiWDwAFZZlABJDKwBLq5AA1OvfABduSABil4EAEUouACuDYgAUeEsAOKl5AB9vSwD1/fkAM4dlABCIYAD9/vwAI3pRAP///wAeglcAFy8mAByHXQASa0AAFmNDABqOYABFi2gAMKlxABlqRgAvr3oAHHJMAB5zTwAfSDIAG3pSABl+VQASXTsAF1c7AB2AUgAcg1sAHIlbAC0kDwAVOCcAFz0kACFfQQC+3coAG2pHABhwRwAlEQQAFU0wAA0qGQALMRwAGnxQAPj9+wAcUDkACzwiAP3+/gDM6NAA/v7+AA5rQgAlUDkA5/fzABJBKAAXZkUANZ9wACCMXACJmYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIODg4ODg4OYg4ODg4ODg4ODg6mBfqepn6RpNwqDg4ODqXReU5A4EUsiZ2VxGwVMg3grbj4EOjEclg8hL6piVDN2Mh1tRZmiQoWIE5Iph291hosnAXkCUK2aFUctlz1YgH8IC2tVEGiJZmOdkWByrnpdhHCeaqUuSKE/r09fQ5M7QDCmd0QgFFeVKKtkjY59JKk0ik5hIxlalCo5CTw2EqyDB4xJo1KgUXtcj7AGViaDg4OoFx4fGCxNsZsWNQOpg4ODg4NGggwlbFtzfEGDg4ODg4ODDakaSlmcqQ6Dg4ODAAAAAAAAAAAAAAAAAAAAAP//AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP//AAA=" rel="icon" type="image/x-icon">
+		<link rel="stylesheet" type="text/css" href="assets/css/style.css">
+		<!-- OSX Style CSS files -->
+		<link type='text/css' href='assets/css/osx.css' rel='stylesheet' media='screen'>
+		<link rel="stylesheet" type="text/css" href="assets/css/ui-lightness/jquery-ui-1.8.17.custom.css" />
+		<script type="text/javascript" src="/js/libs/jquery-1.7.1.min.js"></script>
+		<script type="text/javascript" src="/js/libs/json2.js"></script>
+		<script type="text/javascript" src="/js/libs/underscore-min.js"></script>
+		<script type="text/javascript" src="/js/libs/backbone-min.js"></script>
+		
+		<script src="/js/libs/Three.js" type="text/javascript"></script>
+		<script src="/js/libs/js/Stats.js" type="text/javascript"></script>
+		<script src="/js/libs/js/helvetiker_regular.typeface.js" type="text/javascript"></script>
+		<script src='/js/libs/threex.domevent.js' type="text/javascript"></script>
+		<script src='/js/libs/threex.domevent.object3d.js' type="text/javascript"></script>
+		<script type="text/javascript" src="js/libs/jquery-ui-1.8.17.custom.min.js"></script>
+		<script type="text/javascript" src="/js/libs/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
+		
+		<script type="text/javascript" src="/js/app/controllers/BaseController.js"></script>
+		<script type="text/javascript" src="/js/app/models/BaseModel.js"></script>
+		<script type="text/javascript" src="/js/app/views/BaseView.js"></script>
+		<script type="text/javascript" src="/js/app/router.js"></script>
+	</head>
+	<body class="body">
+		<div id="navigator">
+			<div id="arrowup" class="circle arrow-up">
+				<div class="arrow"></div>
+			</div>
+			<div id="arrowleft" class="circle arrow-left">
+				<div class="arrow"></div>
+			</div>
+			<div id="arrowright" class="circle arrow-right">
+				<div class="arrow"></div>
+			</div>
+			<div id="arrowdown" class="circle arrow-down">
+				<div class="arrow"></div>
+			</div>
+			<div id="plus" class="circle">
+				+
+			</div>
+			<div id="slider"></div>
+			<div id="minus" class="circle">
+				-
+			</div>
+		</div>
+		<div id="home"></div>
+		<div id="osx-modal-content">
+			<div id="osx-modal-title">
+				OSX Style Modal Dialog
+			</div>
+			<div class="close">
+				<a href="#" class="simplemodal-close">x</a>
+			</div>
+			<div id="osx-modal-data">
+				<!--h2>Hello! I'm SimpleModal!</h2-->
+				<div id="div-about"></div>
+				<p>
+					<input type="button" id="edit_person" value="Edit" onclick="/* OSX.init_edit({'action': 'edit_person'});*/"> <!-- it doesn't work yet! -->
+					
+					<button class="simplemodal-close">
+						Close
+					</button>
+					<span>(or press ESC or click the overlay)</span>
+				</p>
+			</div>
+		</div>
+		
+		<div id="osx-modal-content-edit">
+			<div id="osx-modal-title-edit">
+				OSX Style Modal Dialog
+			</div>
+			<div class="close">
+				<a href="#" class="simplemodal-close">x</a>
+			</div>
+			<div id="osx-modal-data-edit">
+				<!--h2>Hello! I'm SimpleModal!</h2-->
+				<table>
+					<tr>
+						<td class="data-edit-field">
+							First name
+						</td>
+						<td class="data-edit-data">
+							<input id="f_name" name="f_name"/>
+						</td>
+					</tr>
+					<tr>
+						<td class="data-edit-field">
+							Last name
+						</td>
+						<td class="data-edit-data">
+							<input id="l_name" name="l_name"/>
+						</td>
+					</tr>				
+					<tr>
+						<td class="data-edit-field">
+							Birth date
+						</td>
+						<td class="data-edit-data">
+							<input id="date_b" name="date_b"/>
+						</td>
+					</tr>
+					<tr>
+						<td class="data-edit-field">
+							Death date
+						</td>
+						<td class="data-edit-data">
+							<input id="date_d" name="date_d"/>
+						</td>
+					</tr>
+					<tr>
+						<td class="data-edit-field">
+							Sex</td>
+						<td>
+							<input type="radio" name="sex" value="m" checked /> Male 
+							<input type="radio" name="sex" value="f" /> Female
+						</td>
+						
+					</tr>
+					<tr>
+						<td class="data-edit-field">
+							About
+						</td>
+						<td class="data-edit-data">
+							<textarea id="about" name="about" class="mceEditor"></textarea>
+						</td>						
+					</tr>
+				</table>
+				<p>
+					<input type="submit" id="submit-person" value="Save" />
+					<button class="simplemodal-close">
+						Close
+					</button>
+					<span>(or press ESC or click the overlay)</span>
+				</p>
+			</div>
+		</div>
+		<script type='text/javascript' src='/js/libs/jquery.simplemodal.js'></script>
+		<script type='text/javascript' src='/js/libs/osx.js'></script>
+		<a href="#" id="uLogin" style="position:absolute; bottom:0px"><img src="http://ulogin.ru/img/button.png" width="187" height="30" alt="МультиВход"></a>
+		<script src="http://ulogin.ru/js/widget.js?display=window&fields=first_name,last_name,photo&redirect_uri=http%3A%2F%2Fstudia-vektor.org.ua%2Fserver%2Fapi%2Flogin" type="text/javascript"></script>
+	</body>
+</html>

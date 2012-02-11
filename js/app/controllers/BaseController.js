@@ -1,16 +1,16 @@
 (function () {
 
-    BaseController = Backbone.Collection.extend({
+    BaseController = Backbone.Router.extend({
 		
 		initialize : function(){
 			this.el = $('#home');
 			this._model   = new BaseModel();
-			this._view    = new BaseView(this.el);
+			this._view    = new BaseView({el: $('body')});
 			//console.log(this._model);
 		},
 		start: function(){
-			//this._view.render(this._model.get('items'));
-			$('#home').append(this._model.get('items'));
+			this._view.animate();
+			//$('#home').append(this._model.get('items'));
 		}
 	});
 })();
