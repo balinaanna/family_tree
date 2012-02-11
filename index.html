@@ -65,6 +65,7 @@
 			var mouseHover = false;
 			var nodeWidth = 270;
 			var nodeHeight = 320;
+            var SELECTED;
 
 			//navigation
 			$("#slider").slider({
@@ -307,12 +308,14 @@
 					mouseHover = true;
 					onMouseDownPosition.x = event.clientX;
 					onMouseDownPosition.y = event.clientY;
+                    SELECTED = intersects[0].object.parent;
 				} else {
 					mouseHover = false;
 					isMouseDown = true;
 					container.style.cursor = 'move';
 					onMouseDownPosition.x = event.clientX;
 					onMouseDownPosition.y = event.clientY;
+                    SELECTED = null;
 				}
 			}
 
@@ -328,8 +331,8 @@
 				if(intersects.length > 0) {
 					container.style.cursor = 'pointer';
 					if(mouseHover) {
-						var deltaX = -(event.clientX - onMouseDownPosition.x) * camera.position.z / 600;
-						var deltaY = (event.clientY - onMouseDownPosition.y) * camera.position.z / 600;
+						var deltaX = -(event.clientX - onMouseDownPosition.x) * camera.position.z / 450;
+						var deltaY = (event.clientY - onMouseDownPosition.y) * camera.position.z / 450;
 						mouseX -= deltaX;
 						mouseY += deltaY;
 						onMouseDownPosition.x = event.clientX;
@@ -345,31 +348,45 @@
 						}
 					}
 				} else {
-					for( i = 0; i < objects.length; i++) {
-						for( j = 0; j < objects[i].children.length; j++) {
-							if(objects[i].children[j].name == 'child' || objects[i].children[j].name == 'parent') {
-								objects[i].children[j].visible = false;
-							}
-						}
-					}
-					container.style.cursor = 'auto';
-					if(isMouseDown) {
-						container.style.cursor = 'move';
-						var deltaX = -(event.clientX - onMouseDownPosition.x);
-						var deltaY = event.clientY - onMouseDownPosition.y;
-						camera.position.x += deltaX * camera.position.z / 600;
-						camera.position.y += deltaY * camera.position.z / 600;
+                    if(!SELECTED){
+                        for( i = 0; i < objects.length; i++) {
+    						for( j = 0; j < objects[i].children.length; j++) {
+    							if(objects[i].children[j].name == 'child' || objects[i].children[j].name == 'parent') {
+    								objects[i].children[j].visible = false;
+    							}
+    						}
+    					}
+    					container.style.cursor = 'auto';
+    					if(isMouseDown) {
+    						container.style.cursor = 'move';
+    						var deltaX = -(event.clientX - onMouseDownPosition.x);
+    						var deltaY = event.clientY - onMouseDownPosition.y;
+    						camera.position.x += deltaX * camera.position.z / 450;
+    						camera.position.y += deltaY * camera.position.z / 450;
+    						onMouseDownPosition.x = event.clientX;
+    						onMouseDownPosition.y = event.clientY;
+    						camera.updateMatrix();
+    					} else {
+    						container.style.cursor = 'auto';
+    					}
+                    } else {
+   						var deltaX = -(event.clientX - onMouseDownPosition.x) * camera.position.z / 450;
+						var deltaY = (event.clientY - onMouseDownPosition.y) * camera.position.z / 450;
+						mouseX -= deltaX;
+						mouseY += deltaY;
 						onMouseDownPosition.x = event.clientX;
 						onMouseDownPosition.y = event.clientY;
-						camera.updateMatrix();
-					} else {
-						container.style.cursor = 'auto';
-					}
+						SELECTED.position.x -= deltaX;
+						SELECTED.position.y -= deltaY;
+						SELECTED.redrawLine();
+                    }
+                    
 				}
 			}
 
 			function onDocumentMouseUp(event) {
 				event.preventDefault();
+                SELECTED = null;
 				mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
 				mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 				var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
