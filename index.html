@@ -339,7 +339,7 @@
                     SELECTED = null;
 				}
 			}
-
+            /////////////////////////////////////////////    MOUSE CLICK   ///////////////////////////////////////////////////////////
 			function onClick(event) {
 				event.preventDefault();
 				var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
@@ -378,9 +378,16 @@
 				var ray = new THREE.Ray(camera.position, vector.subSelf(camera.position).normalize());
 				var intersects = ray.intersectObjects(objects);
 
-				if(intersects.length > 0 && SELECTED == intersects[0].object.parent ) {
+				if( intersects.length > 0 ) {
 					container.style.cursor = 'pointer';
-					if(mouseHover) {
+					
+                    par = intersects[1].object.parent;
+					for( j = 0; j < par.children.length; j++) {
+						if(par.children[j].name == 'child' || par.children[j].name == 'parent') {
+							par.children[j].visible = true;
+						}
+					}
+                    if(mouseHover && SELECTED == intersects[0].object.parent) {
 						var deltaX = -(event.clientX - onMouseDownPosition.x) * camera.position.z / 450;
 						var deltaY = (event.clientY - onMouseDownPosition.y) * camera.position.z / 450;
 						mouseX -= deltaX;
@@ -391,16 +398,9 @@
 						intersects[0].object.parent.position.y -= deltaY;
 						intersects[0].object.parent.redrawLine();
 					}
-					if(intersects.length >1)
-					{
-						par = intersects[1].object.parent;
-						for( j = 0; j < par.children.length; j++) {
-							if(par.children[j].name == 'child' || par.children[j].name == 'parent') {
-								par.children[j].visible = true;
-							}
-						}
-					}
+
 				} else {
+
                     if(!SELECTED){
                         for( i = 0; i < objects.length; i++) {
     						for( j = 0; j < objects[i].children.length; j++) {
