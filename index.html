@@ -328,7 +328,7 @@
 				var ray = new THREE.Ray(camera.position, vector.subSelf(camera.position).normalize());
 				var intersects = ray.intersectObjects(objects);
 
-				if(intersects.length > 0) {
+				if(intersects.length > 0 && SELECTED == intersects[0].object.parent ) {
 					container.style.cursor = 'pointer';
 					if(mouseHover) {
 						var deltaX = -(event.clientX - onMouseDownPosition.x) * camera.position.z / 450;
