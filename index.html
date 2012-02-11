@@ -61,7 +61,6 @@
 			var onMouseDownPosition;
 			
             var mouse = new THREE.Vector2();
-			var mouseHover = false;
 			var nodeWidth = 270;
 			var nodeHeight = 320;
             var SELECTED;
@@ -326,18 +325,15 @@
 				var ray = new THREE.Ray(camera.position, vector.subSelf(camera.position).normalize());
 				var intersects = ray.intersectObjects(objects);
 				if(intersects.length > 0) {
-					mouseHover = true;
-					onMouseDownPosition.x = event.clientX;
-					onMouseDownPosition.y = event.clientY;
-                    SELECTED = intersects[0].object.parent;
+					SELECTED = intersects[0].object.parent;
 				} else {
-					mouseHover = false;
 					isMouseDown = true;
 					container.style.cursor = 'move';
-					onMouseDownPosition.x = event.clientX;
-					onMouseDownPosition.y = event.clientY;
-                    SELECTED = null;
+					SELECTED = null;
 				}
+				onMouseDownPosition.x = event.clientX;
+				onMouseDownPosition.y = event.clientY;
+                    
 			}
             /////////////////////////////////////////////    MOUSE CLICK   ///////////////////////////////////////////////////////////
 			function onClick(event) {
@@ -387,7 +383,7 @@
 							par.children[j].visible = true;
 						}
 					}
-                    if(mouseHover && SELECTED == intersects[0].object.parent) {
+                    if(SELECTED == intersects[0].object.parent) {
 						var deltaX = -(event.clientX - onMouseDownPosition.x) * camera.position.z / 450;
 						var deltaY = (event.clientY - onMouseDownPosition.y) * camera.position.z / 450;
 						mouseX -= deltaX;
@@ -454,7 +450,6 @@
 					onMouseDownPosition.x = event.clientX - onMouseDownPosition.x;
 					onMouseDownPosition.y = event.clientY - onMouseDownPosition.y;
 				}
-				mouseHover = false;
 			}
             /////////////////////////////////////////////    MOUSE WHEEL   ///////////////////////////////////////////////////////////
 			function onDocumentMouseWheel(event) {
