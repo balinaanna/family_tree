@@ -105,7 +105,7 @@
 					var imgPlusSize = 70;
 					var par_voxel = new THREE.Mesh(new THREE.PlaneGeometry(imgPlusSize, imgPlusSize));
 					par_voxel.add(texture('trash/man.png', imgPlusSize, imgPlusSize));
-					par_voxel.position.set(mouseX, mouseY + Math.floor(height / 2), 1);
+					par_voxel.position.set(mouseX, mouseY - Math.floor(height / 2), 1);
 					par_voxel.matrixAutoUpdate = false;
 					par_voxel.updateMatrix();
 					par_voxel.overdraw = true;
@@ -115,7 +115,7 @@
 					//child "+"
 					var child_voxel = new THREE.Mesh(new THREE.PlaneGeometry(imgPlusSize, imgPlusSize));
 					child_voxel.add(texture('trash/man.png', imgPlusSize, imgPlusSize));
-					child_voxel.position.set(mouseX, mouseY - Math.floor(height / 2), 1);
+					child_voxel.position.set(mouseX, mouseY + Math.floor(height / 2), 1);
 					child_voxel.matrixAutoUpdate = false;
 					child_voxel.updateMatrix();
 					child_voxel.overdraw = true;
