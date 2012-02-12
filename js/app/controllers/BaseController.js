@@ -4,8 +4,8 @@
 		
 		initialize : function(){
 			this.el = $('#home');
-			this._model   = new BaseModel();
-			this._view    = new BaseView({el: $('body')});
+			//this._model   = new BaseModel();
+			this._view    = new BaseView({el: $('#home')});
 			//console.log(this._model);
 		},
 		start: function(){

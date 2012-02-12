@@ -34,8 +34,23 @@
 		},
 		
 		initialize: function(){
+			//navigation
+			var that = this;
+			$("#slider").slider({
+				orientation : "vertical",
+				value : 8599,
+				min : 100,
+				max : 9999,
+				slide : function(event, ui) {
+					that.camera.position.z = 10099 - ui.value;
+				}
+			});
+			$('#navigator').on("click", "div", $.proxy(this.navigation, this));
+			
+				this.el = $("#home");
 				this.container = document.createElement('div');
-				this.el.appendChild(this.container);
+				//this.el.append($("#navigator"));
+				this.el.append(this.container);
 				var info = document.createElement('div');
 				this.container.appendChild(info);
 				this.scene = new THREE.Scene();
@@ -70,11 +85,11 @@
 				stats.domElement.style.top = '0px';
 				stats.domElement.style.right = '0px';
 				container.appendChild(stats.domElement);*/
-				//renderer.domElement.addEventListener('mousedown', onDocumentMouseDown, false);
-				//renderer.domElement.addEventListener('mouseup', onDocumentMouseUp, false);
-				//renderer.domElement.addEventListener('mousemove', onDocumentMouseMove, false);
-				//renderer.domElement.addEventListener('mousewheel', onDocumentMouseWheel, false);
-			
+				/*renderer.domElement.addEventListener('mousedown', onDocumentMouseDown, false);
+				renderer.domElement.addEventListener('mouseup', onDocumentMouseUp, false);
+				renderer.domElement.addEventListener('mousemove', onDocumentMouseMove, false);
+				renderer.domElement.addEventListener('mousewheel', onDocumentMouseWheel, false);
+			*/
 			
 		},
 		
@@ -388,6 +403,7 @@
 		},
 		
 		onDocumentMouseWheel: function(event) {
+			
 				if(this.camera.position.z > 0)
 					this.camera.position.z -= event.wheelDeltaY;
 				if(this.camera.position.z < 100)
@@ -396,9 +412,11 @@
 					this.camera.position.z = 9999;
 				this.camera.updateMatrix();
 		},
+		
 		navigation: function(event) {
+				//console.log(event.target);
 				event.preventDefault();
-				switch (this.id) {
+				switch (event.target.id) {
 					case "arrowdown":
 						this.camera.position.y -= 10;
 						break;
@@ -419,7 +437,7 @@
 						if(this.camera.position.z < 9999)
 							this.camera.position.z += 10;
 						break;
-				};
+				};						
 		},
 		animate: function() {
 				requestAnimationFrame($.proxy(this.animate, this));
