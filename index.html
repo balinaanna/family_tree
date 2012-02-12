@@ -91,190 +91,6 @@
 				camera.position.z = 1500;
 				scene.add(camera);
 				THREE.Object3D._threexDomEvent.camera(camera);
-				
-                /////////////////////////////////////////////    NODE CREATION   ///////////////////////////////////////////////////////////
-				function create_node(l_name, f_name, b_date, d_date, about, width, height) {
-					var cube = new THREE.Object3D();
-					// TODO coords
-					
-					var photo = texture('trash/image.jpg', 128, 128);
-					photo.position.set(0, 32, -1);
-					container.style.background = "url('trash/leafs_tr.jpg')";
-					
-					//parent "+"					
-					var imgPlusSize = 70;
-					var par_voxel = new THREE.Mesh(new THREE.PlaneGeometry(imgPlusSize, imgPlusSize));
-					par_voxel.add(texture('trash/man.png', imgPlusSize, imgPlusSize));
-					par_voxel.position.set(mouseX, mouseY - Math.floor(height / 2), 1);
-					par_voxel.matrixAutoUpdate = false;
-					par_voxel.updateMatrix();
-					par_voxel.overdraw = true;
-					par_voxel.visible = false;
-					par_voxel.name = 'parent';
-
-					//child "+"
-					var child_voxel = new THREE.Mesh(new THREE.PlaneGeometry(imgPlusSize, imgPlusSize));
-					child_voxel.add(texture('trash/man.png', imgPlusSize, imgPlusSize));
-					child_voxel.position.set(mouseX, mouseY + Math.floor(height / 2), 1);
-					child_voxel.matrixAutoUpdate = false;
-					child_voxel.updateMatrix();
-					child_voxel.overdraw = true;
-					child_voxel.visible = false;
-					child_voxel.name = 'child';
-					
-					// arrow
-					var arrow = new THREE.Mesh(new THREE.PlaneGeometry(30, 48));
-					arrow.add(texture('trash/arrow.png', 30, 48));
-					arrow.position.set(mouseX, mouseY - 30 - Math.floor(height / 2), 1);
-					arrow.overdraw = true;
-					arrow.name = 'arrow';
-					arrow.visible = false;
-					arrow.on('click', function() { console.log('arrow click');OSX.init_view(cube.info); }); // Dont work! Why?!!
-					
-					
-					
-					cube.add(texture('trash/pergament.png', width * 0.8, height));			// children[0]
-					cube.add(photo);												// children[1]
-					cube.add(text(l_name, f_name, b_date, d_date, nodeWidth, nodeHeight));	// children[2]
-					cube.add(par_voxel);											// children[3]
-					cube.add(child_voxel);											// children[4]
-					cube.add(arrow);												// children[5]
-					cube.info = {
-						"l_name" : l_name,
-						"f_name" : f_name,
-						"b_date" : b_date,
-						"d_date" : d_date,
-						"about" : about
-					};
-					cube.mother;
-					cube.father;
-					cube.child;
-					cube.lineM;
-					cube.lineF;
-					cube.lineC;
-					cube.redrawLine = function(){
-						if(cube.mother){
-							cube.lineM.geometry.vertices[0].position.set(cube.position.x,cube.position.y,-10);
-							cube.lineM.geometry.vertices[1].position.set(cube.position.x, cube.position.y - 200, -10);
-							cube.lineM.geometry.vertices[2].position.set(cube.mother.position.x, cube.position.y - 200, -10);
-						};
-						if(cube.father){
-							cube.lineF.geometry.vertices[0].position.set(cube.position.x,cube.position.y,-10);
-							cube.lineF.geometry.vertices[1].position.set(cube.position.x, cube.position.y - 200, -10);
-							cube.lineF.geometry.vertices[2].position.set(cube.father.position.x, cube.position.y - 200, -10);
-						};
-						if(cube.child){
-						cube.lineC.geometry.vertices[2].position.set(cube.position.x, cube.child.position.y - 200, -10);
-						cube.lineC.geometry.vertices[3].position.set(cube.position.x,cube.position.y,-10);
-						};
-					}
-					return cube;
-				}
-                /////////////////////////////////////////////    TEXT   ///////////////////////////////////////////////////////////
-				function text(l_name, f_name, b_date, d_date, width, height) {
-					var canvas = document.createElement('canvas');
-					canvas.width = width;
-					canvas.height = height;
-					var context = canvas.getContext("2d");
-					context.fillStyle = "black";
-					context.font = '22px Arial Black';
-					//TODO text align
-					context.fillText(f_name, width * 0.35, height * 0.68);
-					context.fillText(l_name, width * 0.35, height * 0.74);
-					context.fillText(b_date, width * 0.25, height * 0.82);
-					context.fillText(d_date, width * 0.5, height * 0.82);
-					var tex = new THREE.Texture(canvas);
-					tex.needsUpdate = true;
-					var mat = new THREE.MeshBasicMaterial({
-						map : tex,
-						overdraw : true
-					});
-					mat.transparent = true;
-					var item = new THREE.Mesh(new THREE.PlaneGeometry(width, height), mat);
-                    
-                    item.position.z = 1;
-
-					return item;
-				}
-                /////////////////////////////////////////////    TEXTURE   ///////////////////////////////////////////////////////////
-				function texture(path, size_x, size_y) {
-					var tex = THREE.ImageUtils.loadTexture(path);
-					var mat = new THREE.MeshBasicMaterial({
-						map : tex,
-						overdraw : true
-					});
-					mat.transparent = true;
-					var item = new THREE.Mesh(new THREE.PlaneGeometry(size_x, size_y), mat);
-					return item;
-				};
-                /////////////////////////////////////////////    LINES   ///////////////////////////////////////////////////////////
-				function create_line_c(color,child,parent) {
-					var lineMat = new THREE.LineBasicMaterial({
-						color : color,
-						opacity : 1,
-						linewidth : 3
-					});
-
-					var geom = new THREE.Geometry();
-					geom.vertices.push(new THREE.Vertex(new THREE.Vector3(child.position.x, child.position.y, -10)));
-					geom.vertices.push(new THREE.Vertex(new THREE.Vector3(child.position.x, child.position.y - 200, -10)));
-					geom.vertices.push(new THREE.Vertex(new THREE.Vector3(parent.position.x, child.position.y - 200, -10)));
-					geom.vertices.push(new THREE.Vertex(new THREE.Vector3(parent.position.x, parent.position.y, -10)));
-					line = new THREE.Line(geom, lineMat);
-					return line;
-				};
-				/////////////////////////////////////////////    TREE CREATION   ///////////////////////////////////////////////////////////
-				function create_tree(json, id, i, nodex) {
-					var data = JSON.parse(json);
-					if(i == 1) {//TODO f_name
-						var node = create_node(data[id].l_name, data[id].l_name, data[id].b_date, data[id].d_date, data[id].about, nodeWidth, nodeHeight);
-						node.position.set(0, nodeHeight + 50, 0);
-						node.info.user_id = id;
-						objects.push(node);
-						scene.add(node);
-						nodex = node;
-					}
-					if(i < 4) {
-						var a = i + 1;
-						if(data[id].f_id) {
-							var f_id = data[id].f_id;
-							var f_node = create_node(data[f_id].l_name, data[f_id].l_name, data[f_id].b_date, data[f_id].d_date, data[f_id].about, nodeWidth, nodeHeight);
-							f_node.position.set(nodex.position.x + (Math.pow((4 - i), 1.25)) * (-nodeWidth), (i - 1) * (-nodeHeight - 50), 0);
-							f_node.info.user_id = f_id;
-							objects.push(f_node);
-							scene.add(f_node);
-							lineFc = create_line_c(0x000000,nodex,f_node);
-							scene.add(lineFc);
-							nodex.father = f_node;
-							nodex.lineF = lineFc;
-							f_node.lineC = lineFc;
-							f_node.child = nodex;
-							if(i==3){
-								f_node.children[5].visible = true;
-							}
-							create_tree(json, f_id, a, f_node);
-						};
-						if(data[id].m_id) {
-							var m_id = data[id].m_id;
-							var m_node = create_node(data[m_id].l_name, data[m_id].l_name, data[m_id].b_date, data[m_id].d_date, data[m_id].about, nodeWidth, nodeHeight);
-							m_node.position.set(nodex.position.x + (Math.pow((4 - i), 1.25)) * nodeWidth, (i - 1) * (-nodeHeight - 50), 0);
-							m_node.info.user_id = m_id;
-							objects.push(m_node);
-							scene.add(m_node);
-							lineMc = create_line_c(0x000000,nodex,m_node);
-							scene.add(lineMc);
-							nodex.mother = m_node;
-							nodex.lineM = lineMc;
-							m_node.lineC = lineMc;
-							m_node.child = nodex;
-							if(i==3){
-								m_node.children[5].visible = true;
-							}
-							create_tree(json, m_id, a, m_node);
-						};
-						
-					}
-				}
 
 				/////////////////////////////////////////////    CALL TREE   ///////////////////////////////////////////////////////////
 				create_tree('{"1":{"l_name":"ffff","b_date":"123","d_date":"456","f_id":"2","m_id":"3","about":"Lorem ipsum dolor sit amet..."},\n\
@@ -313,6 +129,189 @@
 					});
 				}
 			}
+            /////////////////////////////////////////////    NODE CREATION   ///////////////////////////////////////////////////////////
+			function create_node(l_name, f_name, b_date, d_date, about, width, height) {
+				var cube = new THREE.Object3D();
+				// TODO coords
+				
+				var photo = texture('trash/image.jpg', 128, 128);
+				photo.position.set(0, 32, -1);
+				container.style.background = "url('trash/leafs_tr.jpg')";
+				
+				//parent "+"					
+				var imgPlusSize = 70;
+				var par_voxel = new THREE.Mesh(new THREE.PlaneGeometry(imgPlusSize, imgPlusSize));
+				par_voxel.add(texture('trash/man.png', imgPlusSize, imgPlusSize));
+				par_voxel.position.set(mouseX, mouseY - Math.floor(height / 2), 1);
+				par_voxel.matrixAutoUpdate = false;
+				par_voxel.updateMatrix();
+				par_voxel.overdraw = true;
+				par_voxel.visible = false;
+				par_voxel.name = 'parent';
+
+				//child "+"
+				var child_voxel = new THREE.Mesh(new THREE.PlaneGeometry(imgPlusSize, imgPlusSize));
+				child_voxel.add(texture('trash/man.png', imgPlusSize, imgPlusSize));
+				child_voxel.position.set(mouseX, mouseY + Math.floor(height / 2), 1);
+				child_voxel.matrixAutoUpdate = false;
+				child_voxel.updateMatrix();
+				child_voxel.overdraw = true;
+				child_voxel.visible = false;
+				child_voxel.name = 'child';
+				
+				// arrow
+				var arrow = new THREE.Mesh(new THREE.PlaneGeometry(30, 48));
+				arrow.add(texture('trash/arrow.png', 30, 48));
+				arrow.position.set(mouseX, mouseY - 30 - Math.floor(height / 2), 1);
+				arrow.overdraw = true;
+				arrow.name = 'arrow';
+				arrow.visible = false;
+				arrow.on('click', function() { console.log('arrow click');OSX.init_view(cube.info); }); // Dont work! Why?!!
+				
+				
+				
+				cube.add(texture('trash/pergament.png', width * 0.8, height));			// children[0]
+				cube.add(photo);												// children[1]
+				cube.add(text(l_name, f_name, b_date, d_date, nodeWidth, nodeHeight));	// children[2]
+				cube.add(par_voxel);											// children[3]
+				cube.add(child_voxel);											// children[4]
+				cube.add(arrow);												// children[5]
+				cube.info = {
+					"l_name" : l_name,
+					"f_name" : f_name,
+					"b_date" : b_date,
+					"d_date" : d_date,
+					"about" : about
+				};
+				cube.mother;
+				cube.father;
+				cube.child;
+				cube.lineM;
+				cube.lineF;
+				cube.lineC;
+				cube.redrawLine = function(){
+					if(cube.mother){
+						cube.lineM.geometry.vertices[0].position.set(cube.position.x,cube.position.y,-10);
+						cube.lineM.geometry.vertices[1].position.set(cube.position.x, cube.position.y - 200, -10);
+						cube.lineM.geometry.vertices[2].position.set(cube.mother.position.x, cube.position.y - 200, -10);
+					};
+					if(cube.father){
+						cube.lineF.geometry.vertices[0].position.set(cube.position.x,cube.position.y,-10);
+						cube.lineF.geometry.vertices[1].position.set(cube.position.x, cube.position.y - 200, -10);
+						cube.lineF.geometry.vertices[2].position.set(cube.father.position.x, cube.position.y - 200, -10);
+					};
+					if(cube.child){
+					cube.lineC.geometry.vertices[2].position.set(cube.position.x, cube.child.position.y - 200, -10);
+					cube.lineC.geometry.vertices[3].position.set(cube.position.x,cube.position.y,-10);
+					};
+				}
+				return cube;
+			}
+            /////////////////////////////////////////////    TEXT   ///////////////////////////////////////////////////////////
+			function text(l_name, f_name, b_date, d_date, width, height) {
+				var canvas = document.createElement('canvas');
+				canvas.width = width;
+				canvas.height = height;
+				var context = canvas.getContext("2d");
+				context.fillStyle = "black";
+				context.font = '22px Arial Black';
+				//TODO text align
+				context.fillText(f_name, width * 0.35, height * 0.68);
+				context.fillText(l_name, width * 0.35, height * 0.74);
+				context.fillText(b_date, width * 0.25, height * 0.82);
+				context.fillText(d_date, width * 0.5, height * 0.82);
+				var tex = new THREE.Texture(canvas);
+				tex.needsUpdate = true;
+				var mat = new THREE.MeshBasicMaterial({
+					map : tex,
+					overdraw : true
+				});
+				mat.transparent = true;
+				var item = new THREE.Mesh(new THREE.PlaneGeometry(width, height), mat);
+                
+                item.position.z = 1;
+
+				return item;
+			}
+            /////////////////////////////////////////////    TEXTURE   ///////////////////////////////////////////////////////////
+			function texture(path, size_x, size_y) {
+				var tex = THREE.ImageUtils.loadTexture(path);
+				var mat = new THREE.MeshBasicMaterial({
+					map : tex,
+					overdraw : true
+				});
+				mat.transparent = true;
+				var item = new THREE.Mesh(new THREE.PlaneGeometry(size_x, size_y), mat);
+				return item;
+			};
+            /////////////////////////////////////////////    LINES   ///////////////////////////////////////////////////////////
+			function create_line_c(color,child,parent) {
+				var lineMat = new THREE.LineBasicMaterial({
+					color : color,
+					opacity : 1,
+					linewidth : 3
+				});
+
+				var geom = new THREE.Geometry();
+				geom.vertices.push(new THREE.Vertex(new THREE.Vector3(child.position.x, child.position.y, -10)));
+				geom.vertices.push(new THREE.Vertex(new THREE.Vector3(child.position.x, child.position.y - 200, -10)));
+				geom.vertices.push(new THREE.Vertex(new THREE.Vector3(parent.position.x, child.position.y - 200, -10)));
+				geom.vertices.push(new THREE.Vertex(new THREE.Vector3(parent.position.x, parent.position.y, -10)));
+				line = new THREE.Line(geom, lineMat);
+				return line;
+			};
+			/////////////////////////////////////////////    TREE CREATION   ///////////////////////////////////////////////////////////
+			function create_tree(json, id, i, nodex) {
+				var data = JSON.parse(json);
+				if(i == 1) {//TODO f_name
+					var node = create_node(data[id].l_name, data[id].l_name, data[id].b_date, data[id].d_date, data[id].about, nodeWidth, nodeHeight);
+					node.position.set(0, nodeHeight + 50, 0);
+					node.info.user_id = id;
+					objects.push(node);
+					scene.add(node);
+					nodex = node;
+				}
+				if(i < 4) {
+					var a = i + 1;
+					if(data[id].f_id) {
+						var f_id = data[id].f_id;
+						var f_node = create_node(data[f_id].l_name, data[f_id].l_name, data[f_id].b_date, data[f_id].d_date, data[f_id].about, nodeWidth, nodeHeight);
+						f_node.position.set(nodex.position.x + (Math.pow((4 - i), 1.25)) * (-nodeWidth), (i - 1) * (-nodeHeight - 50), 0);
+						f_node.info.user_id = f_id;
+						objects.push(f_node);
+						scene.add(f_node);
+						lineFc = create_line_c(0x000000,nodex,f_node);
+						scene.add(lineFc);
+						nodex.father = f_node;
+						nodex.lineF = lineFc;
+						f_node.lineC = lineFc;
+						f_node.child = nodex;
+						if(i==3){
+							f_node.children[5].visible = true;
+						}
+						create_tree(json, f_id, a, f_node);
+					};
+					if(data[id].m_id) {
+						var m_id = data[id].m_id;
+						var m_node = create_node(data[m_id].l_name, data[m_id].l_name, data[m_id].b_date, data[m_id].d_date, data[m_id].about, nodeWidth, nodeHeight);
+						m_node.position.set(nodex.position.x + (Math.pow((4 - i), 1.25)) * nodeWidth, (i - 1) * (-nodeHeight - 50), 0);
+						m_node.info.user_id = m_id;
+						objects.push(m_node);
+						scene.add(m_node);
+						lineMc = create_line_c(0x000000,nodex,m_node);
+						scene.add(lineMc);
+						nodex.mother = m_node;
+						nodex.lineM = lineMc;
+						m_node.lineC = lineMc;
+						m_node.child = nodex;
+						if(i==3){
+							m_node.children[5].visible = true;
+						}
+						create_tree(json, m_id, a, m_node);
+					};
+					
+				}
+			}
             /////////////////////////////////////////////    MOUSE DOWN   ///////////////////////////////////////////////////////////
 			function onDocumentMouseDown(event) {
 
@@ -347,7 +346,47 @@
 						}
 						else if(intersects[i].object.name == 'parent')
 						{
-							OSX.init_edit({"action": 'add_parent'});
+							/////////////////////////////////////   ADDING PARENT    /////////////////////////////////////////
+                            if (!intersects[0].object.parent.father || !intersects[0].object.parent.mother){
+                                nodex = intersects[0].object.parent;
+                                i = nodex.generation+1;
+                                var p_id = objects.length+1;
+    							if (!nodex.father && i<4){
+                                    var p_node = create_node('', '', '', '', '', nodeWidth, nodeHeight);
+                                    p_node.info.user_id = p_id;                            
+                                    p_node.position.set(nodex.position.x + (Math.pow((4 - i), 1.25)) * (-nodeWidth), (i - 1) * (-nodeHeight - 50), 0);
+        							objects.push(p_node);
+        							scene.add(p_node);
+        							lineFc = create_line_c(0x000000,nodex,p_node);
+        							scene.add(lineFc);
+        							nodex.father = p_node;
+        							nodex.lineF = lineFc;
+        							p_node.lineC = lineFc;
+                                    p_node.generation = i;
+                                    p_node.child = nodex;
+                                    if(i==3){
+                                        p_node.children[5].visible = true;
+                                    }
+                                } else if (!nodex.mother && i<4){
+                                    var p_node = create_node('', '', '', '', '', nodeWidth, nodeHeight);
+                                    p_node.info.user_id = p_id;
+                                    p_node.position.set(nodex.position.x - (Math.pow((4 - i), 1.25)) * (-nodeWidth), (i - 1) * (-nodeHeight - 50), 0);
+        							objects.push(p_node);
+        							scene.add(p_node);
+        							lineMc = create_line_c(0x000000,nodex,p_node);
+        							scene.add(lineMc);
+        							nodex.mother = p_node;
+        							nodex.lineM = lineMc;
+        							p_node.lineC = lineMc;
+                                    p_node.generation = i;
+                                    p_node.child = nodex;
+                                    if(i==3){
+                                        p_node.children[5].visible = true;
+                                    }
+                                }
+                            }                            
+                            //////////////////////////////////////////////////////////////////////////////////////////////////
+                            OSX.init_edit({"action": 'add_parent'});
 						}
 					}
 					/*par = intersects[1].object.parent;
