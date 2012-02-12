@@ -190,7 +190,9 @@
 						overdraw : true
 					});
 					mat.transparent = true;
-					var item = new THREE.Mesh(new THREE.PlaneGeometry(width, height, 6), mat);
+					var item = new THREE.Mesh(new THREE.PlaneGeometry(width, height), mat);
+                    
+                    item.position.z = 1;
 
 					return item;
 				}
