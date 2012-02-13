@@ -64,6 +64,9 @@
 			var nodeWidth = 270;
 			var nodeHeight = 320;
             var SELECTED;
+            
+            var tree = '{"1":{"l_name":"ffff","b_date":"123","d_date":"456","f_id":"2","m_id":"3","about":"Lorem ipsum dolor sit amet..."},"2":{"l_name":"father","b_date":"123","d_date":"456","f_id":"4","m_id":"5","about":"Lorem ipsum dolor sit amet..."},"3":{"l_name":"mot","b_date":"123","d_date":"456","f_id":"10","m_id":"","about":"Lorem ipsum dolor sit amet..."},"4":{"l_name":"fff1","b_date":"123","d_date":"456","f_id":"6","m_id":"7","about":"Lorem ipsum dolor sit amet..."},"5":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"8","m_id":"9","about":"Lorem ipsum dolor sit amet..."},"6":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":"","about":"Lorem ipsum dolor sit amet..."},"7":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":"","about":"Lorem ipsum dolor sit amet..."},"8":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":"","about":"Lorem ipsum dolor sit amet..."},"9":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":"","about":"Lorem ipsum dolor sit amet..."},"10":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":"11","about":"Lorem ipsum dolor sit amet..."},"11":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":"","about":"Lorem ipsum dolor sit amet..."}}';
+            
 
 			/////////////////////////////////////////////    NAVIGATOR   ///////////////////////////////////////////////////////////
 			$("#slider").slider({
@@ -93,17 +96,7 @@
 				THREE.Object3D._threexDomEvent.camera(camera);
 
 				/////////////////////////////////////////////    CALL TREE   ///////////////////////////////////////////////////////////
-				create_tree('{"1":{"l_name":"ffff","b_date":"123","d_date":"456","f_id":"2","m_id":"3","about":"Lorem ipsum dolor sit amet..."},\n\
-							"2":{"l_name":"father","b_date":"123","d_date":"456","f_id":"4","m_id":"5","about":"Lorem ipsum dolor sit amet..."},\n\
-							"3":{"l_name":"mot","b_date":"123","d_date":"456","f_id":"10","m_id":"","about":"Lorem ipsum dolor sit amet..."},\n\
-							"4":{"l_name":"fff1","b_date":"123","d_date":"456","f_id":"6","m_id":"7","about":"Lorem ipsum dolor sit amet..."},\n\
-							"5":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"8","m_id":"9","about":"Lorem ipsum dolor sit amet..."},\n\
-							"6":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":"","about":"Lorem ipsum dolor sit amet..."},\n\
-							"7":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":"","about":"Lorem ipsum dolor sit amet..."},\n\
-							"8":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":"","about":"Lorem ipsum dolor sit amet..."},\n\
-							"9":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":"","about":"Lorem ipsum dolor sit amet..."},\n\
-							"10":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":"11","about":"Lorem ipsum dolor sit amet..."},\n\
-							"11":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":"","about":"Lorem ipsum dolor sit amet..."}}', "1", 1);
+				create_tree(tree, "1", 1);
 								
 				projector = new THREE.Projector();
 				onMouseDownPosition = new THREE.Vector2();
@@ -267,6 +260,7 @@
 					var node = create_node(data[id].l_name, data[id].l_name, data[id].b_date, data[id].d_date, data[id].about, nodeWidth, nodeHeight);
 					node.position.set(0, nodeHeight + 50, 0);
 					node.info.user_id = id;
+                    node.generation = 1;
 					objects.push(node);
 					scene.add(node);
 					nodex = node;
@@ -283,6 +277,7 @@
 						lineFc = create_line_c(0x000000,nodex,f_node);
 						scene.add(lineFc);
 						nodex.father = f_node;
+                        f_node.generation = i;
 						nodex.lineF = lineFc;
 						f_node.lineC = lineFc;
 						f_node.child = nodex;
@@ -301,6 +296,7 @@
 						lineMc = create_line_c(0x000000,nodex,m_node);
 						scene.add(lineMc);
 						nodex.mother = m_node;
+                        m_node.generation = i;
 						nodex.lineM = lineMc;
 						m_node.lineC = lineMc;
 						m_node.child = nodex;
@@ -350,53 +346,45 @@
                             if (!intersects[0].object.parent.father || !intersects[0].object.parent.mother){
                                 nodex = intersects[0].object.parent;
                                 i = nodex.generation+1;
+                                var n_id = nodex.info.user_id;
                                 var p_id = objects.length+1;
-    							if (!nodex.father && i<4){
-                                    var p_node = create_node('', '', '', '', '', nodeWidth, nodeHeight);
-                                    p_node.info.user_id = p_id;                            
-                                    p_node.position.set(nodex.position.x + (Math.pow((4 - i), 1.25)) * (-nodeWidth), (i - 1) * (-nodeHeight - 50), 0);
-        							objects.push(p_node);
-        							scene.add(p_node);
-        							lineFc = create_line_c(0x000000,nodex,p_node);
-        							scene.add(lineFc);
-        							nodex.father = p_node;
-        							nodex.lineF = lineFc;
-        							p_node.lineC = lineFc;
-                                    p_node.generation = i;
-                                    p_node.child = nodex;
-                                    if(i==3){
-                                        p_node.children[5].visible = true;
-                                    }
-                                } else if (!nodex.mother && i<4){
-                                    var p_node = create_node('', '', '', '', '', nodeWidth, nodeHeight);
-                                    p_node.info.user_id = p_id;
-                                    p_node.position.set(nodex.position.x - (Math.pow((4 - i), 1.25)) * (-nodeWidth), (i - 1) * (-nodeHeight - 50), 0);
-        							objects.push(p_node);
-        							scene.add(p_node);
-        							lineMc = create_line_c(0x000000,nodex,p_node);
-        							scene.add(lineMc);
-        							nodex.mother = p_node;
-        							nodex.lineM = lineMc;
-        							p_node.lineC = lineMc;
-                                    p_node.generation = i;
-                                    p_node.child = nodex;
-                                    if(i==3){
-                                        p_node.children[5].visible = true;
-                                    }
+                                data = JSON.parse(tree);
+                                
+                                if (data[n_id].f_id == ""){
+                                    var m_id = data[n_id].m_id;
+                                    data[n_id].m_id = "";
+                                    data[n_id].f_id = p_id;
+                                } else if (data[n_id].m_id == ""){
+                                    var f_id = data[n_id].f_id;
+                                    data[n_id].f_id = "";
+                                    data[n_id].m_id = p_id;
                                 }
+                                var addNode = {};
+                                addNode[n_id] = data[n_id];
+                                addNode[p_id] = {
+                                                    "l_name": "fafaf",
+                                                    "b_date": "13433",
+                                                    "d_date": "365756",
+                                                    "f_id": "",
+                                                    "m_id": "",
+                                                    "about": "Lorem ipsum dolor sit amet..."
+                                                };
+                                 tree2 = JSON.stringify(addNode);
+                                 create_tree(tree2,n_id,i,nodex);
+                                 if (f_id){
+                                    data[n_id].f_id = f_id;
+                                    f_id = null;
+                                 } else if (m_id) {
+                                    data[n_id].m_id = m_id;
+                                    m_id = null;
+                                 }
+                                 data[p_id] = addNode[p_id];
+                                 tree = JSON.stringify(data);
                             }                            
                             //////////////////////////////////////////////////////////////////////////////////////////////////
                             OSX.init_edit({"action": 'add_parent'});
 						}
 					}
-					/*par = intersects[1].object.parent;
-					for( j = 0; j < par.children.length; j++) {
-						if(par.children[j].name == 'child' || par.children[j].name == 'parent') {
-							par.children[j].visible = true;
-						}
-					}*/
-				} else {
-					
 				}
 			}
 
