@@ -87,9 +87,9 @@ define([],function(){
 				container.appendChild(stats.domElement);*/
 				/*renderer.domElement.addEventListener('mousedown', onDocumentMouseDown, false);
 				renderer.domElement.addEventListener('mouseup', onDocumentMouseUp, false);
-				renderer.domElement.addEventListener('mousemove', onDocumentMouseMove, false);
-				renderer.domElement.addEventListener('mousewheel', onDocumentMouseWheel, false);
-			*/
+				renderer.domElement.addEventListener('mousemove', onDocumentMouseMove, false);*/
+				//this.renderer.domElement.addEventListener('mousewheel', this.onDocumentMouseWheel, false);
+			
 			
 		},
 		
@@ -405,7 +405,7 @@ define([],function(){
 		onDocumentMouseWheel: function(event) {
 			
 				if(this.camera.position.z > 0)
-					this.camera.position.z -= event.wheelDeltaY;
+					this.camera.position.z -= event.originalEvent.wheelDeltaY;
 				if(this.camera.position.z < 100)
 					this.camera.position.z = 101;
 				if(this.camera.position.z > 10000)
@@ -445,6 +445,7 @@ define([],function(){
 				
 		},
 		render: function(){
+			$("#slider").slider("value", 10099 - this.camera.position.z);
 			this.renderer.render(this.scene, this.camera);
 			
 		}
