@@ -30,14 +30,16 @@ var OSX = {
 				overlayClose: true,
 				onOpen: OSX.open_add,
 				onClose: OSX.close,
-				onShow: function() {initMCE();}
+				onShow: function() {
+					initMCE();
+				}
 			});
 			data=info;
-		} else if(info.action == 'edit_person')
+		} else if(info.action == "edit_person")
 		{
 			//editing person info on some event (we'll make it later)
 			user_info=info;
-			$("#osx-modal-content-edit").modal({
+			/*$("#osx-modal-content-edit").modal({
 				overlayId: 'osx-overlay',
 				containerId: 'osx-container',
 				closeHTML: null,
@@ -47,9 +49,16 @@ var OSX = {
 				overlayClose: true,
 				onOpen: OSX.open_edit,
 				onClose: OSX.close,
-				onShow: function() {initMCE();}
-			});
-			//OSX.open_edit();
+				onShow: function() {
+					initMCE();
+				}
+			});*/
+			console.log(user_info);
+			$("#osx-modal-data").html($("#osx-modal-data-edit").html());
+			$("#f-name").html(user_info.f_name);
+			$("#osx-container").css('height', '500px');
+			initMCE();
+		//OSX.open_edit();
 		}
 	},
 	open_view: function (d) {
@@ -75,9 +84,17 @@ var OSX = {
 					function () {
 						$("div.close", self.container).show();
 						$("#osx-modal-data", self.container).show();
-						/*$('#edit_person').click(function(){
+						$('#edit_person').click(function(){
+							//console.log($('#osx-container div div'));
 							
-							//OSX.close();
+							/*$("#f_name").val(user_info.f_name);
+							$("#osx-container").css('height', '500px');
+							$("#osx-modal-content-edit").attr('style', 'display: block;');
+							$("#osx-modal-data-edit").attr('style', 'display: block;');
+							initMCE();
+							$("#osx-modal-data").html($("#osx-modal-data-edit").html());*/
+							
+							/*//OSX.close();
 							//self.init_edit({"action": 'add_parent'});
 							//OSX.init_edit(user_info);
 							$("#osx-modal-content-edit").modal({
@@ -91,14 +108,14 @@ var OSX = {
 								onOpen: callOpenEdit(user_info),
 								onClose: OSX.close(),
 								onShow: function() {initMCE();}
-							});
-						});*/
+							});*/
+						});
 					}
 					);
 				}, 300);
 			});
 		});
-		
+
 	},
 	open_edit: function (d) {
 		//editing person info on some event (we'll make it later)
@@ -129,7 +146,7 @@ var OSX = {
 				}, 300);
 			});
 		})
-		
+
 	},
 	open_add: function (d) {
 		//adding new person
@@ -173,7 +190,7 @@ var OSX = {
 		d.container.animate(
 		{
 			top:"-" + (d.container.height() + 20)
-			},
+		},
 		500,
 		function () {
 			self.close(); // or $.modal.close();
