@@ -1,5 +1,5 @@
-$(document).ready(function () {
-	
+//$(document).ready(function () {
+define(['controllers/BaseController'],	function(BaseController){
     Router = Backbone.Router.extend({
 		
 		initialize : function (options) {
@@ -22,7 +22,8 @@ $(document).ready(function () {
 			console.log('this is just an example')
 		}
     });
-    
-    var router = new Router();
-    Backbone.history.start()
-});
+    return Router;
+});    
+    //var router = new Router();
+   // Backbone.history.start()
+//});

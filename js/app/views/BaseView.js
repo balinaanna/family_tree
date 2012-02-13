@@ -1,9 +1,9 @@
-(function () {
+//(function () {
 
-	var URL = 'js/app/templates/',
-	EJS = '.ejs'
+	//var URL = 'js/app/templates/',
+	//EJS = '.ejs'
 		
-
+define([],function(){
     BaseView = Backbone.View.extend({
 	//	var container, stats;
 		//	var camera, scene, projector, renderer;
@@ -450,4 +450,6 @@
 		}
 		
 	});
-})();
+	return BaseView;
+});	
+//})();

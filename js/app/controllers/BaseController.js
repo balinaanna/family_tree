@@ -1,5 +1,5 @@
-(function () {
-
+//(function () {
+define(['views/BaseView','models/BaseModel'],function(BaseView, BaseModel){
     BaseController = Backbone.Router.extend({
 		
 		initialize : function(){
@@ -13,4 +13,6 @@
 			//$('#home').append(this._model.get('items'));
 		}
 	});
-})();
+	return BaseController;
+});	
+//})();

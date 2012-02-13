@@ -1,5 +1,5 @@
-(function () {
-	
+//(function () {
+define([],function(){	
 	BaseModel = Backbone.Model.extend({
 				
 		initialize: function(){
@@ -29,4 +29,6 @@
 			//localStorage.setItem(key, JSON.stringify(value));
 		}
 	});
-})();
+	return BaseModel;
+});	
+//})();
