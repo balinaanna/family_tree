@@ -11,11 +11,10 @@ define([],function(){
 			objects : [],
 			// array of NODES
 			mouseX : 0,
-			
 			mouseY : 0,
 			
 			isMouseDown : false,
-			//onMouseDownPosition;
+			onMouseDownPosition: null,
 			//windowHalfX : window.innerWidth / 2,
 			//windowHalfY : window.innerHeight / 2,
 			mouse : new THREE.Vector2(),
@@ -23,6 +22,9 @@ define([],function(){
 			nodeWidth : 270,
 			nodeHeight : 320,
             SELECTED: null,
+            tree: '{"1":{"l_name":"ffff","b_date":"123","d_date":"456","f_id":"2","m_id":"3","about":"Lorem ipsum dolor sit amet..."},"2":{"l_name":"father","b_date":"123","d_date":"456","f_id":"4","m_id":"5","about":"Lorem ipsum dolor sit amet..."},"3":{"l_name":"mot","b_date":"123","d_date":"456","f_id":"10","m_id":"","about":"Lorem ipsum dolor sit amet..."},"4":{"l_name":"fff1","b_date":"123","d_date":"456","f_id":"6","m_id":"7","about":"Lorem ipsum dolor sit amet..."},"5":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"8","m_id":"9","about":"Lorem ipsum dolor sit amet..."},"6":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":"","about":"Lorem ipsum dolor sit amet..."},"7":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":"","about":"Lorem ipsum dolor sit amet..."},"8":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":"","about":"Lorem ipsum dolor sit amet..."},"9":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":"","about":"Lorem ipsum dolor sit amet..."},"10":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":"11","about":"Lorem ipsum dolor sit amet..."},"11":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":"","about":"Lorem ipsum dolor sit amet..."}}',
+            
+            
 		
 		events: {
 			"mousedown" : "onDocumentMouseDown",
@@ -59,17 +61,7 @@ define([],function(){
 				this.camera.position.z = 1500;
 				this.scene.add(this.camera);
 				THREE.Object3D._threexDomEvent.camera(this.camera);
-				this.create_tree('{"1":{"l_name":"ffff","b_date":"123","d_date":"456","f_id":"2","m_id":"3","about":"Lorem ipsum dolor sit amet..."},\n\
-							"2":{"l_name":"father","b_date":"123","d_date":"456","f_id":"4","m_id":"5","about":"Lorem ipsum dolor sit amet..."},\n\
-							"3":{"l_name":"mot","b_date":"123","d_date":"456","f_id":"10","m_id":"","about":"Lorem ipsum dolor sit amet..."},\n\
-							"4":{"l_name":"fff1","b_date":"123","d_date":"456","f_id":"6","m_id":"7","about":"Lorem ipsum dolor sit amet..."},\n\
-							"5":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"8","m_id":"9","about":"Lorem ipsum dolor sit amet..."},\n\
-							"6":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":"","about":"Lorem ipsum dolor sit amet..."},\n\
-							"7":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":"","about":"Lorem ipsum dolor sit amet..."},\n\
-							"8":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":"","about":"Lorem ipsum dolor sit amet..."},\n\
-							"9":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":"","about":"Lorem ipsum dolor sit amet..."},\n\
-							"10":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":"11","about":"Lorem ipsum dolor sit amet..."},\n\
-							"11":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":"","about":"Lorem ipsum dolor sit amet..."}}', "1", 1);
+				this.create_tree(this.tree, "1", 1);
 				for(var key in this.objects) {
 					this.objects[key].children[0].on('dblclick', function(event) {
 						OSX.init_view(event.target.parent.info);
@@ -80,11 +72,11 @@ define([],function(){
 				this.renderer = new THREE.CanvasRenderer();
 				this.renderer.setSize(window.innerWidth, window.innerHeight);
 				this.container.appendChild(this.renderer.domElement);
-				/*stats = new Stats();
-				stats.domElement.style.position = 'absolute';
-				stats.domElement.style.top = '0px';
-				stats.domElement.style.right = '0px';
-				container.appendChild(stats.domElement);*/
+				this.stats = new Stats();
+				this.stats.domElement.style.position = 'absolute';
+				this.stats.domElement.style.top = '0px';
+				this.stats.domElement.style.right = '0px';
+				this.container.appendChild(this.stats.domElement);
 				/*renderer.domElement.addEventListener('mousedown', onDocumentMouseDown, false);
 				renderer.domElement.addEventListener('mouseup', onDocumentMouseUp, false);
 				renderer.domElement.addEventListener('mousemove', onDocumentMouseMove, false);*/
@@ -105,7 +97,7 @@ define([],function(){
 					var imgPlusSize = 70;
 					var par_voxel = new THREE.Mesh(new THREE.PlaneGeometry(imgPlusSize, imgPlusSize));
 					par_voxel.add(this.texture('trash/man.png', imgPlusSize, imgPlusSize));
-					par_voxel.position.set(this.mouseX, this.mouseY + Math.floor(height / 2), 1);
+					par_voxel.position.set(this.mouseX, this.mouseY - Math.floor(height / 2), 1);
 					par_voxel.matrixAutoUpdate = false;
 					par_voxel.updateMatrix();
 					par_voxel.overdraw = true;
@@ -115,7 +107,7 @@ define([],function(){
 					//child "+"
 					var child_voxel = new THREE.Mesh(new THREE.PlaneGeometry(imgPlusSize, imgPlusSize));
 					child_voxel.add(this.texture('trash/man.png', imgPlusSize, imgPlusSize));
-					child_voxel.position.set(this.mouseX, this.mouseY - Math.floor(height / 2), 1);
+					child_voxel.position.set(this.mouseX, this.mouseY + Math.floor(height / 2), 1);
 					child_voxel.matrixAutoUpdate = false;
 					child_voxel.updateMatrix();
 					child_voxel.overdraw = true;
@@ -143,7 +135,8 @@ define([],function(){
 						"l_name" : l_name,
 						"f_name" : f_name,
 						"b_date" : b_date,
-						"d_date" : d_date
+						"d_date" : d_date,
+						"about" : about
 					};
 					cube.mother;
 					cube.father;
@@ -175,6 +168,7 @@ define([],function(){
 						var node = this.create_node(data[id].l_name, data[id].l_name, data[id].b_date, data[id].d_date, this.nodeWidth, this.nodeHeight);
 						node.position.set(0, this.nodeHeight + 50, 0);
 						node.info.user_id = id;
+						node.generation = 1;
 						this.objects.push(node);
 						this.scene.add(node);
 						nodex = node;
@@ -191,6 +185,7 @@ define([],function(){
 							lineFc = this.create_line_c(0x000000,nodex,f_node);
 							this.scene.add(lineFc);
 							nodex.father = f_node;
+							f_node.generation = i;
 							nodex.lineF = lineFc;
 							f_node.lineC = lineFc;
 							f_node.child = nodex;
@@ -209,6 +204,7 @@ define([],function(){
 							lineMc = this.create_line_c(0x000000,nodex,m_node);
 							this.scene.add(lineMc);
 							nodex.mother = m_node;
+							m_node.generation = i;
 							nodex.lineM = lineMc;
 							m_node.lineC = lineMc;
 							m_node.child = nodex;
@@ -264,7 +260,7 @@ define([],function(){
 					});
 					mat.transparent = true;
 					var item = new THREE.Mesh(new THREE.PlaneGeometry(width, height), mat);
-
+					item.position.z = 1;
 					return item;
 		},
 		onDocumentMouseDown: function(event) {
@@ -298,7 +294,46 @@ define([],function(){
 							OSX.init_edit({"action": 'add_child'});
 						}
 						else if(intersects[i].object.name == 'parent')
-						{
+						{	/////////////////////////////////////   ADDING PARENT    /////////////////////////////////////////
+                            if (!intersects[0].object.parent.father || !intersects[0].object.parent.mother){
+                                nodex = intersects[0].object.parent;
+                                i = nodex.generation+1;
+                                var n_id = nodex.info.user_id;
+                                var p_id = this.objects.length+1;
+                                data = JSON.parse(this.tree);
+                                
+                                if (data[n_id].f_id == ""){
+                                    var m_id = data[n_id].m_id;
+                                    data[n_id].m_id = "";
+                                    data[n_id].f_id = p_id;
+                                } else if (data[n_id].m_id == ""){
+                                    var f_id = data[n_id].f_id;
+                                    data[n_id].f_id = "";
+                                    data[n_id].m_id = p_id;
+                                }
+                                var addNode = {};
+                                addNode[n_id] = data[n_id];
+                                addNode[p_id] = {
+                                                    "l_name": "fafaf",
+                                                    "b_date": "13433",
+                                                    "d_date": "365756",
+                                                    "f_id": "",
+                                                    "m_id": "",
+                                                    "about": "Lorem ipsum dolor sit amet..."
+                                                };
+                                 tree2 = JSON.stringify(addNode);
+                                 this.create_tree(tree2,n_id,i,nodex);
+                                 if (f_id){
+                                    data[n_id].f_id = f_id;
+                                    f_id = null;
+                                 } else if (m_id) {
+                                    data[n_id].m_id = m_id;
+                                    m_id = null;
+                                 }
+                                 data[p_id] = addNode[p_id];
+                                 this.tree = JSON.stringify(data);
+                            }                            
+                            //////////////////////////////////////////////////////////////////////////////////////////////////
 							OSX.init_edit({"action": 'add_parent'});
 						}
 					}
@@ -442,6 +477,7 @@ define([],function(){
 		animate: function() {
 				requestAnimationFrame($.proxy(this.animate, this));
 				this.render();
+				this.stats.update();
 				
 		},
 		render: function(){
