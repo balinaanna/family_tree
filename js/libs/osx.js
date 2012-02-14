@@ -16,50 +16,24 @@ var OSX = {
 		});
 		user_info=info;
 	},
-	init_edit: function (info) {
-		if(info.action == 'add_child' || info.action == 'add_parent')
-		{
-			//adding new person
-			$("#osx-modal-content-edit").modal({
-				overlayId: 'osx-overlay',
-				containerId: 'osx-container',
-				closeHTML: null,
-				minHeight: 80,
-				opacity: 65,
-				position: ['0',],
-				overlayClose: true,
-				onOpen: OSX.open_add,
-				onClose: OSX.close,
-				onShow: function() {
-					initMCE();
-				}
-			});
-			data=info;
-		} else if(info.action == "edit_person")
-		{
-			//editing person info on some event (we'll make it later)
-			user_info=info;
-			/*$("#osx-modal-content-edit").modal({
-				overlayId: 'osx-overlay',
-				containerId: 'osx-container',
-				closeHTML: null,
-				minHeight: 80,
-				opacity: 65,
-				position: ['0',],
-				overlayClose: true,
-				onOpen: OSX.open_edit,
-				onClose: OSX.close,
-				onShow: function() {
-					initMCE();
-				}
-			});*/
-			console.log(user_info);
-			$("#osx-modal-data").html($("#osx-modal-data-edit").html());
-			$("#f-name").html(user_info.f_name);
-			$("#osx-container").css('height', '500px');
-			initMCE();
-		//OSX.open_edit();
-		}
+	init_edit: function (info, user_info) {
+		//edit or add new person
+		data = info;
+		user_data = user_info;
+		$("#osx-modal-content-edit").modal({
+			overlayId: 'osx-overlay',
+			containerId: 'osx-container',
+			closeHTML: null,
+			minHeight: 80,
+			opacity: 65,
+			position: ['0',],
+			overlayClose: true,
+			onOpen: OSX.open_edit,
+			onClose: OSX.close,
+			onShow: function() {
+				initMCE();
+			}
+		});
 	},
 	open_view: function (d) {
 		//view person info on double click
@@ -84,32 +58,6 @@ var OSX = {
 					function () {
 						$("div.close", self.container).show();
 						$("#osx-modal-data", self.container).show();
-						$('#edit_person').click(function(){
-							//console.log($('#osx-container div div'));
-							
-							/*$("#f_name").val(user_info.f_name);
-							$("#osx-container").css('height', '500px');
-							$("#osx-modal-content-edit").attr('style', 'display: block;');
-							$("#osx-modal-data-edit").attr('style', 'display: block;');
-							initMCE();
-							$("#osx-modal-data").html($("#osx-modal-data-edit").html());*/
-							
-							/*//OSX.close();
-							//self.init_edit({"action": 'add_parent'});
-							//OSX.init_edit(user_info);
-							$("#osx-modal-content-edit").modal({
-								overlayId: 'osx-overlay',
-								containerId: 'osx-container',
-								closeHTML: null,
-								minHeight: 80,
-								opacity: 65,
-								position: ['0',],
-								overlayClose: true,
-								onOpen: callOpenEdit(user_info),
-								onClose: OSX.close(),
-								onShow: function() {initMCE();}
-							});*/
-						});
 					}
 					);
 				}, 300);
@@ -118,38 +66,7 @@ var OSX = {
 
 	},
 	open_edit: function (d) {
-		//editing person info on some event (we'll make it later)
-		var self = this;
-		self.container = d.container[0];
-		d.overlay.fadeIn('slow', function () {
-			$("#osx-modal-content-edit", self.container).show();
-
-			var title = $("#osx-modal-title-edit", self.container);
-			title=$("#osx-modal-title-edit").html("Editing person");
-			title.show();
-
-			d.container.slideDown('slow', function () {
-				setTimeout(function () {
-					var h = $("#osx-modal-data-edit", self.container).height()
-					+ title.height()
-					+ 20; // padding
-					d.container.animate(
-					{
-						height: h
-					},
-					200,
-					function () {
-						$("div.close-edit", self.container).show();
-						$("#osx-modal-data-edit", self.container).show();
-					}
-					);
-				}, 300);
-			});
-		})
-
-	},
-	open_add: function (d) {
-		//adding new person
+		//edit or add new person
 		var self = this;
 		self.container = d.container[0];
 		d.overlay.fadeIn('slow', function () {
@@ -162,6 +79,9 @@ var OSX = {
 					break;
 				case 'add_parent':
 					title=$("#osx-modal-title-edit").html("Adding parent");
+					break;
+				case 'edit_person':
+					title=$("#osx-modal-title-edit").html("Editing person");
 					break;
 			}
 			title.show();
@@ -179,11 +99,20 @@ var OSX = {
 					function () {
 						$("div.close-edit", self.container).show();
 						$("#osx-modal-data-edit", self.container).show();
+						if(data.action == 'edit_person')
+						{
+							$('#f_name').val(user_data.info.f_name);
+							$('#l_name').val(user_data.info.l_name);
+							$('#b_date').val(user_data.info.b_date);
+							$('#d_date').val(user_data.info.b_date);
+							$('#about').html(user_data.info.about);
+						}
 					}
 					);
 				}, 300);
 			});
 		})
+
 	},
 	close: function (d) {
 		var self = this; // this = SimpleModal object
@@ -200,7 +129,7 @@ var OSX = {
 };
 
 function initMCE(){
-	tinyMCE.init({
+	return tinyMCE.init({
 		// General options
 		mode : "exact",
 		theme : "advanced",

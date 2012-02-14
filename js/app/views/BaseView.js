@@ -85,34 +85,34 @@ define([],function(){
 			
 		},
 		
-		create_node: function (l_name, f_name, b_date, d_date, width, height){
+		create_node: function (l_name, f_name, b_date, d_date, about, width, height){
 					var cube = new THREE.Object3D();
 					// TODO coords
 					
 					var photo = this.texture('trash/image.jpg', 128, 128);
-					photo.position.set(0, 32, -1);
-					this.container.style.background = "url('trash/leafs_tr.jpg')";
+					photo.position.set(0, 32, 1);
+					//this.container.style.background = "url('trash/leafs_tr.jpg')";
 					
 					//parent "+"					
 					var imgPlusSize = 70;
-					var par_voxel = new THREE.Mesh(new THREE.PlaneGeometry(imgPlusSize, imgPlusSize));
-					par_voxel.add(this.texture('trash/man.png', imgPlusSize, imgPlusSize));
-					par_voxel.position.set(this.mouseX, this.mouseY - Math.floor(height / 2), 1);
-					par_voxel.matrixAutoUpdate = false;
-					par_voxel.updateMatrix();
-					par_voxel.overdraw = true;
-					par_voxel.visible = false;
-					par_voxel.name = 'parent';
+					var parVoxel = new THREE.Mesh(new THREE.PlaneGeometry(imgPlusSize, imgPlusSize));
+					parVoxel.add(this.texture('trash/add.png', imgPlusSize, imgPlusSize));
+					parVoxel.position.set(this.mouseX, this.mouseY - Math.floor(height / 2), 1);
+					parVoxel.matrixAutoUpdate = false;
+					parVoxel.updateMatrix();
+					parVoxel.overdraw = true;
+					parVoxel.visible = false;
+					parVoxel.name = 'parent';
 
 					//child "+"
-					var child_voxel = new THREE.Mesh(new THREE.PlaneGeometry(imgPlusSize, imgPlusSize));
-					child_voxel.add(this.texture('trash/man.png', imgPlusSize, imgPlusSize));
-					child_voxel.position.set(this.mouseX, this.mouseY + Math.floor(height / 2), 1);
-					child_voxel.matrixAutoUpdate = false;
-					child_voxel.updateMatrix();
-					child_voxel.overdraw = true;
-					child_voxel.visible = false;
-					child_voxel.name = 'child';
+					var childVoxel = new THREE.Mesh(new THREE.PlaneGeometry(imgPlusSize, imgPlusSize));
+					childVoxel.add(this.texture('trash/add.png', imgPlusSize, imgPlusSize));
+					childVoxel.position.set(this.mouseX, this.mouseY + Math.floor(height / 2), 1);
+					childVoxel.matrixAutoUpdate = false;
+					childVoxel.updateMatrix();
+					childVoxel.overdraw = true;
+					childVoxel.visible = false;
+					childVoxel.name = 'child';
 					
 					// arrow
 					var arrow = new THREE.Mesh(new THREE.PlaneGeometry(30, 48));
@@ -124,13 +124,38 @@ define([],function(){
 					arrow.on('click', function() { console.log('arrow click');OSX.init(cube.info); }); // Dont work! Why?!!
 					
 					
+
+					//edit
+					var editVoxel = new THREE.Mesh(new THREE.PlaneGeometry(imgPlusSize, imgPlusSize));
+					editVoxel.add(this.texture('trash/edit.png', imgPlusSize, imgPlusSize));
+					editVoxel.position.set(this.mouseX+width/4, this.mouseY + Math.floor(height / 2), 1);
+					editVoxel.matrixAutoUpdate = false;
+					editVoxel.updateMatrix();
+					editVoxel.overdraw = true;
+					editVoxel.visible = false;
+					editVoxel.name = 'edit';
 					
-					cube.add(this.texture('trash/pergament.png', width * 0.8, height));			// children[0]
+
+					//delete
+					var deleteVoxel = new THREE.Mesh(new THREE.PlaneGeometry(imgPlusSize, imgPlusSize));
+					deleteVoxel.add(this.texture('trash/delete.png', imgPlusSize, imgPlusSize));
+					deleteVoxel.position.set(this.mouseX-width/4, this.mouseY + Math.floor(height / 2), 1);
+					deleteVoxel.matrixAutoUpdate = false;
+					deleteVoxel.updateMatrix();
+					deleteVoxel.overdraw = true;
+					deleteVoxel.visible = false;
+					deleteVoxel.name = 'delete';
+					
+					//cube.add(this.texture('trash/board.jpg', width * 0.8, height));			// children[0]
+					cube.add(new THREE.Mesh(new THREE.PlaneGeometry(width, height), new THREE.MeshBasicMaterial( { color: 0xe0e0e0 } )));
+					
 					cube.add(photo);												// children[1]
 					cube.add(this.text(l_name, f_name, b_date, d_date, this.nodeWidth, this.nodeHeight));	// children[2]
-					cube.add(par_voxel);											// children[3]
-					cube.add(child_voxel);											// children[4]
+					cube.add(parVoxel);											// children[3]
+					cube.add(childVoxel);											// children[4]
 					cube.add(arrow);												// children[5]
+					cube.add(editVoxel);												// children[6]
+					cube.add(deleteVoxel);												// children[7]
 					cube.info = {
 						"l_name" : l_name,
 						"f_name" : f_name,
@@ -165,7 +190,7 @@ define([],function(){
 		create_tree: function(json, id, i, nodex) {
 					var data = JSON.parse(json);
 					if(i == 1) {//TODO f_name
-						var node = this.create_node(data[id].l_name, data[id].l_name, data[id].b_date, data[id].d_date, this.nodeWidth, this.nodeHeight);
+						var node = this.create_node(data[id].l_name, data[id].l_name, data[id].b_date, data[id].d_date, data[id].about, this.nodeWidth, this.nodeHeight);
 						node.position.set(0, this.nodeHeight + 50, 0);
 						node.info.user_id = id;
 						node.generation = 1;
@@ -177,7 +202,7 @@ define([],function(){
 						var a = i + 1;
 						if(data[id].f_id) {
 							var f_id = data[id].f_id;
-							var f_node = this.create_node(data[f_id].l_name, data[f_id].l_name, data[f_id].b_date, data[f_id].d_date, this.nodeWidth, this.nodeHeight);
+							var f_node = this.create_node(data[f_id].l_name, data[f_id].l_name, data[f_id].b_date, data[f_id].d_date, data[f_id].about, this.nodeWidth, this.nodeHeight);
 							f_node.position.set(nodex.position.x + (Math.pow((4 - i), 1.25)) * (-this.nodeWidth), (i - 1) * (-this.nodeHeight - 50), 0);
 							f_node.info.user_id = f_id;
 							this.objects.push(f_node);
@@ -196,7 +221,7 @@ define([],function(){
 						};
 						if(data[id].m_id) {
 							var m_id = data[id].m_id;
-							var m_node = this.create_node(data[m_id].l_name, data[m_id].l_name, data[m_id].b_date, data[m_id].d_date, this.nodeWidth, this.nodeHeight);
+							var m_node = this.create_node(data[m_id].l_name, data[m_id].l_name, data[m_id].b_date, data[m_id].d_date, data[id].about, this.nodeWidth, this.nodeHeight);
 							m_node.position.set(nodex.position.x + (Math.pow((4 - i), 1.25)) * this.nodeWidth, (i - 1) * (-this.nodeHeight - 50), 0);
 							m_node.info.user_id = m_id;
 							this.objects.push(m_node);
@@ -291,7 +316,7 @@ define([],function(){
 					for(i = 0; i < intersects.length; i++)
 					{
 						if(intersects[i].object.name == 'child') {
-							OSX.init_edit({"action": 'add_child'});
+							OSX.init_edit({"action": 'add_child'}, intersects[i].object.parent);
 						}
 						else if(intersects[i].object.name == 'parent')
 						{	/////////////////////////////////////   ADDING PARENT    /////////////////////////////////////////
@@ -332,9 +357,17 @@ define([],function(){
                                  }
                                  data[p_id] = addNode[p_id];
                                  this.tree = JSON.stringify(data);
+								 OSX.init_edit({"action": 'add_parent'}, nodex);
                             }                            
                             //////////////////////////////////////////////////////////////////////////////////////////////////
-							OSX.init_edit({"action": 'add_parent'});
+						} else if(intersects[i].object.name == 'edit')
+						{
+							//edit persone 
+							nodex = intersects[i].object.parent;
+							OSX.init_edit({'action': 'edit_person'}, nodex);
+						}else if(intersects[i].object.name == 'delete')
+						{
+							// delete node
 						}
 					}
 					/*par = intersects[1].object.parent;
@@ -363,7 +396,11 @@ define([],function(){
 					{
 						par = intersects[1].object.parent;
 						for( j = 0; j < par.children.length; j++) {
-							if(par.children[j].name == 'child' || par.children[j].name == 'parent') {
+							if(par.children[j].name == 'child' || 
+								par.children[j].name == 'parent' ||
+								par.children[j].name == 'edit' || 
+								par.children[j].name == 'delete'
+								) {
 								par.children[j].visible = true;
 							}
 						}
@@ -386,7 +423,11 @@ define([],function(){
                     if(!this.SELECTED){
                         for( i = 0; i < this.objects.length; i++) {
     						for( j = 0; j < this.objects[i].children.length; j++) {
-    							if(this.objects[i].children[j].name == 'child' || this.objects[i].children[j].name == 'parent') {
+    							if(this.objects[i].children[j].name == 'child' ||
+									this.objects[i].children[j].name == 'parent' ||
+									this.objects[i].children[j].name == 'edit' || 
+									this.objects[i].children[j].name == 'delete'
+									) {
     								this.objects[i].children[j].visible = false;
     							}
     						}
