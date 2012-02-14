@@ -15,9 +15,9 @@ require.config({
 });
 
 require([ 'router',
-	'order!../libs/jquery-1.7.1',
-	'order!../libs/underscore', 
-	'order!../libs/backbone',
+	//'order!../libs/jquery-1.7.1',
+	//'order!../libs/underscore', 
+	//'order!../libs/backbone',
 	'order!../libs/Three',
 	'order!../libs/js/Stats',
 	'order!../libs/js/helvetiker_regular.typeface',

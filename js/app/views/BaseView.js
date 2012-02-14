@@ -37,15 +37,15 @@ define([],function(){
 		
 		initialize: function(){
 			//navigation
-			var that = this;
+			
 			$("#slider").slider({
 				orientation : "vertical",
 				value : 8599,
 				min : 100,
 				max : 9999,
-				slide : function(event, ui) {
-					that.camera.position.z = 10099 - ui.value;
-				}
+				slide : $.proxy(function(event, ui) {
+					this.camera.position.z = 10099 - ui.value;
+				},this)
 			});
 			$('#navigator').on("click", "div", $.proxy(this.navigation, this));
 			
