@@ -296,7 +296,7 @@ define([],function(){
 						else if(intersects[i].object.name == 'parent')
 						{	/////////////////////////////////////   ADDING PARENT    /////////////////////////////////////////
                             if (!intersects[0].object.parent.father || !intersects[0].object.parent.mother){
-                                nodex = intersects[0].object.parent;
+                                nodex = intersects[i].object.parent;
                                 i = nodex.generation+1;
                                 var n_id = nodex.info.user_id;
                                 var p_id = this.objects.length+1;
