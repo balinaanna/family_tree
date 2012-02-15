@@ -1,9 +1,7 @@
-//$(document).ready(function () {
-define(['controllers/BaseController'],	function(BaseController){
-    Router = Backbone.Router.extend({
+define(['controllers/TreeController', 'views/BaseView'],	function(TreeController, BaseView){
+    return Backbone.Router.extend({
 		
 		initialize : function (options) {
-			
 			console.log("initialize");
         },
 
@@ -12,9 +10,17 @@ define(['controllers/BaseController'],	function(BaseController){
 	},
 
         WebApp : function () {
-            
-            this._currentController = new BaseController();
-			this._currentController.start();
+        	$(document).ready(function(){
+        	this.el = $('#home');
+        	
+            this._currentController = new BaseView({el: this.el});
+          
+           //this._currentController = new BaseController();
+            //this._currentController = new TreeController({el: this.el});
+            //this._currentController = new Controller();
+			//this._currentController.start();
+			this._currentController.animate();
+			});
 			console.log('offLineWebApplication router start');
         },
 		
@@ -22,8 +28,5 @@ define(['controllers/BaseController'],	function(BaseController){
 			console.log('this is just an example')
 		}
     });
-    return Router;
-});    
-    //var router = new Router();
-   // Backbone.history.start()
-//});
+    
+});
