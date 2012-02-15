@@ -4,6 +4,7 @@ var OSX = {
 	init_view: function (info) {
 		//view person info on double click
 		$("#osx-modal-content").modal({
+			appendTo : "#home",
 			overlayId: 'osx-overlay',
 			containerId: 'osx-container',
 			closeHTML: null,
@@ -21,6 +22,7 @@ var OSX = {
 		data = info;
 		user_data = user_info;
 		$("#osx-modal-content-edit").modal({
+			appendTo : "#home",
 			overlayId: 'osx-overlay',
 			containerId: 'osx-container',
 			closeHTML: null,

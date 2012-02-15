@@ -28,11 +28,12 @@ define([],function(){
            
 		
 		events: {
-			"mousedown" : "onDocumentMouseDown",
-			"mouseup": "onDocumentMouseUp",
-			"mousemove" : "onDocumentMouseMove", 
-			"mousewheel" : "onDocumentMouseWheel",
-			"click": "onClick",
+			"mousedown canvas" : "onDocumentMouseDown",
+			"mouseup canvas": "onDocumentMouseUp",
+			"mousemove canvas" : "onDocumentMouseMove", 
+			"mousewheel canvas" : "onDocumentMouseWheel",
+			"click canvas": "onClick",
+			//"click #osx-modal-content-edit": "submitFunc",
 			"click #submit_person": "submitFunc"//?
 			
 		},
@@ -43,7 +44,9 @@ define([],function(){
 			tree = JSON.parse(this.treeObj);
 			
 			console.log(JSON.stringify(JSON.parse(this.treeObj)));
-			
+			console.log($("#osx-modal-data-edit"));
+			//$(this.el).append($("#osx-modal-data-edit"));
+			//$("#osx-modal-data-edit").on("click",this.submitFunc);
 			$("#slider").slider({
 				orientation : "vertical",
 				value : 8599,
@@ -59,7 +62,8 @@ define([],function(){
 				//this.el.append($("#navigator"));
 				$(this.el).append(this.container);
 				var info = document.createElement('div');
-				this.container.appendChild(info);
+				this.el.appendChild(info);
+				//$(this.container).append($("#osx-modal-data-edit"));
 				this.scene = new THREE.Scene();
 				this.camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 10000);
 				this.camera.position.y = 150;
@@ -531,7 +535,8 @@ define([],function(){
 			this.renderer.render(this.scene, this.camera);
 			
 		},
-		submitFunc: function(){
+		submitFunc: function(event){
+			event.preventDefault();
 			console.log("submit ");
 		}
 		

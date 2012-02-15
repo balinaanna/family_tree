@@ -15,10 +15,6 @@ define(['views/BaseView'],	function(BaseView){
         	
             this._currentController = new BaseView({el: this.el});
           
-           //this._currentController = new BaseController();
-            //this._currentController = new TreeController({el: this.el});
-            //this._currentController = new Controller();
-			//this._currentController.start();
 			this._currentController.animate();
 			});
 			console.log('offLineWebApplication router start');
