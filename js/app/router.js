@@ -1,4 +1,4 @@
-define(['controllers/TreeController', 'views/BaseView'],	function(TreeController, BaseView){
+define(['views/BaseView'],	function(BaseView){
     return Backbone.Router.extend({
 		
 		initialize : function (options) {
