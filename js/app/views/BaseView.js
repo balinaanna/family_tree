@@ -217,19 +217,36 @@ define(['models/TreeNodeModel'],function(TreeModel){
 					//var data = JSON.parse(json);
 					if(i == 1) {//TODO f_name
 						console.log(data);
-						var node = this.create_node(data[id].l_name, data[id].l_name, data[id].b_date, data[id].d_date, data[id].comment, data[id].photo_url, this.nodeWidth, this.nodeHeight);
+						var node = this.create_node(data[id].l_name, data[id].f_name, data[id].b_date, data[id].d_date, data[id].comment, data[id].photo_url, this.nodeWidth, this.nodeHeight);
 						node.position.set(0, this.nodeHeight + 50, 0);
 						node.info.user_id = id;
 						node.generation = 1;
 						this.objects.push(node);
 						this.scene.add(node);
 						nodex = node;
+						if (data[id].ch_ids){
+							for(var key in data[id].ch_ids) {
+							var ch_id=(data[id].ch_ids[key]);
+							ch_node = this.create_node(data[ch_id].l_name, data[ch_id].f_name, data[ch_id].b_date, data[ch_id].d_date, data[ch_id].comment, data[ch_id].photo_url, this.nodeWidth, this.nodeHeight);
+							ch_node.position.set(0 - (this.nodeWidth*(data[id].ch_ids.length-1))/2 + this.nodeWidth*key, this.nodeHeight + 50 + this.nodeHeight +50, 0);
+							ch_node.info.user_id = ch_id;
+							ch_node.generation = -1;
+							this.objects.push(ch_node);
+							this.scene.add(ch_node);
+							lineCc = this.create_line_c(0x000000,ch_node,nodex);
+							this.scene.add(lineCc);
+							ch_node.father = nodex;
+							ch_node.lineF = lineCc;
+							nodex.lineC = lineCc;
+							nodex.child = ch_node;
+							};
+						};
 					}
 					if(i < 4) {
 						var a = i + 1;
 						if(data[id].f_id) {
 							var f_id = data[id].f_id;
-							var f_node = this.create_node(data[f_id].l_name, data[f_id].l_name, data[f_id].b_date, data[f_id].d_date, data[f_id].comment, data[f_id].photo_url, this.nodeWidth, this.nodeHeight);
+							var f_node = this.create_node(data[f_id].l_name, data[f_id].f_name, data[f_id].b_date, data[f_id].d_date, data[f_id].comment, data[f_id].photo_url, this.nodeWidth, this.nodeHeight);
 							f_node.position.set(nodex.position.x + (Math.pow((4 - i), 1.25)) * (-this.nodeWidth), (i - 1) * (-this.nodeHeight - 50), 0);
 							f_node.info.user_id = f_id;
 							this.objects.push(f_node);
@@ -249,7 +266,7 @@ define(['models/TreeNodeModel'],function(TreeModel){
 						};
 						if(data[id].m_id) {
 							var m_id = data[id].m_id;
-							var m_node = this.create_node(data[m_id].l_name, data[m_id].l_name, data[m_id].b_date, data[m_id].d_date, data[id].comment, data[m_id].photo_url, this.nodeWidth, this.nodeHeight);
+							var m_node = this.create_node(data[m_id].l_name, data[m_id].f_name, data[m_id].b_date, data[m_id].d_date, data[id].comment, data[m_id].photo_url, this.nodeWidth, this.nodeHeight);
 							m_node.position.set(nodex.position.x + (Math.pow((4 - i), 1.25)) * this.nodeWidth, (i - 1) * (-this.nodeHeight - 50), 0);
 							m_node.info.user_id = m_id;
 							this.objects.push(m_node);
