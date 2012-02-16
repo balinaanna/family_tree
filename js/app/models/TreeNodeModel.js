@@ -11,6 +11,7 @@ define([],function(){
 			this.url = '/server';
 			this.bind("change:tree", function(){
                 this.setLocal("tree",JSON.stringify(this.get("tree")));
+                console.log(JSON.stringify(this.get("tree")));
             });
 			/*this.save().complete(function(rest){
 				re=rest;
@@ -37,6 +38,10 @@ define([],function(){
 													 "10":{"l_name":"name1","f_name":"name2","f_id":"","m_id":"","ch_ids":["11","12","13"],"spouse_id":"1","b_date":"1989","d_date":"0","sex":"m","photo_url":null,"comment":"comment"}}}');
 			this.set("tree", data.tree);
 			
+		},
+		update: function(key, data){
+			this.set({key: data});
+			this.trigger("change:tree");
 		},
 		getLocal: function(key){
 			console.log('getlocal');

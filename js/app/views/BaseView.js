@@ -249,7 +249,7 @@ define(['models/TreeNodeModel'],function(TreeModel){
 						};
 						if(data[id].m_id) {
 							var m_id = data[id].m_id;
-							var m_node = this.create_node(data[m_id].l_name, data[m_id].l_name, data[m_id].b_date, data[m_id].d_date, data[id].comment, data[id].photo_url, this.nodeWidth, this.nodeHeight);
+							var m_node = this.create_node(data[m_id].l_name, data[m_id].l_name, data[m_id].b_date, data[m_id].d_date, data[id].comment, data[m_id].photo_url, this.nodeWidth, this.nodeHeight);
 							m_node.position.set(nodex.position.x + (Math.pow((4 - i), 1.25)) * this.nodeWidth, (i - 1) * (-this.nodeHeight - 50), 0);
 							m_node.info.user_id = m_id;
 							this.objects.push(m_node);
@@ -354,8 +354,8 @@ define(['models/TreeNodeModel'],function(TreeModel){
                                 i = nodex.generation+1;
                                 var n_id = nodex.info.user_id;
                                 var p_id = this.objects.length+1;
-                                data = JSON.parse(this.tree);
-                                
+                               // data = JSON.parse(this.tree);
+                                data = this.treeObj;
                                 if (data[n_id].f_id == ""){
                                     var m_id = data[n_id].m_id;
                                     data[n_id].m_id = "";
@@ -368,16 +368,20 @@ define(['models/TreeNodeModel'],function(TreeModel){
                                 var addNode = {};
                                 addNode[n_id] = data[n_id];
                                 addNode[p_id] = {
-                                                    "l_name": "fafaf",
-                                                    "b_date": "13433",
-                                                    "d_date": "365756",
-                                                    "f_id": "",
-                                                    "m_id": "",
-                                                    "comment": "Lorem ipsum dolor sit amet...",
-                                                    "photo_url": "image.jpg"
+                                                    "l_name":"newName",
+                                                    "f_name":"newfname",
+                                                    "f_id":"",
+                                                    "m_id":"",
+                                                    "ch_ids": n_id,
+                                                    "spouse_id":"",
+                                                    "b_date":"1920",
+                                                    "d_date":"0",
+                                                    "sex":"f",
+                                                    "photo_url":"back_3.jpg",
+                                                    "comment":"comment"
                                                 };
-                                 tree2 = JSON.stringify(addNode);
-                                 this.create_tree(tree2,n_id,i,nodex);
+                                 //tree2 = JSON.stringify(addNode);
+                                 this.create_tree(addNode,n_id,i,nodex);
                                  if (f_id){
                                     data[n_id].f_id = f_id;
                                     f_id = null;
@@ -386,7 +390,9 @@ define(['models/TreeNodeModel'],function(TreeModel){
                                     m_id = null;
                                  }
                                  data[p_id] = addNode[p_id];
-                                 this.tree = JSON.stringify(data);
+                                 this.treeObj = data;
+                                 this._model.update("tree",this.treeObj);
+                                 console.log(this._model.get("tree",this.treeObj));
 								 OSX.init_edit({"action": 'add_parent'}, nodex);
                             }                            
                             //////////////////////////////////////////////////////////////////////////////////////////////////
