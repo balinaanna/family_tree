@@ -42,10 +42,10 @@ define(['models/TreeNodeModel'],function(TreeModel){
 			//test model
 			this._model = new TreeModel();
 			console.log(this._model);
-			this.treeObj = this._model.get('data');
-			console.log(JSON.parse(this.treeObj));
+			this.treeObj = this._model.get('tree');
+			console.log(this.treeObj);
 			//tree = JSON.parse(this.treeObj);
-			console.log(JSON.stringify(JSON.parse(this.treeObj)));		
+			console.log(JSON.stringify(this.treeObj));		
 		
 			//navigation
 			$("#slider").slider({
