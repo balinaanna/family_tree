@@ -16,7 +16,7 @@ define([],function(){
 				root.setLocal(key, rest.responseText);
 				//root.setLocal(key,JSON.parse(rest.responseText));
 			});
-			if (re.responseText==undefined) {
+			if (re==undefined) {
 				this.set({"items": this.getLocal(key)});
 			} else {
 				this.set({"items": re.responseText});
