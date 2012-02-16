@@ -6,16 +6,17 @@ define([],function(){
 			var root  = this;
 			var key   = 'App';
 			var re;
-			this.url = '/server';
-			this.save().complete(function(rest){
+			this.url = '/server/api/';
+			//this.save().complete(function(rest){
 				//console.log(rest);
-				re=rest;
+			//	re=rest;
 				//console.log(rest.responseText);
 				//var result =  eval( '(' + rest.responseText + ')');
-				root.setLocal(key, rest.responseText);
+				//root.setLocal(key, rest.responseText);
+				//this.set({"items": rest.responseText});
 				//root.setLocal(key,JSON.parse(rest.responseText));
-				});
-			this.set({"items": this.getLocal(key)});
+			//	});
+			//this.set({"items": this.getLocal(key)});
 			//console.log(this.toJSON());
 			
 		},

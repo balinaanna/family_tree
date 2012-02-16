@@ -1,4 +1,4 @@
-define(['views/BaseView'], function(BaseView){
+define(['views/BaseView','models/BaseModel'], function(BaseView, BaseModel){
     return Backbone.Router.extend({
 		
 	initialize : function (options) {
@@ -12,6 +12,7 @@ define(['views/BaseView'], function(BaseView){
         WebApp : function () {
             $(document).ready(function(){
         	this.el = $('#home');
+        	
 		this._currentController = new BaseView({el: this.el});
 		this._currentController.animate();
 	    });
