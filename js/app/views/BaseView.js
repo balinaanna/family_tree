@@ -54,9 +54,8 @@ define(['models/TreeNodeModel'],function(TreeModel){
 			console.log(this._model);
 			this.treeObj = this._model.get('tree');
 			console.log(this.treeObj);
-			//tree = JSON.parse(this.treeObj);
-			console.log(JSON.stringify(this.treeObj));		
-		
+			console.log(JSON.stringify(this.treeObj));	
+			
 			//navigation
 			$("#slider").slider({
 				orientation : "vertical",
@@ -81,12 +80,12 @@ define(['models/TreeNodeModel'],function(TreeModel){
 				this.camera.position.z = 1500;
 				this.scene.add(this.camera);
 				THREE.Object3D._threexDomEvent.camera(this.camera);
-				this.create_tree(this.tree, "1", 1);
-				for(var key in this.objects) {
+				this.create_tree(this.treeObj, "1", 1);
+				/*for(var key in this.objects) {
 					this.objects[key].children[0].on('dblclick', function(event) {
 						OSX.init_view(event.target.parent.info);
 					});
-				}
+				}*/
 				this.projector = new THREE.Projector();
 				this.onMouseDownPosition = new THREE.Vector2();
 				this.renderer = new THREE.CanvasRenderer();
@@ -96,19 +95,13 @@ define(['models/TreeNodeModel'],function(TreeModel){
 				this.stats.domElement.style.position = 'absolute';
 				this.stats.domElement.style.top = '0px';
 				this.stats.domElement.style.right = '0px';
-				this.container.appendChild(this.stats.domElement);
-				/*renderer.domElement.addEventListener('mousedown', onDocumentMouseDown, false);
-				renderer.domElement.addEventListener('mouseup', onDocumentMouseUp, false);
-				renderer.domElement.addEventListener('mousemove', onDocumentMouseMove, false);*/
-				//this.renderer.domElement.addEventListener('mousewheel', this.onDocumentMouseWheel, false);
-
-			
-},
+				this.container.appendChild(this.stats.domElement);					
+		},
 		
 		create_node: function (l_name, f_name, b_date, d_date, comment, photo_url, width, height){
 					var cube = new THREE.Object3D();
 					// TODO coords
-					
+					if(!photo_url){photo_url = "image.jpg"};
 					var photo = this.texture('trash/avatars/'+photo_url, 235, 235);
 					photo.position.set(0, 30, 1);
 					this.container.style.background = "url('trash/back_11111.jpg')";
@@ -220,8 +213,8 @@ define(['models/TreeNodeModel'],function(TreeModel){
 					}
 					return cube;
 		},
-		create_tree: function(json, id, i, nodex) {
-					var data = JSON.parse(json);
+		create_tree: function(data, id, i, nodex) {
+					//var data = JSON.parse(json);
 					if(i == 1) {//TODO f_name
 						console.log(data);
 						var node = this.create_node(data[id].l_name, data[id].l_name, data[id].b_date, data[id].d_date, data[id].comment, data[id].photo_url, this.nodeWidth, this.nodeHeight);
@@ -252,7 +245,7 @@ define(['models/TreeNodeModel'],function(TreeModel){
 								f_node.children[5].visible = true;
 								//f_node.children[5].children[0].material.map.image.src = 'trash/arrow.png';
 							}
-							this.create_tree(json, f_id, a, f_node);
+							this.create_tree(data, f_id, a, f_node);
 						};
 						if(data[id].m_id) {
 							var m_id = data[id].m_id;
@@ -272,7 +265,7 @@ define(['models/TreeNodeModel'],function(TreeModel){
 								m_node.children[5].visible = true;
 								//m_node.children[5].children[0].material.map.image.src = 'trash/arrow.png';
 							}
-							this.create_tree(json, m_id, a, m_node);
+							this.create_tree(data, m_id, a, m_node);
 						};
 					}
 			},
