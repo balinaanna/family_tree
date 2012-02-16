@@ -19,8 +19,9 @@ define([],function(){
 			//windowHalfY : window.innerHeight / 2,
 			mouse : new THREE.Vector2(),
 			//mouseHover : false,
-			nodeWidth : 270,
-			nodeHeight : 320,
+			nodeWidth : 360,
+			nodeHeight : 350,			
+			imgPlusSize : 70,
             SELECTED: null,
             treeObj: '{"id":"1","tree":{"1":{"l_name":"name1","f_name":"name2","f_id":"2","m_id":"3","ch_ids":["11","12","13"],"spouse_id":"10","b_date":"1989","d_date":"0","sex":"m","photo_url":null,"comment":"comment"},"2":{"l_name":"name2","f_name":"fname2","f_id":"4","m_id":"5","ch_ids":"1","spouse_id":"3","b_date":"1990","d_date":"0","sex":"m","photo_url":null,"comment":"comment"},"3":{"l_name":"name3","f_name":"fname3","f_id":"6","m_id":"7","ch_ids":"1","spouse_id":"2","b_date":"1990","d_date":"0","sex":"f","photo_url":null,"comment":"comment"},"4":{"l_name":"name2","f_name":"fname2","f_id":"","m_id":"","ch_ids":"2","spouse_id":"5","b_date":"1990","d_date":"0","sex":"m","photo_url":null,"comment":"comment"},"5":{"l_name":"name2","f_name":"fname2","f_id":"","m_id":"","ch_ids":"2","spouse_id":"4","b_date":"1990","d_date":"0","sex":"f","photo_url":null,"comment":"comment"}, "6":{"l_name":"name2","f_name":"fname2","f_id":"","m_id":"","ch_ids":"3","spouse_id":"7","b_date":"1990","d_date":"0","sex":"m","photo_url":null,"comment":"comment"},"7":{"l_name":"name2","f_name":"fname2","f_id":"8","m_id":"9","ch_ids":"3","spouse_id":"6","b_date":"1990","d_date":"0","sex":"f","photo_url":null,"comment":"comment"},"8":{"l_name":"name2","f_name":"fname2","f_id":"","m_id":"","ch_ids":["7"],"spouse_id":"9","b_date":"1990","d_date":"0","sex":"m","photo_url":null,"comment":"comment"},"9":{"l_name":"name2","f_name":"fname2","f_id":"","m_id":"","ch_ids":["7"],"spouse_id":"8","b_date":"1990","d_date":"0","sex":"m","photo_url":null,"comment":"comment"},"11":{"l_name":"name2","f_name":"fname2","f_id":"1","m_id":"10","ch_ids":[],"spouse_id":"","b_date":"1990","d_date":"0","sex":"m","photo_url":null,"comment":"comment"},"12":{"l_name":"name2","f_name":"fname2","f_id":"1","m_id":"10","ch_ids":[],"spouse_id":"","b_date":"1990","d_date":"0","sex":"m","photo_url":null,"comment":"comment"},"13":{"l_name":"name2","f_name":"fname2","f_id":"1","m_id":"10","ch_ids":[],"spouse_id":"","b_date":"1990","d_date":"0","sex":"m","photo_url":null,"comment":"comment"}, "10":{"l_name":"name1","f_name":"name2","f_id":"","m_id":"","ch_ids":["11","12","13"],"spouse_id":"1","b_date":"1989","d_date":"0","sex":"m","photo_url":null,"comment":"comment"}}}',
             tree: '{"1":{"l_name":"ffff","b_date":"123","d_date":"456","f_id":"2","m_id":"3","about":"Lorem ipsum dolor sit amet..."},"2":{"l_name":"father","b_date":"123","d_date":"456","f_id":"4","m_id":"5","about":"Lorem ipsum dolor sit amet..."},"3":{"l_name":"mot","b_date":"123","d_date":"456","f_id":"10","m_id":"","about":"Lorem ipsum dolor sit amet..."},"4":{"l_name":"fff1","b_date":"123","d_date":"456","f_id":"6","m_id":"7","about":"Lorem ipsum dolor sit amet..."},"5":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"8","m_id":"9","about":"Lorem ipsum dolor sit amet..."},"6":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":"","about":"Lorem ipsum dolor sit amet..."},"7":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":"","about":"Lorem ipsum dolor sit amet..."},"8":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":"","about":"Lorem ipsum dolor sit amet..."},"9":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":"","about":"Lorem ipsum dolor sit amet..."},"10":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":"11","about":"Lorem ipsum dolor sit amet..."},"11":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":"","about":"Lorem ipsum dolor sit amet..."}}',
@@ -98,29 +99,30 @@ define([],function(){
 					var cube = new THREE.Object3D();
 					// TODO coords
 					
-					var photo = this.texture('trash/image.jpg', 128, 128);
-					photo.position.set(0, 32, 1);
-					//this.container.style.background = "url('trash/leafs_tr.jpg')";
+					var photo = this.texture('trash/image.jpg', 235, 235);
+					photo.position.set(0, 30, 1);
+					this.container.style.background = "url('trash/back_11111.jpg')";
 					
-					//parent "+"					
-					var imgPlusSize = 70;
-					var parVoxel = new THREE.Mesh(new THREE.PlaneGeometry(imgPlusSize, imgPlusSize));
-					parVoxel.add(this.texture('trash/add.png', imgPlusSize, imgPlusSize));
+					//parent "+"		
+					var parVoxel = new THREE.Mesh(new THREE.PlaneGeometry(this.imgPlusSize, this.imgPlusSize));
+					parVoxel.add(this.texture('trash/add.png', this.imgPlusSize, this.imgPlusSize));
 					parVoxel.position.set(this.mouseX, this.mouseY - Math.floor(height / 2), 1);
 					parVoxel.matrixAutoUpdate = false;
 					parVoxel.updateMatrix();
 					parVoxel.overdraw = true;
-					parVoxel.visible = false;
+					//parVoxel.visible = false;
+					parVoxel.children[0].material.map.image.src = 'trash/add_tr.png';
 					parVoxel.name = 'parent';
 
 					//child "+"
-					var childVoxel = new THREE.Mesh(new THREE.PlaneGeometry(imgPlusSize, imgPlusSize));
-					childVoxel.add(this.texture('trash/add.png', imgPlusSize, imgPlusSize));
+					var childVoxel = new THREE.Mesh(new THREE.PlaneGeometry(this.imgPlusSize, this.imgPlusSize));
+					childVoxel.add(this.texture('trash/add.png', this.imgPlusSize, this.imgPlusSize));
 					childVoxel.position.set(this.mouseX, this.mouseY + Math.floor(height / 2), 1);
 					childVoxel.matrixAutoUpdate = false;
 					childVoxel.updateMatrix();
 					childVoxel.overdraw = true;
-					childVoxel.visible = false;
+					//childVoxel.visible = false;
+					childVoxel.children[0].material.map.image.src = 'trash/add_tr.png';
 					childVoxel.name = 'child';
 					
 					// arrow
@@ -130,34 +132,45 @@ define([],function(){
 					arrow.overdraw = true;
 					arrow.name = 'arrow';
 					arrow.visible = false;
-					arrow.on('click', function() { console.log('arrow click');OSX.init(cube.info); }); // Dont work! Why?!!
+					//arrow.children[0].material.map.image.src = 'trash/arrow_tr.png';
+					arrow.on('click', function() {console.log('arrow click');OSX.init(cube.info);}); // Dont work! Why?!!
 					
 					
 
 					//edit
-					var editVoxel = new THREE.Mesh(new THREE.PlaneGeometry(imgPlusSize, imgPlusSize));
-					editVoxel.add(this.texture('trash/edit.png', imgPlusSize, imgPlusSize));
+					var editVoxel = new THREE.Mesh(new THREE.PlaneGeometry(this.imgPlusSize, this.imgPlusSize));
+					editVoxel.add(this.texture('trash/edit.png', this.imgPlusSize, this.imgPlusSize));
 					editVoxel.position.set(this.mouseX+width/4, this.mouseY + Math.floor(height / 2), 1);
 					editVoxel.matrixAutoUpdate = false;
 					editVoxel.updateMatrix();
 					editVoxel.overdraw = true;
-					editVoxel.visible = false;
+					//editVoxel.visible = false;
+					editVoxel.children[0].material.map.image.src = 'trash/edit_tr.png';
 					editVoxel.name = 'edit';
 					
 
 					//delete
-					var deleteVoxel = new THREE.Mesh(new THREE.PlaneGeometry(imgPlusSize, imgPlusSize));
-					deleteVoxel.add(this.texture('trash/delete.png', imgPlusSize, imgPlusSize));
+					var deleteVoxel = new THREE.Mesh(new THREE.PlaneGeometry(this.imgPlusSize, this.imgPlusSize));
+					deleteVoxel.add(this.texture('trash/delete.png', this.imgPlusSize, this.imgPlusSize));
 					deleteVoxel.position.set(this.mouseX-width/4, this.mouseY + Math.floor(height / 2), 1);
 					deleteVoxel.matrixAutoUpdate = false;
 					deleteVoxel.updateMatrix();
 					deleteVoxel.overdraw = true;
-					deleteVoxel.visible = false;
+					//deleteVoxel.visible = false;
+					deleteVoxel.children[0].material.map.image.src = 'trash/delete_tr.png';
 					deleteVoxel.name = 'delete';
 					
-					//cube.add(this.texture('trash/board.jpg', width * 0.8, height));			// children[0]
-					cube.add(new THREE.Mesh(new THREE.PlaneGeometry(width, height), new THREE.MeshBasicMaterial( { color: 0xe0e0e0 } )));
+					cube.add(this.texture('trash/polaroid.png', width*0.8, height));			// children[0]
+					//cube.add(new THREE.Mesh(new THREE.PlaneGeometry(width, height), new THREE.MeshBasicMaterial( { color: 0xe0e0e0 } )));
 					
+					
+					var minVal = -0.2;
+					var maxVal = 0.2;
+					var floatVal = 2;
+					var randVal = minVal+(Math.random()*(maxVal-minVal));
+					cube.rotation.z = typeof floatVal=='undefined'?Math.round(randVal):randVal.toFixed(floatVal);
+					
+				   
 					cube.add(photo);												// children[1]
 					cube.add(this.text(l_name, f_name, b_date, d_date, this.nodeWidth, this.nodeHeight));	// children[2]
 					cube.add(parVoxel);											// children[3]
@@ -225,6 +238,7 @@ define([],function(){
 							f_node.child = nodex;
 							if(i==3){
 								f_node.children[5].visible = true;
+								//f_node.children[5].children[0].material.map.image.src = 'trash/arrow.png';
 							}
 							this.create_tree(json, f_id, a, f_node);
 						};
@@ -244,6 +258,7 @@ define([],function(){
 							m_node.child = nodex;
 							if(i==3){
 								m_node.children[5].visible = true;
+								//m_node.children[5].children[0].material.map.image.src = 'trash/arrow.png';
 							}
 							this.create_tree(json, m_id, a, m_node);
 						};
@@ -253,7 +268,7 @@ define([],function(){
 					var lineMat = new THREE.LineBasicMaterial({
 						color : color,
 						opacity : 1,
-						linewidth : 3
+						linewidth : 1
 					});
 
 					var geom = new THREE.Geometry();
@@ -280,12 +295,12 @@ define([],function(){
 					canvas.height = height;
 					var context = canvas.getContext("2d");
 					context.fillStyle = "black";
-					context.font = '22px Arial Black';
+					context.font = 'italic 22px Arial Black';
 					//TODO text align
-					context.fillText(f_name, width * 0.35, height * 0.68);
-					context.fillText(l_name, width * 0.35, height * 0.74);
-					context.fillText(b_date, width * 0.25, height * 0.82);
-					context.fillText(d_date, width * 0.5, height * 0.82);
+					context.fillText(f_name, width * 0.2, height * 0.83);
+					context.fillText(l_name, width * 0.5, height * 0.83);
+					context.fillText(b_date, width * 0.3, height * 0.9);
+					context.fillText(d_date, width * 0.55, height * 0.9);
 					var tex = new THREE.Texture(canvas);
 					tex.needsUpdate = true;
 					var mat = new THREE.MeshBasicMaterial({
@@ -405,12 +420,18 @@ define([],function(){
 					{
 						par = intersects[1].object.parent;
 						for( j = 0; j < par.children.length; j++) {
-							if(par.children[j].name == 'child' || 
-								par.children[j].name == 'parent' ||
-								par.children[j].name == 'edit' || 
-								par.children[j].name == 'delete'
-								) {
-								par.children[j].visible = true;
+							if(par.children[j].name == 'child') {
+								//par.children[j].visible = true;
+								par.children[j].children[0].material.map.image.src = 'trash/add.png';
+							}else if(par.children[j].name == 'parent') {
+								//par.children[j].visible = true;
+								par.children[j].children[0].material.map.image.src = 'trash/add.png';
+							}else if(par.children[j].name == 'edit') {
+								//par.children[j].visible = true;
+								par.children[j].children[0].material.map.image.src = 'trash/edit.png';
+							}else if(par.children[j].name == 'delete') {
+								//par.children[j].visible = true;
+								par.children[j].children[0].material.map.image.src = 'trash/delete.png';
 							}
 						}
 					}
@@ -432,13 +453,19 @@ define([],function(){
                     if(!this.SELECTED){
                         for( i = 0; i < this.objects.length; i++) {
     						for( j = 0; j < this.objects[i].children.length; j++) {
-    							if(this.objects[i].children[j].name == 'child' ||
-									this.objects[i].children[j].name == 'parent' ||
-									this.objects[i].children[j].name == 'edit' || 
-									this.objects[i].children[j].name == 'delete'
-									) {
-    								this.objects[i].children[j].visible = false;
-    							}
+    							if(par.children[j].name == 'child') {
+									//par.children[j].visible = true;
+									par.children[j].children[0].material.map.image.src = 'trash/add_tr.png';
+								}else if(par.children[j].name == 'parent') {
+									//par.children[j].visible = true;
+									par.children[j].children[0].material.map.image.src = 'trash/add_tr.png';
+								}else if(par.children[j].name == 'edit') {
+									//par.children[j].visible = true;
+									par.children[j].children[0].material.map.image.src = 'trash/edit_tr.png';
+								}else if(par.children[j].name == 'delete') {
+									//par.children[j].visible = true;
+									par.children[j].children[0].material.map.image.src = 'trash/delete_tr.png';
+								}
     						}
     					}
     					this.container.style.cursor = 'auto';
