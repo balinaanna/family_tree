@@ -455,22 +455,22 @@ define(['models/TreeNodeModel'],function(TreeModel){
 					}
 
 				} else {
-
+					
                     if(!this.SELECTED){
                         for( i = 0; i < this.objects.length; i++) {
     						for( j = 0; j < this.objects[i].children.length; j++) {
-    							if(par.children[j].name == 'child') {
+    							if(this.objects[i].children[j].name == 'child') {
 									//par.children[j].visible = true;
-									par.children[j].children[0].material.map.image.src = 'trash/add_tr.png';
-								}else if(par.children[j].name == 'parent') {
+									this.objects[i].children[j].children[0].material.map.image.src = 'trash/add_tr.png';
+								}else if(this.objects[i].children[j].name == 'parent') {
 									//par.children[j].visible = true;
-									par.children[j].children[0].material.map.image.src = 'trash/add_tr.png';
-								}else if(par.children[j].name == 'edit') {
+									this.objects[i].children[j].children[0].material.map.image.src = 'trash/add_tr.png';
+								}else if(this.objects[i].children[j].name == 'edit') {
 									//par.children[j].visible = true;
-									par.children[j].children[0].material.map.image.src = 'trash/edit_tr.png';
-								}else if(par.children[j].name == 'delete') {
+									this.objects[i].children[j].children[0].material.map.image.src = 'trash/edit_tr.png';
+								}else if(this.objects[i].children[j].name == 'delete') {
 									//par.children[j].visible = true;
-									par.children[j].children[0].material.map.image.src = 'trash/delete_tr.png';
+									this.objects[i].children[j].children[0].material.map.image.src = 'trash/delete_tr.png';
 								}
     						}
     					}
