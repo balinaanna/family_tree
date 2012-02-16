@@ -13,4 +13,10 @@ class Email_model extends CI_Model {
 		$result = $this -> email -> send();
 		return $result;
 	}
+	
+	function is_valid_email($email) {
+		$result = true;
+		if(!eregi("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$", $email)) { $result = false; }
+		return $result;
+	}
 }

@@ -68,7 +68,21 @@ class Api extends CI_Controller {
 	
 	public function reg() {
 		$email=addslashes($_REQUEST['email']);
+		if( $this->email_model->is_valid_email($email) == false ) {
+		    $json->action = "registration";
+		    $json->status = "0";
+		    $json->message = "invalid email";
+		    echo json_encode($json);
+		    die();
+		}
 		$pass=md5(md5(addslashes($_REQUEST['pass'])));
+		if(trim($pass)==""){
+		    $json->action = "registration";
+		    $json->status = "0";
+		    $json->message = "no pass";
+		    echo json_encode($json);
+		    die();
+		}
 		$res = $this->db->query('SELECT * FROM users WHERE email="'.$email.'"');
 		if(!$res->result()){
 			$result = $this->db->query('INSERT INTO users(`id`, `prof_id`, `email`, `pass`)

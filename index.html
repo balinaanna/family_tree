@@ -12,6 +12,11 @@
 		<script data-main="js/app/main" src="/js/libs/backbone-min.js"></script>
 		<script data-main="js/app/main" src="js/libs/require.js"></script>
 		<script data-main="js/app/main" src="js/libs/Three.js"></script>
+		
+		<link rel="stylesheet" type="text/css" href="assets/css/imgareaselect-default.css" />
+		<script type="text/javascript" src="js/libs/jquery.imgareaselect.pack.js"></script>
+		<script type="text/javascript" src="js/libs/upclick.js"></script>
+
 	</head>
 	<body class="body">
 		<div id="navigator" style="position:absolute; z-index: 100;">
@@ -64,53 +69,78 @@
 			<div id="osx-modal-data-edit">
 				<table>
 					<tr>
-						<td class="data-edit-field">
-							First name
+						<td style="width: 320px;">
+							<form enctype="multipart/form-data" action="crop.php" method="post">
+								<div id="photo_upload" style="display: none;">
+									<input type="button" id="upload_input" value="Upload"> do it later. look Edit profile
+								</div>
+								<div id="photo_crop" style="display: none;">
+									<p>Select photo fragment to display</p>
+									<div id="photo_div" style="width: 100%;">
+										<img id="photo" alt="" title="" style="max-height: 300px; max-width: 300px; margin: 10px;" />
+									</div>
+										<input type="hidden" name="x1" value="" />
+										<input type="hidden" name="y1" value="" />
+										<input type="hidden" name="x2" value="" />
+										<input type="hidden" name="y2" value="" />
+										<input type="hidden" name="w" value="" />
+										<input type="hidden" name="h" value="" />
+								</div>
+							</form>
 						</td>
-						<td class="data-edit-data">
-							<input id="f_name" name="f_name"/>
-						</td>
-					</tr>
-					<tr>
-						<td class="data-edit-field">
-							Last name
-						</td>
-						<td class="data-edit-data">
-							<input id="l_name" name="l_name"/>
-						</td>
-					</tr>				
-					<tr>
-						<td class="data-edit-field">
-							Birth date
-						</td>
-						<td class="data-edit-data">
-							<input id="b_date" name="b_date"/>
-						</td>
-					</tr>
-					<tr>
-						<td class="data-edit-field">
-							Death date
-						</td>
-						<td class="data-edit-data">
-							<input id="d_date" name="d_date"/>
-						</td>
-					</tr>
-					<tr>
-						<td class="data-edit-field">
-							Gender</td>
 						<td>
-							<input type="radio" name="gender" value="m" checked /> Male 
-							<input type="radio" name="gender" value="f" /> Female
+							<table>
+							<tr>
+								<td class="data-edit-field">
+									First name
+								</td>
+								<td class="data-edit-data">
+									<input id="f_name" name="f_name"/>
+								</td>
+							</tr>
+							<tr>
+								<td class="data-edit-field">
+									Last name
+								</td>
+								<td class="data-edit-data">
+									<input id="l_name" name="l_name"/>
+								</td>
+							</tr>				
+							<tr>
+								<td class="data-edit-field">
+									Birth date
+								</td>
+								<td class="data-edit-data">
+									<input id="b_date" name="b_date"/>
+								</td>
+							</tr>
+							<tr>
+								<td class="data-edit-field">
+									Death date
+								</td>
+								<td class="data-edit-data">
+									<input id="d_date" name="d_date"/>
+								</td>
+							</tr>
+							<tr>
+								<td class="data-edit-field">
+									Gender</td>
+								<td>
+									<input type="radio" name="gender" value="m" checked /> Male 
+									<input type="radio" name="gender" value="f" /> Female
+								</td>
+
+							</tr>
+							<tr>
+								<td class="data-edit-field">
+									About
+								</td>
+								<td class="data-edit-data">
+									<textarea id="about" name="about" class="mceEditor"></textarea>
+								</td>						
+							</tr>
+							</table>
 						</td>
-						
-					</tr>
-					<tr>
-						<td class="data-edit-field">
-							About
-						</td>
-						<td class="data-edit-data">
-							<textarea id="about" name="about" class="mceEditor"></textarea>
-						</td>						
 					</tr>
 				</table>
 				<p>
