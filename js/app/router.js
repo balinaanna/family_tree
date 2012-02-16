@@ -1,8 +1,8 @@
-define(['views/BaseView'],	function(BaseView){
+define(['views/BaseView'], function(BaseView){
     return Backbone.Router.extend({
 		
-		initialize : function (options) {
-			console.log("initialize");
+	initialize : function (options) {
+		console.log("initialize");
         },
 
         routes: {
@@ -10,19 +10,13 @@ define(['views/BaseView'],	function(BaseView){
 	},
 
         WebApp : function () {
-        	$(document).ready(function(){
+            $(document).ready(function(){
         	this.el = $('#home');
-        	
-            this._currentController = new BaseView({el: this.el});
-          
-			this._currentController.animate();
-			});
-			console.log('offLineWebApplication router start');
-        },
-		
-		sync : function () {
-			console.log('this is just an example')
-		}
+		this._currentController = new BaseView({el: this.el});
+		this._currentController.animate();
+	    });
+	    console.log('offLineWebApplication router start');
+        }
     });
     
 });

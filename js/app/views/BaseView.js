@@ -24,7 +24,7 @@ define([],function(){
 			imgPlusSize : 70,
             SELECTED: null,
             treeObj: '{"id":"1","tree":{"1":{"l_name":"name1","f_name":"name2","f_id":"2","m_id":"3","ch_ids":["11","12","13"],"spouse_id":"10","b_date":"1989","d_date":"0","sex":"m","photo_url":null,"comment":"comment"},"2":{"l_name":"name2","f_name":"fname2","f_id":"4","m_id":"5","ch_ids":"1","spouse_id":"3","b_date":"1990","d_date":"0","sex":"m","photo_url":null,"comment":"comment"},"3":{"l_name":"name3","f_name":"fname3","f_id":"6","m_id":"7","ch_ids":"1","spouse_id":"2","b_date":"1990","d_date":"0","sex":"f","photo_url":null,"comment":"comment"},"4":{"l_name":"name2","f_name":"fname2","f_id":"","m_id":"","ch_ids":"2","spouse_id":"5","b_date":"1990","d_date":"0","sex":"m","photo_url":null,"comment":"comment"},"5":{"l_name":"name2","f_name":"fname2","f_id":"","m_id":"","ch_ids":"2","spouse_id":"4","b_date":"1990","d_date":"0","sex":"f","photo_url":null,"comment":"comment"}, "6":{"l_name":"name2","f_name":"fname2","f_id":"","m_id":"","ch_ids":"3","spouse_id":"7","b_date":"1990","d_date":"0","sex":"m","photo_url":null,"comment":"comment"},"7":{"l_name":"name2","f_name":"fname2","f_id":"8","m_id":"9","ch_ids":"3","spouse_id":"6","b_date":"1990","d_date":"0","sex":"f","photo_url":null,"comment":"comment"},"8":{"l_name":"name2","f_name":"fname2","f_id":"","m_id":"","ch_ids":["7"],"spouse_id":"9","b_date":"1990","d_date":"0","sex":"m","photo_url":null,"comment":"comment"},"9":{"l_name":"name2","f_name":"fname2","f_id":"","m_id":"","ch_ids":["7"],"spouse_id":"8","b_date":"1990","d_date":"0","sex":"m","photo_url":null,"comment":"comment"},"11":{"l_name":"name2","f_name":"fname2","f_id":"1","m_id":"10","ch_ids":[],"spouse_id":"","b_date":"1990","d_date":"0","sex":"m","photo_url":null,"comment":"comment"},"12":{"l_name":"name2","f_name":"fname2","f_id":"1","m_id":"10","ch_ids":[],"spouse_id":"","b_date":"1990","d_date":"0","sex":"m","photo_url":null,"comment":"comment"},"13":{"l_name":"name2","f_name":"fname2","f_id":"1","m_id":"10","ch_ids":[],"spouse_id":"","b_date":"1990","d_date":"0","sex":"m","photo_url":null,"comment":"comment"}, "10":{"l_name":"name1","f_name":"name2","f_id":"","m_id":"","ch_ids":["11","12","13"],"spouse_id":"1","b_date":"1989","d_date":"0","sex":"m","photo_url":null,"comment":"comment"}}}',
-            tree: '{"1":{"l_name":"ffff","b_date":"123","d_date":"456","f_id":"2","m_id":"3","about":"Lorem ipsum dolor sit amet..."},"2":{"l_name":"father","b_date":"123","d_date":"456","f_id":"4","m_id":"5","about":"Lorem ipsum dolor sit amet..."},"3":{"l_name":"mot","b_date":"123","d_date":"456","f_id":"10","m_id":"","about":"Lorem ipsum dolor sit amet..."},"4":{"l_name":"fff1","b_date":"123","d_date":"456","f_id":"6","m_id":"7","about":"Lorem ipsum dolor sit amet..."},"5":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"8","m_id":"9","about":"Lorem ipsum dolor sit amet..."},"6":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":"","about":"Lorem ipsum dolor sit amet..."},"7":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":"","about":"Lorem ipsum dolor sit amet..."},"8":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":"","about":"Lorem ipsum dolor sit amet..."},"9":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":"","about":"Lorem ipsum dolor sit amet..."},"10":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":"11","about":"Lorem ipsum dolor sit amet..."},"11":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":"","about":"Lorem ipsum dolor sit amet..."}}',
+            tree: '{"1":{"l_name":"ffff","b_date":"123","d_date":"456","f_id":"2","m_id":"3","comment":"Lorem ipsum dolor sit amet..."},"2":{"l_name":"father","b_date":"123","d_date":"456","f_id":"4","m_id":"5","comment":"Lorem ipsum dolor sit amet..."},"3":{"l_name":"mot","b_date":"123","d_date":"456","f_id":"10","m_id":"","comment":"Lorem ipsum dolor sit amet..."},"4":{"l_name":"fff1","b_date":"123","d_date":"456","f_id":"6","m_id":"7","comment":"Lorem ipsum dolor sit amet..."},"5":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"8","m_id":"9","comment":"Lorem ipsum dolor sit amet..."},"6":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":"","comment":"Lorem ipsum dolor sit amet..."},"7":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":"","comment":"Lorem ipsum dolor sit amet..."},"8":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":"","comment":"Lorem ipsum dolor sit amet..."},"9":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":"","comment":"Lorem ipsum dolor sit amet..."},"10":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":"11","comment":"Lorem ipsum dolor sit amet..."},"11":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":"","comment":"Lorem ipsum dolor sit amet..."}}',
             
            
 		
@@ -95,7 +95,7 @@ define([],function(){
 			
 		},
 		
-		create_node: function (l_name, f_name, b_date, d_date, about, width, height){
+		create_node: function (l_name, f_name, b_date, d_date, comment, width, height){
 					var cube = new THREE.Object3D();
 					// TODO coords
 					
@@ -183,7 +183,7 @@ define([],function(){
 						"f_name" : f_name,
 						"b_date" : b_date,
 						"d_date" : d_date,
-						"about" : about
+						"comment" : comment
 					};
 					cube.mother;
 					cube.father;
@@ -212,7 +212,7 @@ define([],function(){
 		create_tree: function(json, id, i, nodex) {
 					var data = JSON.parse(json);
 					if(i == 1) {//TODO f_name
-						var node = this.create_node(data[id].l_name, data[id].l_name, data[id].b_date, data[id].d_date, data[id].about, this.nodeWidth, this.nodeHeight);
+						var node = this.create_node(data[id].l_name, data[id].l_name, data[id].b_date, data[id].d_date, data[id].comment, this.nodeWidth, this.nodeHeight);
 						node.position.set(0, this.nodeHeight + 50, 0);
 						node.info.user_id = id;
 						node.generation = 1;
@@ -224,7 +224,7 @@ define([],function(){
 						var a = i + 1;
 						if(data[id].f_id) {
 							var f_id = data[id].f_id;
-							var f_node = this.create_node(data[f_id].l_name, data[f_id].l_name, data[f_id].b_date, data[f_id].d_date, data[f_id].about, this.nodeWidth, this.nodeHeight);
+							var f_node = this.create_node(data[f_id].l_name, data[f_id].l_name, data[f_id].b_date, data[f_id].d_date, data[f_id].comment, this.nodeWidth, this.nodeHeight);
 							f_node.position.set(nodex.position.x + (Math.pow((4 - i), 1.25)) * (-this.nodeWidth), (i - 1) * (-this.nodeHeight - 50), 0);
 							f_node.info.user_id = f_id;
 							this.objects.push(f_node);
@@ -244,7 +244,7 @@ define([],function(){
 						};
 						if(data[id].m_id) {
 							var m_id = data[id].m_id;
-							var m_node = this.create_node(data[m_id].l_name, data[m_id].l_name, data[m_id].b_date, data[m_id].d_date, data[id].about, this.nodeWidth, this.nodeHeight);
+							var m_node = this.create_node(data[m_id].l_name, data[m_id].l_name, data[m_id].b_date, data[m_id].d_date, data[id].comment, this.nodeWidth, this.nodeHeight);
 							m_node.position.set(nodex.position.x + (Math.pow((4 - i), 1.25)) * this.nodeWidth, (i - 1) * (-this.nodeHeight - 50), 0);
 							m_node.info.user_id = m_id;
 							this.objects.push(m_node);
@@ -368,7 +368,7 @@ define([],function(){
                                                     "d_date": "365756",
                                                     "f_id": "",
                                                     "m_id": "",
-                                                    "about": "Lorem ipsum dolor sit amet..."
+                                                    "comment": "Lorem ipsum dolor sit amet..."
                                                 };
                                  tree2 = JSON.stringify(addNode);
                                  this.create_tree(tree2,n_id,i,nodex);
