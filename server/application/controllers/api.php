@@ -9,6 +9,7 @@ class Api extends CI_Controller {
 		//$this->load->model('api');
 		$this->load->model('email_model');
 		$this->load->model('pass_recover_model');
+		$this->load->model('image_model');
 	}
 	
 	public function index()	{
@@ -173,6 +174,37 @@ class Api extends CI_Controller {
 					    ');
 	    $json->action = "delete_node";
 	    $json->status = "1";
+	    echo json_encode($json);
+	}
+
+	public function save_photo() {
+		$value = json_decode($json_response); // ?
+		$image = $this->image_model;
+		$image->uploadTo = '';
+		$image->returnType = 'array';
+		$img = $image->upload($_FILES['photo']);
+
+		$json->action = "save_photo";
+	    $json->status = "1";
+	    $json->response = $img['image']; // $img['path'] ?
+	    echo json_encode($json);
+	}
+
+	public function crop_photo() {
+		//$json_response = '{"path": "123.jpg", "x1": "1", "x2": "101", "y1": "1", "y2": "101"}';
+		$value = json_decode($json_response);
+		$image = $this->image_model;
+		$image->source_file = $value->path;
+		$image->newPath = 'thumbs/';
+		$image->returnType = 'array';
+		$width = $value->x2 - $value->x1;
+		$height = $value->y2 - $value->y1;
+		$myImage->namePrefix = 'thumb_';
+		$img = $image->crop($width,$height,$value->x1,$value->y1);
+
+		$json->action = "crop_photo";
+	    $json->status = "1";
+	    $json->response = $img['prefix'].$img['image']; // $img['prefix'] ??
 	    echo json_encode($json);
 	}
 }
