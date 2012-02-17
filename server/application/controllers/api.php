@@ -22,12 +22,12 @@ class Api extends CI_Controller {
 	public function login() {
 		$email=addslashes($_REQUEST['email']);
 		$pass=md5(md5(addslashes($_REQUEST['pass'])));
-		$autologin=addslashes(base64_decode($_REQUEST['autologin']));
+		if(isset($_REQUEST['autologin'])){$autologin=addslashes(base64_decode($_REQUEST['autologin']));}
 		if(!$pass){$pass=$autologin;}
 		$result = $this->db->query('SELECT b.*, a.pass, a.id as user_id FROM users a, profile_data b
 										WHERE a.prof_id=b.id AND a.email="'.$email.'" AND a.pass="'.$pass.'"
-								UNION
-								SELECT  b.*, a.pass, a.id as user_id FROM users a, profile_data b
+									UNION
+									SELECT  b.*, a.pass, a.id as user_id FROM users a, profile_data b
 										WHERE b.user_id=a.id AND a.email="'.$email.'" AND a.pass="'.$pass.'"
 							    ');
 		$db_result = $result->result();
@@ -38,7 +38,7 @@ class Api extends CI_Controller {
 			$json->pass=base64_encode($db_result[0]->pass);
 			
 			$session_data = array(
-			    'user_id'     => $db_result[0]->user_id,
+			    'user_id'  => $db_result[0]->user_id,
 			    'prof_id'  => $json->id,
 			    'pass'     => $db_result[0]->pass
 			);
@@ -145,18 +145,19 @@ class Api extends CI_Controller {
 	    $value = json_decode($json_response);
 	    $this->db->query('INSERT INTO `profile_data`(`user_id`, `f_id`, `m_id`, `ch_ids`, `spouse_id`, `f_name`, `l_name`, `b_date`, `d_date`, `sex`, `photo_url`, `comment`)
 				    	    VALUES (
-					    	"'.$this->session->userdata('user_id').'",
-						"'.$value->f_id.'",
-					    	"'.$value->m_id.'",
-						"'.$value->ch_ids.'",
-						"'.$value->spouse_id.'",
-						"'.$value->f_name.'",
-						"'.$value->l_name.'",
-						"'.$value->b_date.'",
-						"'.$value->d_date.'",
-						"'.$value->sex.'",
-						"'.$value->photo_url.'",
-						"'.$value->comment.'"
+					    		"'.$this->session->userdata('user_id').'",
+								"'.$value->f_id.'",
+							    "'.$value->m_id.'",
+								"'.$value->ch_ids.'",
+								"'.$value->spouse_id.'",
+								"'.$value->f_name.'",
+								"'.$value->l_name.'",
+								"'.$value->b_date.'",
+								"'.$value->d_date.'",
+								"'.$value->sex.'",
+								"'.$value->photo_url.'",
+								"'.$value->comment.'"
+							)
 					    ');
 	    $json->action = "add_node";
 	    $json->status = "1";
@@ -167,8 +168,8 @@ class Api extends CI_Controller {
 	    //$json_response='{"id":"5"}';
 	    $value = json_decode($json_response);
 	    $this->db->query('DELETE FROM `profile_data`
-						WHERE `id` = "'.$value->id.'" AND
-							    `user_id` = "'.$this->session->userdata('user_id').'"
+							WHERE `id` = "'.$value->id.'" AND
+							   	`user_id` = "'.$this->session->userdata('user_id').'"
 					    ');
 	    $json->action = "delete_node";
 	    $json->status = "1";
