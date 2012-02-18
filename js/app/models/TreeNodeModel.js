@@ -1,7 +1,18 @@
 define([],function(){	
 	return Backbone.Model.extend({
 		defaults:{
-				tree: []		
+				//tree: []
+				l_name: null,
+				f_name:null,	
+				f_id:null,	
+				m_id:null,
+				ch_ids:[],
+				spouse_id:null,
+				b_date:null,
+				d_date:null,
+				sex:null,
+				photo_url:null,
+				comment:null
 		},
 				
 		initialize: function(){
@@ -9,9 +20,9 @@ define([],function(){
 			var key   = 'App';
 			var re;
 			this.url = '/server';
-			this.bind("change:tree", function(){
-                this.setLocal("tree",JSON.stringify(this.get("tree")));
-                console.log(JSON.stringify(this.get("tree")));
+			this.on("change", function(model, key){
+                this.setLocal(key,JSON.stringify(this.get(key)));
+                console.log(JSON.stringify(this.get(key)));
             });
 			/*this.save().complete(function(rest){
 				re=rest;
@@ -36,12 +47,15 @@ define([],function(){
 													 "12":{"l_name":"name2","f_name":"fname2","f_id":"1","m_id":"10","ch_ids":[],"spouse_id":"","b_date":"1990","d_date":"0","sex":"m","photo_url":null,"comment":"comment"},\n\
 													 "13":{"l_name":"name2","f_name":"fname2","f_id":"1","m_id":"10","ch_ids":[],"spouse_id":"","b_date":"1990","d_date":"0","sex":"m","photo_url":null,"comment":"comment"}, \n\
 													 "10":{"l_name":"name1","f_name":"name2","f_id":"","m_id":"","ch_ids":["11","12","13"],"spouse_id":"1","b_date":"1989","d_date":"0","sex":"m","photo_url":null,"comment":"comment"}}}');
-			this.set("tree", data.tree);
+			//this.set("tree", data.tree);
+			for (i in data.tree){
+				this.set(i, data.tree[i]);
+			}
 			
 		},
 		update: function(key, data){
 			this.set({key: data});
-			this.trigger("change:tree");
+			this.trigger("change");
 		},
 		getLocal: function(key){
 			console.log('getlocal');

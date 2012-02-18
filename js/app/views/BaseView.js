@@ -52,7 +52,11 @@ define(['models/TreeNodeModel'],function(TreeModel){
 			//test model
 			this._model = new TreeModel();
 			console.log(this._model);
-			this.treeObj = this._model.get('tree');
+			for (i in this._model.toJSON()){
+			console.log(i);};
+			//this._model.set('15', "sdf");
+			this.treeObj = this._model.toJSON();
+			//this._model.set('15', this.treeObj);
 			console.log(this.treeObj);
 			console.log(JSON.stringify(this.treeObj));	
 			
