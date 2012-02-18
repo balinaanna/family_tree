@@ -113,7 +113,7 @@ define(['models/TreeNodeModel'],function(TreeModel){
 					//parent "+"		
 					var parVoxel = new THREE.Mesh(new THREE.PlaneGeometry(this.imgPlusSize, this.imgPlusSize));
 					parVoxel.add(this.texture('trash/add.png', this.imgPlusSize, this.imgPlusSize));
-					parVoxel.position.set(this.mouseX, this.mouseY - Math.floor(height / 2), 1);
+					parVoxel.position.set(this.mouseX, this.mouseY - Math.floor(height / 2), 2);
 					parVoxel.matrixAutoUpdate = false;
 					parVoxel.updateMatrix();
 					parVoxel.overdraw = true;
@@ -124,7 +124,7 @@ define(['models/TreeNodeModel'],function(TreeModel){
 					//child "+"
 					var childVoxel = new THREE.Mesh(new THREE.PlaneGeometry(this.imgPlusSize, this.imgPlusSize));
 					childVoxel.add(this.texture('trash/add.png', this.imgPlusSize, this.imgPlusSize));
-					childVoxel.position.set(this.mouseX, this.mouseY + Math.floor(height / 2), 1);
+					childVoxel.position.set(this.mouseX, this.mouseY + Math.floor(height / 2), 2);
 					childVoxel.matrixAutoUpdate = false;
 					childVoxel.updateMatrix();
 					childVoxel.overdraw = true;
@@ -135,7 +135,7 @@ define(['models/TreeNodeModel'],function(TreeModel){
 					// arrow
 					var arrow = new THREE.Mesh(new THREE.PlaneGeometry(30, 48));
 					arrow.add(this.texture('trash/arrow.png', 30, 48));
-					arrow.position.set(this.mouseX, this.mouseY - 30 - Math.floor(height / 2), 1);
+					arrow.position.set(this.mouseX, this.mouseY - 30 - Math.floor(height / 2), 2);
 					arrow.overdraw = true;
 					arrow.name = 'arrow';
 					arrow.visible = false;
@@ -147,7 +147,7 @@ define(['models/TreeNodeModel'],function(TreeModel){
 					//edit
 					var editVoxel = new THREE.Mesh(new THREE.PlaneGeometry(this.imgPlusSize, this.imgPlusSize));
 					editVoxel.add(this.texture('trash/edit.png', this.imgPlusSize, this.imgPlusSize));
-					editVoxel.position.set(this.mouseX+width/4, this.mouseY + Math.floor(height / 2), 1);
+					editVoxel.position.set(this.mouseX+width/4, this.mouseY + Math.floor(height / 2), 2);
 					editVoxel.matrixAutoUpdate = false;
 					editVoxel.updateMatrix();
 					editVoxel.overdraw = true;
@@ -159,7 +159,7 @@ define(['models/TreeNodeModel'],function(TreeModel){
 					//delete
 					var deleteVoxel = new THREE.Mesh(new THREE.PlaneGeometry(this.imgPlusSize, this.imgPlusSize));
 					deleteVoxel.add(this.texture('trash/delete.png', this.imgPlusSize, this.imgPlusSize));
-					deleteVoxel.position.set(this.mouseX-width/4, this.mouseY + Math.floor(height / 2), 1);
+					deleteVoxel.position.set(this.mouseX-width/4, this.mouseY + Math.floor(height / 2), 2);
 					deleteVoxel.matrixAutoUpdate = false;
 					deleteVoxel.updateMatrix();
 					deleteVoxel.overdraw = true;
