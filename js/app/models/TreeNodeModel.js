@@ -23,20 +23,34 @@ define([],function(){
 			//this.set({"items": this.getLocal(key)});
 			
 			
-			var data = JSON.parse('{"id":"1","tree":{"1":{"l_name":"name1","f_name":"name2","f_id":"2","m_id":"3","ch_ids":["11","12","13"],"spouse_id":"10","b_date":"1989","d_date":"0","sex":"m","photo_url":null,"comment":"comment"},\n\
-													 "2":{"l_name":"name2","f_name":"fname2","f_id":"4","m_id":"5","ch_ids":"1","spouse_id":"3","b_date":"1990","d_date":"0","sex":"m","photo_url":null,"comment":"comment"},\n\
-													 "3":{"l_name":"name3","f_name":"fname3","f_id":"6","m_id":"7","ch_ids":"1","spouse_id":"2","b_date":"1990","d_date":"0","sex":"f","photo_url":null,"comment":"comment"},\n\
-													 "4":{"l_name":"name2","f_name":"fname2","f_id":"","m_id":"","ch_ids":"2","spouse_id":"5","b_date":"1990","d_date":"0","sex":"m","photo_url":null,"comment":"comment"},\n\
-													 "5":{"l_name":"name2","f_name":"fname2","f_id":"","m_id":"","ch_ids":"2","spouse_id":"4","b_date":"1990","d_date":"0","sex":"f","photo_url":null,"comment":"comment"},\n\
-													 "6":{"l_name":"name2","f_name":"fname2","f_id":"","m_id":"","ch_ids":"3","spouse_id":"7","b_date":"1990","d_date":"0","sex":"m","photo_url":null,"comment":"comment"},\n\
-													 "7":{"l_name":"name2","f_name":"fname2","f_id":"8","m_id":"9","ch_ids":"3","spouse_id":"6","b_date":"1990","d_date":"0","sex":"f","photo_url":null,"comment":"comment"},\n\
-													 "8":{"l_name":"name2","f_name":"fname2","f_id":"","m_id":"","ch_ids":["7"],"spouse_id":"9","b_date":"1990","d_date":"0","sex":"m","photo_url":null,"comment":"comment"},\n\
-													 "9":{"l_name":"name2","f_name":"fname2","f_id":"","m_id":"","ch_ids":["7"],"spouse_id":"8","b_date":"1990","d_date":"0","sex":"m","photo_url":null,"comment":"comment"},\n\
-													 "11":{"l_name":"name2","f_name":"fname2","f_id":"1","m_id":"10","ch_ids":[],"spouse_id":"","b_date":"1990","d_date":"0","sex":"m","photo_url":null,"comment":"comment"},\n\
-													 "12":{"l_name":"name2","f_name":"fname2","f_id":"1","m_id":"10","ch_ids":[],"spouse_id":"","b_date":"1990","d_date":"0","sex":"m","photo_url":null,"comment":"comment"},\n\
-													 "13":{"l_name":"name2","f_name":"fname2","f_id":"1","m_id":"10","ch_ids":[],"spouse_id":"","b_date":"1990","d_date":"0","sex":"m","photo_url":null,"comment":"comment"}, \n\
-													 "10":{"l_name":"name1","f_name":"name2","f_id":"","m_id":"","ch_ids":["11","12","13"],"spouse_id":"1","b_date":"1989","d_date":"0","sex":"m","photo_url":null,"comment":"comment"}}}');
-			this.set("tree", data.tree);
+			var treeObj = '{"id":"1","tree":{"1":{"l_name":"name1","f_name":"name2","f_id":"4","m_id":"3","ch_ids":[],"spouse_id":"19","b_date":"1989","d_date":"0","sex":"m","photo_url":null,"comment":"comment"},';
+            treeObj+='"2":{"l_name":"name2","f_name":"fname2","f_id":"4","m_id":"3","ch_ids":[],"spouse_id":"","b_date":"1990","d_date":"0","sex":"m","photo_url":null,"comment":"comment"},';
+            treeObj+='"3":{"l_name":"MAMA","f_name":"fname3","f_id":"8","m_id":"7","ch_ids":["1","2","22","23","24","25"],"spouse_id":"","b_date":"1990","d_date":"0","sex":"f","photo_url":null,"comment":"comment"},';
+            treeObj+='"4":{"l_name":"PAPA","f_name":"fname2","f_id":"10","m_id":"9","ch_ids":["1","2","22","23","24","25"],"spouse_id":"","b_date":"1990","d_date":"0","sex":"m","photo_url":null,"comment":"comment"},';
+            treeObj+='"5":{"l_name":"name2","f_name":"fname2","f_id":"8","m_id":"7","ch_ids":[],"spouse_id":"","b_date":"1990","d_date":"0","sex":"f","photo_url":null,"comment":"comment"},'; 
+            treeObj+='"6":{"l_name":"UNCLE","f_name":"fname2","f_id":"10","m_id":"9","ch_ids":[],"spouse_id":"","b_date":"1990","d_date":"0","sex":"m","photo_url":null,"comment":"comment"},';
+            treeObj+='"7":{"l_name":"name2","f_name":"fname2","f_id":"12","m_id":"11","ch_ids":["3","5"],"spouse_id":"","b_date":"1990","d_date":"0","sex":"f","photo_url":null,"comment":"comment"},';
+            treeObj+='"8":{"l_name":"name2","f_name":"fname2","f_id":"14","m_id":"13","ch_ids":["3","5"],"spouse_id":"","b_date":"1990","d_date":"0","sex":"m","photo_url":null,"comment":"comment"},';
+            treeObj+='"9":{"l_name":"name2","f_name":"fname2","f_id":"16","m_id":"15","ch_ids":["6","4"],"spouse_id":"","b_date":"1990","d_date":"0","sex":"m","photo_url":null,"comment":"comment"},';
+            treeObj+='"10":{"l_name":"name2","f_name":"fname2","f_id":"18","m_id":"17","ch_ids":["6","4"],"spouse_id":"","b_date":"1990","d_date":"0","sex":"m","photo_url":null,"comment":"comment"},';
+            treeObj+='"11":{"l_name":"name2","f_name":"fname2","f_id":"","m_id":"","ch_ids":["7"],"spouse_id":"","b_date":"1990","d_date":"0","sex":"m","photo_url":null,"comment":"comment"},';
+            treeObj+='"12":{"l_name":"name2","f_name":"fname2","f_id":"","m_id":"","ch_ids":["7"],"spouse_id":"","b_date":"1990","d_date":"0","sex":"m","photo_url":null,"comment":"comment"},';
+            treeObj+='"13":{"l_name":"name2","f_name":"fname2","f_id":"","m_id":"","ch_ids":["8"],"spouse_id":"","b_date":"1990","d_date":"0","sex":"m","photo_url":null,"comment":"comment"},';
+            treeObj+='"14":{"l_name":"name2","f_name":"fname2","f_id":"","m_id":"","ch_ids":["8"],"spouse_id":"","b_date":"1990","d_date":"0","sex":"m","photo_url":null,"comment":"comment"},';
+            treeObj+='"15":{"l_name":"name2","f_name":"fname2","f_id":"","m_id":"","ch_ids":["9"],"spouse_id":"","b_date":"1990","d_date":"0","sex":"m","photo_url":null,"comment":"comment"},';
+            treeObj+='"16":{"l_name":"name2","f_name":"fname2","f_id":"","m_id":"","ch_ids":["9"],"spouse_id":"","b_date":"1990","d_date":"0","sex":"m","photo_url":null,"comment":"comment"},';
+            treeObj+='"17":{"l_name":"name2","f_name":"fname2","f_id":"","m_id":"","ch_ids":["10"],"spouse_id":"","b_date":"1990","d_date":"0","sex":"m","photo_url":null,"comment":"comment"},';
+            treeObj+='"18":{"l_name":"name2","f_name":"fname2","f_id":"","m_id":"","ch_ids":["10"],"spouse_id":"","b_date":"1990","d_date":"0","sex":"m","photo_url":null,"comment":"comment"},';
+            treeObj+='"19":{"l_name":"name2","f_name":"fname2","f_id":"20","m_id":"21","ch_ids":[],"spouse_id":"","b_date":"1990","d_date":"0","sex":"m","photo_url":null,"comment":"comment"},';
+            treeObj+='"20":{"l_name":"name2","f_name":"fname2","f_id":"","m_id":"","ch_ids":["19"],"spouse_id":"","b_date":"1990","d_date":"0","sex":"m","photo_url":null,"comment":"comment"},';
+            treeObj+='"22":{"l_name":"name2","f_name":"fname2","f_id":"4","m_id":"3","ch_ids":["19"],"spouse_id":"","b_date":"1990","d_date":"0","sex":"m","photo_url":null,"comment":"comment"},';
+			treeObj+='"23":{"l_name":"name2","f_name":"fname2","f_id":"4","m_id":"3","ch_ids":["19"],"spouse_id":"","b_date":"1990","d_date":"0","sex":"m","photo_url":null,"comment":"comment"},';
+			treeObj+='"24":{"l_name":"name2","f_name":"fname2","f_id":"4","m_id":"3","ch_ids":["19"],"spouse_id":"","b_date":"1990","d_date":"0","sex":"m","photo_url":null,"comment":"comment"},';
+			treeObj+='"25":{"l_name":"name2","f_name":"fname2","f_id":"4","m_id":"3","ch_ids":["19"],"spouse_id":"","b_date":"1990","d_date":"0","sex":"m","photo_url":null,"comment":"comment"},';
+            treeObj+='"21":{"l_name":"name2","f_name":"fname2","f_id":"","m_id":"","ch_ids":["19"],"spouse_id":"","b_date":"1990","d_date":"0","sex":"m","photo_url":null,"comment":"comment"}}}';
+			
+            var data = JSON.parse(treeObj);
+			this.set("tree", data);
 			
 		},
 		update: function(key, data){
