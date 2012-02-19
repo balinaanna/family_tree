@@ -4,6 +4,7 @@ $f_name = $_REQUEST['f_name'];
 $l_name = $_REQUEST['l_name'];
 $b_date = $_REQUEST['b_date'];
 $d_date = $_REQUEST['d_date'];
+$comment = $_REQUEST['comment'];
 
 if($user_id !== '')
 {

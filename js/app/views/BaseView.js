@@ -82,8 +82,8 @@ define(['models/TreeNodeModel'],function(TreeModel){
 		create_node: function (data){
 					var cube = new THREE.Object3D();
 					// TODO coords
-					if(!photo_url){var photo_url = "image.jpg"};
-					var photo = this.texture('trash/avatars/'+photo_url, 235, 235);
+					if(data.photo_url == "" || data.photo_url == null){data.photo_url = "no_avatar.jpg"};
+					var photo = this.texture('trash/avatars/'+data.photo_url, 235, 235);
 					photo.position.set(0, 30, 1);
 					this.container.style.background = "url('trash/back_11111.jpg')";
 					
@@ -645,7 +645,8 @@ define(['models/TreeNodeModel'],function(TreeModel){
 					'y2': $('#y2').val()*scale,
 					'w': $('#w').val()*scale,
 					'h': $('#h').val()*scale,
-					'photo_url' : $('#photo').attr('src')
+					'photo_url' : $('#photo').attr('src'),
+					'comment' : $('#about').val()
 					},
 				success: function(){
 					//update photo
