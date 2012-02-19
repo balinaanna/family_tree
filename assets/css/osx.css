@@ -29,5 +29,5 @@
 #osx-container span {color:#777;}
 .data-edit-field {min-width: 100px; background-color: #e0e0e0;}
 .data-edit-data {min-width: 300px;}
-#osx-container table {border: 2px solid #fff; width: 100%;}
+#osx-container table {border: 0px solid #fff; width: 100%;}
 .mceEditor{width: 100%;}

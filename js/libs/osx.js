@@ -92,7 +92,7 @@ var OSX = {
 				setTimeout(function () {
 					var h = $("#osx-modal-data-edit", self.container).height()
 					+ title.height()
-					+ 120; // padding
+					+ 100; // padding
 					d.container.animate(
 					{
 						height: h
@@ -103,6 +103,7 @@ var OSX = {
 						$("#osx-modal-data-edit", self.container).show();
 						if(data.action == 'edit_person')
 						{
+							$('#user_id').val(user_data.info.user_id);
 							$('#f_name').val(user_data.info.f_name);
 							$('#l_name').val(user_data.info.l_name);
 							$('#b_date').val(user_data.info.b_date);
@@ -112,6 +113,7 @@ var OSX = {
 							{
 								$('#text_image').attr('style','display: block');
 								$('#photo').attr('src','trash/avatars/'+user_data.info.photo_url);
+								$('#photo_native_size').attr('src','trash/avatars/'+user_data.info.photo_url);
 								initImgCrop('trash/avatars/'+user_data.info.photo_url);
 							}
 							else
@@ -124,10 +126,12 @@ var OSX = {
 							$('#text_image').attr('style','display: none');
 							$('#data_table').attr('style','height: 495px;');
 							$('#photo').attr('src','trash/avatars/no_avatar.jpg');
+							$('#photo_native_size').attr('src','trash/avatars/no_avatar.jpg');
 						}
 						upclick({
 							element: upload_input,
 							action: 'upload_img.php',
+							action_params: {'user_id': $('#user_id').val(), 'login_name': 'new'},/* change login !!! */
 							onstart:
 								function(filename)
 								{
@@ -139,14 +143,22 @@ var OSX = {
 									resp = JSON.parse(response);
 									if(resp.success)
 									{
-										//alert('The photo has been uploaded successfully');
 										$('#photo').attr('src','trash/avatars/'+resp.photo_url);
+										$('#photo_native_size').attr('src','trash/avatars/'+resp.photo_url);
 										$('#text_image').attr('style','display: block');
+										$('.imgareaselect-outer').attr('style','display:none;');
+										$('.body div').each(function(index){
+											if(this.style['z-index'] == 1004)
+											{
+												this.style.height = 0;
+												this.style.width = 0;
+											}				
+										});										
 										initImgCrop('trash/avatars/'+resp.photo_url);
 									}
 									else
 									{
-										alert('Photo upload failed!');
+										alert('Wrong image format!');
 									}
 								}
 						});
