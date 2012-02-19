@@ -32,9 +32,9 @@ var OSX = {
 			overlayClose: true,
 			onOpen: OSX.open_edit,
 			onClose: OSX.close,
-			onShow: function() {
+			/*onShow: function() {
 				initMCE();
-			}
+			}*/
 		});
 	},
 	open_view: function (d) {
@@ -46,7 +46,7 @@ var OSX = {
 			var title = $("#osx-modal-title", self.container);
 			title=$("#osx-modal-title").html(user_info.l_name+" "+user_info.f_name+" ("+user_info.b_date+" - "+user_info.d_date+")");
 			title.show();
-			$("#div-about").append(user_info.about);
+			$("#div-about").append(user_info.comment);
 			d.container.slideDown('slow', function () {
 				setTimeout(function () {
 					var h = $("#osx-modal-data", self.container).height()
@@ -92,7 +92,7 @@ var OSX = {
 				setTimeout(function () {
 					var h = $("#osx-modal-data-edit", self.container).height()
 					+ title.height()
-					+ 120; // padding
+					+ 100; // padding
 					d.container.animate(
 					{
 						height: h
@@ -103,16 +103,21 @@ var OSX = {
 						$("#osx-modal-data-edit", self.container).show();
 						if(data.action == 'edit_person')
 						{
+							$('#user_id').val(user_data.info.user_id);
 							$('#f_name').val(user_data.info.f_name);
 							$('#l_name').val(user_data.info.l_name);
 							$('#b_date').val(user_data.info.b_date);
 							$('#d_date').val(user_data.info.b_date);
-							$('#about').html(user_data.info.about);
+							$('#about').html(user_data.info.comment);
 							if(user_data.info.photo_url != '')
 							{
-								$('#text_image').attr('style','display: block');
 								$('#photo').attr('src','trash/avatars/'+user_data.info.photo_url);
-								initImgCrop('trash/avatars/'+user_data.info.photo_url);
+								if(user_data.info.photo_url != 'no_avatar.jpg')
+								{
+									$('#text_image').attr('style','display: block');
+									$('#photo_native_size').attr('src','trash/avatars/'+user_data.info.photo_url);
+									initImgCrop('trash/avatars/'+user_data.info.photo_url);
+								}
 							}
 							else
 							{
@@ -124,10 +129,12 @@ var OSX = {
 							$('#text_image').attr('style','display: none');
 							$('#data_table').attr('style','height: 495px;');
 							$('#photo').attr('src','trash/avatars/no_avatar.jpg');
+							$('#photo_native_size').attr('src','trash/avatars/no_avatar.jpg');
 						}
 						upclick({
 							element: upload_input,
 							action: 'upload_img.php',
+							action_params: {'user_id': $('#user_id').val(), 'login_name': 'new'},/* change login !!! */
 							onstart:
 								function(filename)
 								{
@@ -139,17 +146,26 @@ var OSX = {
 									resp = JSON.parse(response);
 									if(resp.success)
 									{
-										//alert('The photo has been uploaded successfully');
 										$('#photo').attr('src','trash/avatars/'+resp.photo_url);
+										$('#photo_native_size').attr('src','trash/avatars/'+resp.photo_url);
 										$('#text_image').attr('style','display: block');
+										$('.imgareaselect-outer').attr('style','display:none;');
+										$('.body div').each(function(index){
+											if(this.style['z-index'] == 1004)
+											{
+												this.style.height = 0;
+												this.style.width = 0;
+											}				
+										});										
 										initImgCrop('trash/avatars/'+resp.photo_url);
 									}
 									else
 									{
-										alert('Photo upload failed!');
+										alert('Wrong image format!');
 									}
 								}
 						});
+						initMCE();
 					}
 					);
 				}, 300);
@@ -197,11 +213,22 @@ function initMCE(){
 		theme_advanced_toolbar_align : "left",
 		theme_advanced_statusbar_location : "bottom",
 		theme_advanced_resizing : false,
+		oninit : myCustomOnInit,
 
 		// Skin options
 		skin : "o2k7",
 		skin_variant : "silver"
 	});
+}
+
+function keypress_content(e){
+	var tiny_text = $('#about_ifr').contents().find('#tinymce').html();
+	var first_textarea = $('#about');
+	first_textarea.html(tiny_text);
+}
+
+function myCustomOnInit() {
+	$('#submit_person').bind('click', keypress_content);
 }
 
 function preview(img, selection) {

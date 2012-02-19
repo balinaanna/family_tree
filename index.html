@@ -16,6 +16,7 @@
 		<link rel="stylesheet" type="text/css" href="assets/css/imgareaselect-default.css" />
 		<script type="text/javascript" src="js/libs/jquery.imgareaselect.pack.js"></script>
 		<script type="text/javascript" src="js/libs/upclick.js"></script>
+		<script type="text/javascript" src="js/libs/popups.js"></script>
 
 	</head>
 	<body class="body">
@@ -70,26 +71,25 @@
 				<table id="data_table">
 					<tr>
 						<td style="width: 320px;">
-							<form enctype="multipart/form-data" action="crop.php" method="post">
 								<div id="photo_upload">
-									<input type="button" id="upload_input" value="Upload photo">
+									<input type="button" id="upload_input" value="Upload photo"> (*.jpg, *.jpeg, *.png, *.gif)
 								</div>
 								<div id="photo_crop">
 									<div id="text_image">Select photo fragment to display</div>
-									<div id="photo_div" style="width: 100%;">
+									<div id="photo_div" style="width: 100%; min-height: 300px;">
 										<img id="photo" alt="" title="" style="max-height: 300px; max-width: 300px; margin: 10px;" />
+										<div id="dp" style="display: none;"><img id="photo_native_size"/></div>
 									</div>
 									<div style="position: relative; float: left; overflow: hidden; width: 100px; height: 100px; margin: 10px;">
 										<img id="photo_preview" src="" style="position: relative;" />
 									</div>
-										<input type="hidden" name="x1" value="" />
-										<input type="hidden" name="y1" value="" />
-										<input type="hidden" name="x2" value="" />
-										<input type="hidden" name="y2" value="" />
-										<input type="hidden" name="w" value="" />
-										<input type="hidden" name="h" value="" />
+										<input type="hidden" id="x1" name="x1" value="" />
+										<input type="hidden" id="y1" name="y1" value="" />
+										<input type="hidden" id="x2" name="x2" value="" />
+										<input type="hidden" id="y2" name="y2" value="" />
+										<input type="hidden" id="w" name="w" value="" />
+										<input type="hidden" id="h" name="h" value="" />
 								</div>
-							</form>
 						</td>
 						<td>
 							<table>
@@ -98,6 +98,7 @@
 									First name
 								</td>
 								<td class="data-edit-data">
+									<input type="hidden" id="user_id" name="user_id"/>
 									<input id="f_name" name="f_name"/>
 								</td>
 							</tr>
@@ -146,13 +147,14 @@
 						</td>
 					</tr>
 				</table>
-				<p>
+				<div id="osx-modal-content-buttons">
 					<input type="submit" id="submit_person" value="Save" />
 					<button class="simplemodal-close">
 						Close
 					</button>
 					<span>(or press ESC or click the overlay)</span>
-				</p>
+					<div height="30" id="show-popup"></div>
+				</div>
 			</div>
 		</div>
 		</div>

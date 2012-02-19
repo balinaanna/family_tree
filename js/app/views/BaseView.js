@@ -86,8 +86,8 @@ define(['models/TreeNodeModel'],function(TreeModel){
 		create_node: function (data){
 					var cube = new THREE.Object3D();
 					// TODO coords
-					if(!photo_url){var photo_url = "image.jpg"};
-					var photo = this.texture('trash/avatars/'+photo_url, 235, 235);
+					if(data.photo_url == "" || data.photo_url == null){data.photo_url = "no_avatar.jpg"};
+					var photo = this.texture('trash/avatars/'+data.photo_url, 235, 235);
 					photo.position.set(0, 30, 1);
 					this.container.style.background = "url('trash/back_11111.jpg')";
 					
@@ -621,7 +621,42 @@ define(['models/TreeNodeModel'],function(TreeModel){
 		},
 		submitFunc: function(event){
 			event.preventDefault();
-			console.log("submit ");
+			
+			var h = $('#dp').height();
+			var w = $('#dp').width();
+			var scale = 1;
+			if(h > 300 || w > 300)
+			{
+				scale = h/300;
+			}
+			if(w > h)
+			{
+				scale = w/300;
+			}
+			
+			$.ajax({
+				url: 'save_person.php',
+				dataType: 'json',
+				data: {
+					'user_id': $('#user_id').val(),
+					'f_name' : $('#f_name').val(),
+					'l_name' : $('#l_name').val(),
+					'b_date' : $('#b_date').val(),
+					'd_date' : $('#d_date').val(),
+					'x1': $('#x1').val()*scale,
+					'y1': $('#y1').val()*scale,
+					'x2': $('#x2').val()*scale,
+					'y2': $('#y2').val()*scale,
+					'w': $('#w').val()*scale,
+					'h': $('#h').val()*scale,
+					'photo_url' : $('#photo').attr('src'),
+					'comment' : $('#about').val()
+					},
+				success: function(){
+					//update photo
+					showPopup('show-popup','green','Saved', 2000);
+				}
+			});
 		}
 		
 	});
