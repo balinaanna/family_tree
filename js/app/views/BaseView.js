@@ -5,37 +5,18 @@
 		
 define(['models/TreeNodeModel'],function(TreeModel){
     BaseView = Backbone.View.extend({
-	//	var container, stats;
-		//	var camera, scene, projector, renderer;
-			//var cube;
-			objects : [],
-			// array of NODES
-			mouseX : 0,
-			mouseY : 0,
-			
-			isMouseDown : false,
-			onMouseDownPosition: null,
-			//windowHalfX : window.innerWidth / 2,
-			//windowHalfY : window.innerHeight / 2,
-			mouse : new THREE.Vector2(),
-			//mouseHover : false,
-			nodeWidth : 360,
-			nodeHeight : 350,			
-			imgPlusSize : 70,
-            SELECTED: null,
-            tree: '{"1":{"l_name":"ffff","b_date":"123","d_date":"456","f_id":"2","m_id":"3","comment":"Lorem ipsum dolor sit amet...","photo_url":"image.jpg"},\n\
-					"2":{"l_name":"father","b_date":"123","d_date":"456","f_id":"4","m_id":"5","comment":"Lorem ipsum dolor sit amet...","photo_url":"back_3.jpg"},\n\
-					"3":{"l_name":"mot","b_date":"123","d_date":"456","f_id":"10","m_id":"","comment":"Lorem ipsum dolor sit amet...","photo_url":"image.jpg"},\n\
-					"4":{"l_name":"fff1","b_date":"123","d_date":"456","f_id":"6","m_id":"7","comment":"Lorem ipsum dolor sit amet...","photo_url":"image.jpg"},\n\
-					"5":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"8","m_id":"9","comment":"Lorem ipsum dolor sit amet...","photo_url":"back_3.jpg"},\n\
-					"6":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":"","comment":"Lorem ipsum dolor sit amet...","photo_url":"image.jpg"},\n\
-					"7":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":"","comment":"Lorem ipsum dolor sit amet...","photo_url":"image.jpg"},\n\
-					"8":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":"","comment":"Lorem ipsum dolor sit amet...","photo_url":"back_3.jpg"},\n\
-					"9":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":"","comment":"Lorem ipsum dolor sit amet...","photo_url":"image.jpg"},\n\
-					"10":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":"11","comment":"Lorem ipsum dolor sit amet...","photo_url":"back_3.jpg"},\n\
-					"11":{"l_name":"fff2","b_date":"123","d_date":"456","f_id":"","m_id":"","comment":"Lorem ipsum dolor sit amet...","photo_url":"image.jpg"}}',
-            
-           
+		objects : [],
+        
+		mouseX : 0,
+		mouseY : 0,
+		
+		isMouseDown : false,
+		onMouseDownPosition: null,
+		mouse : new THREE.Vector2(),
+		nodeWidth : 360,
+		nodeHeight : 350,			
+		imgPlusSize : 70,
+        SELECTED: null,
 		
 		events: {
 			"mousedown canvas" : "onDocumentMouseDown",
@@ -44,8 +25,7 @@ define(['models/TreeNodeModel'],function(TreeModel){
 			"mousewheel canvas" : "onDocumentMouseWheel",
 			"click canvas": "onClick",
 			//"click #osx-modal-content-edit": "submitFunc",
-			"click #submit_person": "submitFunc"//?
-			
+			"click #submit_person": "submitFunc"//?			
 		},
 		
 		initialize: function(){
@@ -80,7 +60,8 @@ define(['models/TreeNodeModel'],function(TreeModel){
 				this.camera.position.z = 1500;
 				this.scene.add(this.camera);
 				THREE.Object3D._threexDomEvent.camera(this.camera);
-				this.create_tree(this.treeObj, "1", 1);
+				this.create_tree("1", 1);
+                this.create_spouse();
 				/*for(var key in this.objects) {
 					this.objects[key].children[0].on('dblclick', function(event) {
 						OSX.init_view(event.target.parent.info);
@@ -98,74 +79,33 @@ define(['models/TreeNodeModel'],function(TreeModel){
 				this.container.appendChild(this.stats.domElement);					
 		},
 		
-		create_node: function (l_name, f_name, b_date, d_date, comment, photo_url, width, height){
+		create_node: function (data){
 					var cube = new THREE.Object3D();
 					// TODO coords
-					if(!photo_url){photo_url = "image.jpg"};
+					if(!photo_url){var photo_url = "image.jpg"};
 					var photo = this.texture('trash/avatars/'+photo_url, 235, 235);
 					photo.position.set(0, 30, 1);
 					this.container.style.background = "url('trash/back_11111.jpg')";
 					
-					//parent "+"		
-					var parVoxel = new THREE.Mesh(new THREE.PlaneGeometry(this.imgPlusSize, this.imgPlusSize));
-					parVoxel.add(this.texture('trash/add.png', this.imgPlusSize, this.imgPlusSize));
-					parVoxel.position.set(this.mouseX, this.mouseY - Math.floor(height / 2), 2);
-					parVoxel.matrixAutoUpdate = false;
-					parVoxel.updateMatrix();
-					parVoxel.overdraw = true;
-					//parVoxel.visible = false;
-					parVoxel.children[0].material.map.image.src = 'trash/add_tr.png';
-					parVoxel.name = 'parent';
-
-					//child "+"
-					var childVoxel = new THREE.Mesh(new THREE.PlaneGeometry(this.imgPlusSize, this.imgPlusSize));
-					childVoxel.add(this.texture('trash/add.png', this.imgPlusSize, this.imgPlusSize));
-					childVoxel.position.set(this.mouseX, this.mouseY + Math.floor(height / 2), 2);
-					childVoxel.matrixAutoUpdate = false;
-					childVoxel.updateMatrix();
-					childVoxel.overdraw = true;
-					//childVoxel.visible = false;
-					childVoxel.children[0].material.map.image.src = 'trash/add_tr.png';
-					childVoxel.name = 'child';
+					var elems = {
+                        'parent': {
+                            width: this.imgPlusSize, height: this.imgPlusSize, path: 'trash/add.png', trPath: 'trash/add_tr.png', posX: this.mouseX, posY: this.mouseY - Math.floor(this.nodeHeight / 2)
+                        },
+                        'child': {
+                            width: this.imgPlusSize, height: this.imgPlusSize, path: 'trash/add.png', trPath: 'trash/add_tr.png', posX: this.mouseX, posY: this.mouseY + Math.floor(this.nodeHeight / 2)
+                        },
+                        //'arrow': {
+                        //    width: 30, height: 48, path: 'trash/arrow.png', posX: this.mouseX, posY: this.mouseY - 30 - Math.floor(this.nodeHeight / 2)
+                        //},
+                        'edit': {
+                            width: this.imgPlusSize, height: this.imgPlusSize, path: 'trash/edit.png', trPath: 'trash/edit_tr.png', posX: this.mouseX+this.nodeWidth/4, posY: this.mouseY + Math.floor(this.nodeHeight / 2)
+                        },
+                        'delete': {
+                            width: this.imgPlusSize, height: this.imgPlusSize, path: 'trash/delete.png', trPath: 'trash/delete_tr.png', posX: this.mouseX-this.nodeWidth/4, posY: this.mouseY + Math.floor(this.nodeHeight / 2)
+                        }
+                    };
 					
-					// arrow
-					var arrow = new THREE.Mesh(new THREE.PlaneGeometry(30, 48));
-					arrow.add(this.texture('trash/arrow.png', 30, 48));
-					arrow.position.set(this.mouseX, this.mouseY - 30 - Math.floor(height / 2), 2);
-					arrow.overdraw = true;
-					arrow.name = 'arrow';
-					arrow.visible = false;
-					//arrow.children[0].material.map.image.src = 'trash/arrow_tr.png';
-					arrow.on('click', function() {console.log('arrow click');OSX.init(cube.info);}); // Dont work! Why?!!
-					
-					
-
-					//edit
-					var editVoxel = new THREE.Mesh(new THREE.PlaneGeometry(this.imgPlusSize, this.imgPlusSize));
-					editVoxel.add(this.texture('trash/edit.png', this.imgPlusSize, this.imgPlusSize));
-					editVoxel.position.set(this.mouseX+width/4, this.mouseY + Math.floor(height / 2), 2);
-					editVoxel.matrixAutoUpdate = false;
-					editVoxel.updateMatrix();
-					editVoxel.overdraw = true;
-					//editVoxel.visible = false;
-					editVoxel.children[0].material.map.image.src = 'trash/edit_tr.png';
-					editVoxel.name = 'edit';
-					
-
-					//delete
-					var deleteVoxel = new THREE.Mesh(new THREE.PlaneGeometry(this.imgPlusSize, this.imgPlusSize));
-					deleteVoxel.add(this.texture('trash/delete.png', this.imgPlusSize, this.imgPlusSize));
-					deleteVoxel.position.set(this.mouseX-width/4, this.mouseY + Math.floor(height / 2), 2);
-					deleteVoxel.matrixAutoUpdate = false;
-					deleteVoxel.updateMatrix();
-					deleteVoxel.overdraw = true;
-					//deleteVoxel.visible = false;
-					deleteVoxel.children[0].material.map.image.src = 'trash/delete_tr.png';
-					deleteVoxel.name = 'delete';
-					
-					cube.add(this.texture('trash/polaroid.png', width*0.8, height));			// children[0]
-					//cube.add(new THREE.Mesh(new THREE.PlaneGeometry(width, height), new THREE.MeshBasicMaterial( { color: 0xe0e0e0 } )));
-					
+					cube.add(this.texture('trash/polaroid.png', this.nodeWidth*0.8, this.nodeHeight));			// children[0]					
 					
 					var minVal = -0.2;
 					var maxVal = 0.2;
@@ -174,20 +114,19 @@ define(['models/TreeNodeModel'],function(TreeModel){
 					cube.rotation.z = typeof floatVal=='undefined'?Math.round(randVal):randVal.toFixed(floatVal);
 					
 				   
-					cube.add(photo);												// children[1]
-					cube.add(this.text(l_name, f_name, b_date, d_date, this.nodeWidth, this.nodeHeight));	// children[2]
-					cube.add(parVoxel);											// children[3]
-					cube.add(childVoxel);											// children[4]
-					cube.add(arrow);												// children[5]
-					cube.add(editVoxel);												// children[6]
-					cube.add(deleteVoxel);												// children[7]
+					cube.add(photo);			// children[1]
+					cube.add(this.text(data));	// children[2]
+					
+                    for(var key in elems){
+                        cube.add(this.nodeElement(elems[key], key));
+                    }
 					cube.info = {
-						"l_name" : l_name,
-						"f_name" : f_name,
-						"b_date" : b_date,
-						"d_date" : d_date,
-						"comment" : comment,
-						"photo_url" : photo_url
+						"l_name" : data.l_name,
+						"f_name" : data.f_name,
+						"b_date" : data.b_date,
+						"d_date" : data.d_date,
+						"comment" : data.comment,
+						"photo_url" : data.photo_url
 					};
 					cube.mother;
 					cube.father;
@@ -213,84 +152,163 @@ define(['models/TreeNodeModel'],function(TreeModel){
 					}
 					return cube;
 		},
-		create_tree: function(data, id, i, nodex) {
-					//var data = JSON.parse(json);
-					if(i == 1) {//TODO f_name
-						console.log(data);
-						var node = this.create_node(data[id].l_name, data[id].f_name, data[id].b_date, data[id].d_date, data[id].comment, data[id].photo_url, this.nodeWidth, this.nodeHeight);
-						node.position.set(0, this.nodeHeight + 50, 0);
-						node.info.user_id = id;
-						node.generation = 1;
-						this.objects.push(node);
-						this.scene.add(node);
-						nodex = node;
-						if (data[id].ch_ids){
-							for(var key in data[id].ch_ids) {
-							var ch_id=(data[id].ch_ids[key]);
-							ch_node = this.create_node(data[ch_id].l_name, data[ch_id].f_name, data[ch_id].b_date, data[ch_id].d_date, data[ch_id].comment, data[ch_id].photo_url, this.nodeWidth, this.nodeHeight);
-							ch_node.position.set(0 - (this.nodeWidth*(data[id].ch_ids.length-1))/2 + this.nodeWidth*key, this.nodeHeight + 50 + this.nodeHeight +50, 0);
-							ch_node.info.user_id = ch_id;
-							ch_node.generation = -1;
-							this.objects.push(ch_node);
-							this.scene.add(ch_node);
-							lineCc = this.create_line_c(0x000000,ch_node,nodex);
-							this.scene.add(lineCc);
-							ch_node.father = nodex;
-							ch_node.lineF = lineCc;
-							nodex.lineC = lineCc;
-							nodex.child = ch_node;
-							};
-						};
-					}
-					if(i < 4) {
-						var a = i + 1;
-						if(data[id].f_id) {
-							var f_id = data[id].f_id;
-							var f_node = this.create_node(data[f_id].l_name, data[f_id].f_name, data[f_id].b_date, data[f_id].d_date, data[f_id].comment, data[f_id].photo_url, this.nodeWidth, this.nodeHeight);
-							f_node.position.set(nodex.position.x + (Math.pow((4 - i), 1.25)) * (-this.nodeWidth), (i - 1) * (-this.nodeHeight - 50), 0);
-							f_node.info.user_id = f_id;
-							this.objects.push(f_node);
-							this.scene.add(f_node);
-							lineFc = this.create_line_c(0x000000,nodex,f_node);
-							this.scene.add(lineFc);
-							nodex.father = f_node;
-							f_node.generation = i;
-							nodex.lineF = lineFc;
-							f_node.lineC = lineFc;
-							f_node.child = nodex;
-							if(i==3){
-								f_node.children[5].visible = true;
-								//f_node.children[5].children[0].material.map.image.src = 'trash/arrow.png';
-							}
-							this.create_tree(data, f_id, a, f_node);
-						};
-						if(data[id].m_id) {
-							var m_id = data[id].m_id;
-							var m_node = this.create_node(data[m_id].l_name, data[m_id].f_name, data[m_id].b_date, data[m_id].d_date, data[id].comment, data[m_id].photo_url, this.nodeWidth, this.nodeHeight);
-							m_node.position.set(nodex.position.x + (Math.pow((4 - i), 1.25)) * this.nodeWidth, (i - 1) * (-this.nodeHeight - 50), 0);
-							m_node.info.user_id = m_id;
-							this.objects.push(m_node);
-							this.scene.add(m_node);
-							lineMc = this.create_line_c(0x000000,nodex,m_node);
-							this.scene.add(lineMc);
-							nodex.mother = m_node;
-							m_node.generation = i;
-							nodex.lineM = lineMc;
-							m_node.lineC = lineMc;
-							m_node.child = nodex;
-							if(i==3){
-								m_node.children[5].visible = true;
-								//m_node.children[5].children[0].material.map.image.src = 'trash/arrow.png';
-							}
-							this.create_tree(data, m_id, a, m_node);
-						};
-					}
-			},
-		create_line_c: function(color,child,parent) {
-					var lineMat = new THREE.LineBasicMaterial({
+        nodeElement: function(elem, name){
+            var element = new THREE.Mesh(new THREE.PlaneGeometry(elem.width, elem.height));
+			element.add(this.texture(elem.path, elem.width, elem.height));
+			element.position.set(elem.posX, elem.posY, 1);
+			element.matrixAutoUpdate = false;
+			element.updateMatrix();
+			element.overdraw = true;
+			element.visible = true;
+			if (elem.trPath) element.children[0].material.map.image.src = elem.trPath;
+			element.name = name;
+            return element;
+        },
+		width_spouse_for_m: 0,
+        width_spouse_for_f: 0,
+        
+		create_tree: function(id, i, nodex) {
+			var data2 = this._model.get("tree");
+            var data = data2.tree;
+			if(i == 1) {//TODO f_name
+				var node = this.create_node(data[id]);
+				node.position.set(0, this.nodeHeight + 50, 0);
+				node.info.user_id = id;
+				node.generation = 1;
+				this.objects.push(node);
+				this.scene.add(node);
+				nodex = node;
+			}
+			if(i < 4) {
+				var a = i + 1;
+				if(data[id].f_id) {
+					var f_id = data[id].f_id;
+					var f_node = this.create_node(data[f_id]);
+					if (data[f_id].ch_ids.length == 1) f_node.position.set(nodex.position.x + (Math.pow((4 - i), 1.25)) * (-this.nodeWidth), (i - 1) * (-this.nodeHeight - 50), 0);
+                    if (data[f_id].ch_ids.length > 1){
+                        if (data[id].sex=="f"){
+                            f_node.position.set(nodex.position.x, (i - 1) * (-this.nodeHeight - 50), 0);
+                        }
+                        if (data[id].sex=="m"){
+                            var norm =(Math.pow((4 - i), 1.25)) * (this.nodeWidth);
+                            var needed = (data[f_id].ch_ids.length*(this.nodeWidth+200)); 
+                            if (norm < needed) {
+                                f_node.position.set(nodex.position.x - needed, (i - 1) * (-this.nodeHeight - 50), 0);
+                                if (i==2) this.width_spouse_for_f = needed;
+                                var dx = needed/(data[f_id].ch_ids.length - 1);
+                            } else {
+                                f_node.position.set(nodex.position.x - norm, (i - 1) * (-this.nodeHeight - 50), 0);
+                                if (i==2) this.width_spouse_for_f = norm;
+                                var dx = norm/(data[f_id].ch_ids.length - 1);
+                            }
+                            for (k=0; k < data[f_id].ch_ids.length; k++){
+                                if (data[f_id].ch_ids[k] != id){
+                                    var ch_id = data[f_id].ch_ids[k];
+                                    var ch_node = this.create_node(data[ch_id]);
+                                    ch_node.position.set(nodex.position.x - k*dx, nodex.position.y, 0);
+                                    if (data[f_id].ch_ids.length == 2) ch_node.position.set(nodex.position.x - dx, nodex.position.y, 0);
+                                    this.create_relation(0x000000,ch_node,f_node,"father","child",f_id,i-1);
+				                }                                
+                            }
+                        }                                
+                    }
+                    this.create_relation(0x000000,nodex,f_node,"father","parent",f_id,i);
+					//if(i==3){
+					//	f_node.children[5].visible = true;
+					//}
+					this.create_tree(f_id, a, f_node);
+				};
+				if(data[id].m_id) {
+					var m_id = data[id].m_id;
+					var m_node = this.create_node(data[m_id]);
+					if (data[m_id].ch_ids.length == 1) m_node.position.set(nodex.position.x + (Math.pow((4 - i), 1.25)) * this.nodeWidth, (i - 1) * (-this.nodeHeight - 50), 0);
+					if (data[m_id].ch_ids.length > 1){
+                        if (data[id].sex=="m"){
+                            m_node.position.set(nodex.position.x, (i - 1) * (-this.nodeHeight - 50), 0);
+                        }
+                        if (data[id].sex=="f"){
+                            var norm =(Math.pow((4 - i), 1.25)) * (this.nodeWidth);
+                            var needed = (data[m_id].ch_ids.length*(this.nodeWidth+200)); 
+                            if (norm < needed) {
+                                m_node.position.set(nodex.position.x + needed, (i - 1) * (-this.nodeHeight - 50), 0);
+                                if (i==2) this.width_spouse_for_m = needed;
+                                var dx = needed/(data[f_id].ch_ids.length - 1);
+                            }else{
+                                m_node.position.set(nodex.position.x + norm, (i - 1) * (-this.nodeHeight - 50), 0);
+                                if (i==2) this.width_spouse_for_m = norm;
+                                var dx = norm/(data[f_id].ch_ids.length - 1);
+                            }
+                            for (k=0; k < data[m_id].ch_ids.length; k++){
+                                if (data[m_id].ch_ids[k] != id){
+                                    var ch_id = data[m_id].ch_ids[k];
+                                    var ch_node = this.create_node(data[ch_id]);
+                                    ch_node.position.set(nodex.position.x + k*dx,nodex.position.y , 0);
+                                    if (data[m_id].ch_ids.length == 2) ch_node.position.set(nodex.position.x + dx, nodex.position.y, 0);
+        							this.create_relation(0x000000,ch_node,m_node,"mother","child",m_id,i-1);
+                                }                                
+                            }
+                        }
+                    }
+					this.create_relation(0x000000,nodex,m_node,"mother","parent",m_id,i);
+					//if(i==3){
+					//	m_node.children[5].visible = true;
+					//}
+					this.create_tree(m_id, a, m_node);
+				};
+			}
+		},
+        create_spouse: function(){
+            var data2 = this._model.get("tree");
+            var data = data2.tree;
+            var id = data[data2.id].spouse_id;
+            if (data[data2.id].sex == "m"){
+                var dx = this.width_spouse_for_m + this.nodeWidth + 600;
+            }else{
+                var dx = -this.width_spouse_for_f - this.nodeWidth - 600;
+            }
+            var node = this.create_node(data[id]);
+			for (var key in this.objects){
+			    if (this.objects[key].info.user_id == data2.id) spouse_node = this.objects[key];
+			}
+            node.position.set(spouse_node.position.x + dx, spouse_node.position.y, 0);
+			node.info.user_id = id;
+			node.generation = 1;
+			this.objects.push(node);
+			this.scene.add(node);
+			nodex = node;
+
+			if(data[id].f_id) {
+				var f_id = data[id].f_id;
+				var f_node = this.create_node(data[f_id]);
+				f_node.position.set(nodex.position.x - 300, spouse_node.position.y - this.nodeHeight - 50, 0);
+				this.create_relation(0x000000,nodex,f_node,"father","parent",f_id,2);
+			};
+			if(data[id].m_id) {
+				var m_id = data[id].m_id;
+				var m_node = this.create_node(data[m_id]);
+				m_node.position.set(nodex.position.x + 300, spouse_node.position.y - this.nodeHeight - 50, 0);
+				this.create_relation(0x000000,nodex,m_node,"mother","parent",m_id,2);
+			};
+        },
+		create_relation: function(color,child,parent,relation,adding,id,generation) {
+					
+    				if(adding == "parent"){
+    				    parent.info.user_id = id;
+                        parent.generation = generation;
+    				    this.objects.push(parent);
+    				    this.scene.add(parent);
+    				}
+                    if(adding == "child"){
+    				    child.info.user_id = id;
+                        child.generation = generation;
+                        this.objects.push(child);
+    				    this.scene.add(child);
+    				}
+                    
+                    var lineMat = new THREE.LineBasicMaterial({
 						color : color,
 						opacity : 1,
-						linewidth : 1
+						linewidth : 3
 					});
 
 					var geom = new THREE.Geometry();
@@ -299,7 +317,18 @@ define(['models/TreeNodeModel'],function(TreeModel){
 					geom.vertices.push(new THREE.Vertex(new THREE.Vector3(parent.position.x, child.position.y - 200, -10)));
 					geom.vertices.push(new THREE.Vertex(new THREE.Vector3(parent.position.x, parent.position.y, -10)));
 					line = new THREE.Line(geom, lineMat);
-					return line;
+                    
+                    this.scene.add(line);
+					parent.lineC = line;
+					parent.child = child;
+                    if (relation == "mother"){
+                        child.mother = parent;
+                        child.lineM = line;
+                    }
+                    if (relation == "father"){
+                        child.father = parent;
+                        child.lineF = line;
+                    }
 		},
 		texture: function(path, size_x, size_y) {
 					var tex = THREE.ImageUtils.loadTexture(path);
@@ -311,18 +340,18 @@ define(['models/TreeNodeModel'],function(TreeModel){
 					var item = new THREE.Mesh(new THREE.PlaneGeometry(size_x, size_y), mat);
 					return item;
 		},
-		text: function(l_name, f_name, b_date, d_date, width, height) {
+		text: function(data) {
 					var canvas = document.createElement('canvas');
-					canvas.width = width;
-					canvas.height = height;
+					canvas.width = this.nodeWidth;
+					canvas.height = this.nodeHeight;
 					var context = canvas.getContext("2d");
 					context.fillStyle = "black";
 					context.font = 'italic 22px Arial Black';
 					//TODO text align
-					context.fillText(f_name, width * 0.2, height * 0.83);
-					context.fillText(l_name, width * 0.5, height * 0.83);
-					context.fillText(b_date, width * 0.3, height * 0.9);
-					context.fillText(d_date, width * 0.55, height * 0.9);
+					context.fillText(data.f_name, this.nodeWidth * 0.2, this.nodeHeight * 0.83);
+					context.fillText(data.l_name, this.nodeWidth * 0.5, this.nodeHeight * 0.83);
+					context.fillText(data.b_date, this.nodeWidth * 0.3, this.nodeHeight * 0.9);
+					context.fillText(data.d_date, this.nodeWidth * 0.55, this.nodeHeight * 0.9);
 					var tex = new THREE.Texture(canvas);
 					tex.needsUpdate = true;
 					var mat = new THREE.MeshBasicMaterial({
@@ -330,7 +359,7 @@ define(['models/TreeNodeModel'],function(TreeModel){
 						overdraw : true
 					});
 					mat.transparent = true;
-					var item = new THREE.Mesh(new THREE.PlaneGeometry(width, height), mat);
+					var item = new THREE.Mesh(new THREE.PlaneGeometry(this.nodeWidth, this.nodeHeight), mat);
 					item.position.z = 1;
 					return item;
 		},
@@ -423,12 +452,7 @@ define(['models/TreeNodeModel'],function(TreeModel){
 							// delete node
 						}
 					}
-					/*par = intersects[1].object.parent;
-					for( j = 0; j < par.children.length; j++) {
-						if(par.children[j].name == 'child' || par.children[j].name == 'parent') {
-							par.children[j].visible = true;
-						}
-					}*/
+                    
 				} else {
 					
 				}
@@ -476,7 +500,7 @@ define(['models/TreeNodeModel'],function(TreeModel){
 						intersects[0].object.parent.position.y -= deltaY;
 						intersects[0].object.parent.redrawLine();
 					}
-
+                    
 				} else {
 					
                     if(!this.SELECTED){
@@ -632,5 +656,4 @@ define(['models/TreeNodeModel'],function(TreeModel){
 		
 	});
 	return BaseView;
-});	
-//})();
+});
