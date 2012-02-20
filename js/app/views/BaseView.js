@@ -63,7 +63,16 @@ define(['models/TreeNodeModel'],function(TreeModel){
 				this.scene.add(this.camera);
 				THREE.Object3D._threexDomEvent.camera(this.camera);
 				this.create_tree("1", 1);
+                var data2 = this._model.get("tree");
+                for (var key in this.objects){
+                    if (this.objects[key].info.user_id == data2.id) var nodeX = this.objects[key];
+                }
+                this.countChildren(this._model.get("tree").id,0);
                 this.create_spouse();
+                this.createChildren(this._model.get("tree").id, nodeX);
+                //console.log(this.objects);
+                //console.log(this._model.get("tree"));
+                //console.log(this.chWidth);
 				/*for(var key in this.objects) {
 					this.objects[key].children[0].on('dblclick', function(event) {
 						OSX.init_view(event.target.parent.info);
@@ -265,8 +274,10 @@ define(['models/TreeNodeModel'],function(TreeModel){
             var id = data[data2.id].spouse_id;
             if (data[data2.id].sex == "m"){
                 var dx = this.width_spouse_for_m + this.nodeWidth + 600;
+                if (dx < this.chWidth[data2.id]) dx = this.chWidth[data2.id] 
             }else{
                 var dx = -this.width_spouse_for_f - this.nodeWidth - 600;
+                if (dx > -this.chWidth[data2.id]) dx = -this.chWidth[data2.id]
             }
             var node = this.create_node(data[id]);
 			for (var key in this.objects){
@@ -282,13 +293,13 @@ define(['models/TreeNodeModel'],function(TreeModel){
 			if(data[id].f_id) {
 				var f_id = data[id].f_id;
 				var f_node = this.create_node(data[f_id]);
-				f_node.position.set(nodex.position.x - 300, spouse_node.position.y - this.nodeHeight - 50, 0);
+				f_node.position.set(nodex.position.x - 300, spouse_node.position.y - this.nodeHeight - 100, 0);
 				this.create_relation(0x000000,nodex,f_node,"father","parent",f_id,2);
 			};
 			if(data[id].m_id) {
 				var m_id = data[id].m_id;
 				var m_node = this.create_node(data[m_id]);
-				m_node.position.set(nodex.position.x + 300, spouse_node.position.y - this.nodeHeight - 50, 0);
+				m_node.position.set(nodex.position.x + 300, spouse_node.position.y - this.nodeHeight - 100, 0);
 				this.create_relation(0x000000,nodex,m_node,"mother","parent",m_id,2);
 			};
         },
@@ -306,6 +317,11 @@ define(['models/TreeNodeModel'],function(TreeModel){
                         this.objects.push(child);
     				    this.scene.add(child);
     				}
+                    if(adding == "spouse"){
+                        child.info.user_id = id;
+                        this.objects.push(child);
+                        this.scene.add(child);
+                    }
                     
                     var lineMat = new THREE.LineBasicMaterial({
 						color : color,
@@ -313,24 +329,112 @@ define(['models/TreeNodeModel'],function(TreeModel){
 						linewidth : 3
 					});
 
-					var geom = new THREE.Geometry();
-					geom.vertices.push(new THREE.Vertex(new THREE.Vector3(child.position.x, child.position.y, -10)));
-					geom.vertices.push(new THREE.Vertex(new THREE.Vector3(child.position.x, child.position.y - 200, -10)));
-					geom.vertices.push(new THREE.Vertex(new THREE.Vector3(parent.position.x, child.position.y - 200, -10)));
-					geom.vertices.push(new THREE.Vertex(new THREE.Vector3(parent.position.x, parent.position.y, -10)));
-					line = new THREE.Line(geom, lineMat);
+					if (adding != "spouse"){
+                        var geom = new THREE.Geometry();
+    					geom.vertices.push(new THREE.Vertex(new THREE.Vector3(child.position.x, child.position.y, -10)));
+    					geom.vertices.push(new THREE.Vertex(new THREE.Vector3(child.position.x, child.position.y - 200, -10)));
+    					geom.vertices.push(new THREE.Vertex(new THREE.Vector3(parent.position.x, child.position.y - 200, -10)));
+    					geom.vertices.push(new THREE.Vertex(new THREE.Vector3(parent.position.x, parent.position.y, -10)));
+					} else {
+                        var geom = new THREE.Geometry();
+    					geom.vertices.push(new THREE.Vertex(new THREE.Vector3(child.position.x, child.position.y, -10)));
+    					geom.vertices.push(new THREE.Vertex(new THREE.Vector3(parent.position.x, parent.position.y, -10)));
+					}
+                    line = new THREE.Line(geom, lineMat);
                     
                     this.scene.add(line);
-					parent.lineC = line;
-					parent.child = child;
+					
                     if (relation == "mother"){
+                        parent.lineC = line;
+                        parent.child = child;
                         child.mother = parent;
                         child.lineM = line;
                     }
                     if (relation == "father"){
+                        parent.lineC = line;
+                        parent.child = child;
                         child.father = parent;
                         child.lineF = line;
                     }
+		},
+        chWidth: {1: 0 },
+        countChildren: function(id,i,nodeX){
+            var data2 = this._model.get("tree");
+            var data = data2.tree;
+            var sumWidth = 0;
+            var w = this.nodeWidth + 100;
+        
+            for (var key in data[id].ch_ids){                
+                var ch_id = data[id].ch_ids[key];                
+                var width = w;
+                
+                if (data[ch_id].spouse_id) {
+                    width += w;
+                }
+                this.chWidth[ch_id] = width - 100;                
+                this.countChildren(ch_id);
+            }
+            for (var key in data[id].ch_ids){                
+                sumWidth += this.chWidth[data[id].ch_ids[key]];
+            }
+            if (this.chWidth[id] < sumWidth){
+                this.chWidth[id] = sumWidth;
+            }
+        },
+        createChildren: function(id, nodex) {
+			var data2 = this._model.get("tree");
+            var data = data2.tree;
+            var dx = 0;
+            
+            if (data[id].ch_ids){
+                for (var key in data[id].ch_ids){
+                    var ch_id = data[id].ch_ids[key];
+                    var chNode = this.create_node(data[ch_id]);
+                    
+                    for (i=0; i<=key; i++){
+                        dx += this.chWidth[data[id].ch_ids[i]];
+                    }
+                    for (var k in this.objects){
+                        if (this.objects[k].info.user_id == data[nodex.info.user_id].spouse_id) var spNodex = this.objects[k];
+                    }
+                    if (data[id].ch_ids.length != 1){
+                        if (data[nodex.info.user_id].sex == "m"){
+                            if (key == 0){
+                                chNode.position.set(nodex.position.x, nodex.position.y + 100 + this.nodeHeight, 0);
+                            }else{                            
+                                chNode.position.set(nodex.position.x + dx - 100, nodex.position.y + 100 + this.nodeHeight, 0);
+                            }
+                        } else if (data[nodex.info.user_id].sex == "f"){
+                            if (key == 0){
+                                chNode.position.set(nodex.position.x, nodex.position.y + 100 + this.nodeHeight, 0);
+                            }else{
+                                chNode.position.set(nodex.position.x - dx + 100, nodex.position.y + 100 + this.nodeHeight, 0);
+                            }
+                        }
+                    } else {
+                        chNode.position.set((nodex.position.x + spNodex.position.x)/2, nodex.position.y + 100 + this.nodeHeight, 0);
+                    }
+                    
+                    if (data[ch_id].spouse_id){
+                        var chSpNode = this.create_node(data[data[ch_id].spouse_id]);
+                        
+                        if (data[data[ch_id].spouse_id].sex == "m"){
+                            chSpNode.position.set(chNode.position.x - this.chWidth[ch_id], chNode.position.y, 0);
+                        } else {
+                            chSpNode.position.set(chNode.position.x + this.chWidth[ch_id], chNode.position.y, 0);
+                        }
+                        this.create_relation(0x000000,chSpNode,chNode,"","spouse",data[ch_id].spouse_id,1);
+                    }
+                    if (data[nodex.info.user_id].sex == "m"){
+                        this.create_relation(0x000000,chNode,nodex,"father","child",ch_id,1);
+                        this.create_relation(0x000000,chNode,spNodex,"mother","",ch_id,1);
+                    }else if (data[nodex.info.user_id].sex == "f"){
+                        this.create_relation(0x000000,chNode,nodex,"mother","child",ch_id,1);
+                        this.create_relation(0x000000,chNode,spNodex,"father","",ch_id,1);
+                    }
+                    this.createChildren(ch_id, chNode);
+                }
+            }
 		},
 		texture: function(path, size_x, size_y) {
 					var tex = THREE.ImageUtils.loadTexture(path);
