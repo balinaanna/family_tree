@@ -1,4 +1,4 @@
-define(['views/BaseView','models/BaseModel'], function(BaseView, BaseModel){
+define(['views/BaseView1','models/BaseModel'], function(BaseView, BaseModel){
     return Backbone.Router.extend({
 		
 	initialize : function (options) {
@@ -12,12 +12,13 @@ define(['views/BaseView','models/BaseModel'], function(BaseView, BaseModel){
         WebApp : function () {
             $(document).ready(function(){
         	this.el = $('#home');
+        	$.ajaxSetup({cache:false});
         	$.ajax({
 					url: "/server/api/login",
 					type: "POST",
 					data: {
-						email: "mail@sss.com",
-						pass: "12345"
+						email: "email@com.com",
+						pass: "pass"
 					},
 					success : function(data) {
 						console.log(data);
