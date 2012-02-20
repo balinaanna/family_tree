@@ -47,6 +47,8 @@ define(['models/TreeNodeModel'],function(TreeModel){
 				},this)
 			});
 			$('#navigator').on("click", "div", $.proxy(this.navigation, this));
+			$('#navigator').on('mousemove', function(){$('#navigator').css('opacity', '0.7');});
+			$('#navigator').on('mouseout', function(){$('#navigator').css('opacity', '0.3');});
 				
 				this.container = document.createElement('div');
 				//this.el.append($("#navigator"));
@@ -469,10 +471,55 @@ define(['models/TreeNodeModel'],function(TreeModel){
 
 				if( intersects.length > 0 ) {
 					this.container.style.cursor = 'pointer';
+					
+					hint = false;
+					for(i = 0; i < intersects.length; i++)
+					{
+						switch (intersects[i].object.name) 
+						{
+							case 'child':
+								hint = true;
+								$('#hint').css('left',event.clientX);
+								$('#hint').css('top',event.clientY-40);
+								$('#hint').html('Add child');
+								$('#hint').css('opacity','0.7');
+								break;
+							case 'parent':
+								hint = true;
+								$('#hint').css('left',event.clientX);
+								$('#hint').css('top',event.clientY-40);
+								$('#hint').html('Add parent');
+								$('#hint').css('opacity','0.7');
+								break;
+							case 'edit':
+								hint = true;
+								$('#hint').css('left',event.clientX);
+								$('#hint').css('top',event.clientY-40);
+								$('#hint').html('Edit');
+								$('#hint').css('opacity','0.7');
+								break;
+							case 'delete':
+								hint = true;
+								$('#hint').css('left',event.clientX);
+								$('#hint').css('top',event.clientY-40);
+								$('#hint').html('Delete');
+								$('#hint').css('opacity','0.7');
+								break;
+							default:
+								if(hint == false)
+								{
+									$('#hint').css('left',-100);
+									$('#hint').css('top',-100);
+									$('#hint').css('opacity','0');
+								}
+								break;
+						}
+					}
+					
 					if(intersects.length >1)
 					{
 						par = intersects[1].object.parent;
-						for( j = 0; j < par.children.length; j++) {
+						for( j = 0; j < par.children.length; j++) {						
 							if(par.children[j].name == 'child') {
 								//par.children[j].visible = true;
 								par.children[j].children[0].material.map.image.src = 'trash/add.png';
@@ -502,6 +549,9 @@ define(['models/TreeNodeModel'],function(TreeModel){
 					}
                     
 				} else {
+					$('#hint').css('opacity','0');
+					$('#hint').css('left',-100);
+					$('#hint').css('top',-100);
 					
                     if(!this.SELECTED){
                         for( i = 0; i < this.objects.length; i++) {
@@ -518,6 +568,10 @@ define(['models/TreeNodeModel'],function(TreeModel){
 								}else if(this.objects[i].children[j].name == 'delete') {
 									//par.children[j].visible = true;
 									this.objects[i].children[j].children[0].material.map.image.src = 'trash/delete_tr.png';
+								}
+								else
+								{
+									
 								}
     						}
     					}
