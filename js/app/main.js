@@ -26,6 +26,9 @@ require([ 'router',
 	'order!../libs/jquery-ui-1.8.17.custom.min',
 	'order!../libs/tinymce/jscripts/tiny_mce/tiny_mce',
 	'order!js/libs/jquery.simplemodal.js',
+	'order!js/libs/jquery.imgareaselect.pack.js',
+	'order!js/libs/upclick.js',
+	'order!js/libs/popups.js',
 	'order!js/libs/osx.js'], function(Router){
 	$(document).ready(function(){
 		var router = new Router();

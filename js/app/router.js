@@ -1,4 +1,4 @@
-define(['views/BaseView1','models/BaseModel'], function(BaseView, BaseModel){
+define(['views/BaseView','models/BaseModel'], function(BaseView, BaseModel){
     return Backbone.Router.extend({
 		
 	initialize : function (options) {
@@ -12,7 +12,7 @@ define(['views/BaseView1','models/BaseModel'], function(BaseView, BaseModel){
         WebApp : function () {
             $(document).ready(function(){
         	this.el = $('#home');
-        	$.ajaxSetup({cache:false});
+        	/*$.ajaxSetup({cache:false});
         	$.ajax({
 					url: "/server/api/login",
 					type: "POST",
@@ -23,7 +23,7 @@ define(['views/BaseView1','models/BaseModel'], function(BaseView, BaseModel){
 					success : function(data) {
 						console.log(data);
 						}
-				});
+				});*/
 		this._currentController = new BaseView({el: this.el});
 		this._currentController.animate();
 	    });

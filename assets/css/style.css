@@ -4,13 +4,20 @@
 	height: 410px;
 	/*background-color: #aaaaaa;*/
 	background-color: transparent;
+	opacity: 0.3;
+	border:1px solid #fff;
+    box-shadow: 0 0 5px 2px #1A3457;
+    -webkit-box-shadow: 0 0 5px 2px #1A3457; /* Safari, Chrome */
+    -moz-box-shadow: 0 0 5px 2px #1A3457; /* Firefox */
+    margin: 0 auto;
+	padding: 3 5 3 5;
 }
 	
 .circle {
     float: left;
     margin: 10px;
     text-align: center;
-    color: blue;
+    color: #505050;
     font-family: Helvetica;
     font-weight: 900;
     background-color: #fff;
@@ -29,6 +36,11 @@
     content: '';
     cursor: pointer;
 }
+.circle img{
+	position:absolute;
+	top: -4px;
+	left: -4px;
+}
 .arrow{
 	position:absolute;
 	width: 0;
@@ -36,7 +48,7 @@
 	left: 3px;
 	border-top: 10px solid transparent;
 	border-bottom: 10px solid transparent; 
-	border-right:10px solid blue;
+	border-right:10px solid #505050;
 }
 .arrow-right {
 	-webkit-transform:rotate(180deg);
@@ -86,6 +98,7 @@
 	left: 30px;
 	top: 110px;
 }
+
 #minus{
 	position: absolute;
 	left: 30px;
@@ -241,4 +254,20 @@ table.pop_up {
 	height: 10px;
 	background: #ffffff url(notifications/delete_categoriesBtt.gif)
 		no-repeat 80% 100%;
+}
+
+#hint{
+    border:1px solid #fff;
+    border-radius:5px;
+    -webkit-border-radius:5px; /* Safari, Chrome */
+    -moz-border-radius:5px; /* Firefox */
+    box-shadow: 0 0 5px 2px #1A3457;
+    -webkit-box-shadow: 0 0 5px 2px #1A3457; /* Safari, Chrome */
+    -moz-box-shadow: 0 0 5px 2px #1A3457; /* Firefox */
+    background: #000;
+    text-align: center;
+    margin: 0 auto;
+	padding: 3 5 3 5;
+	color: #fff;
+    opacity: 0;
 }
