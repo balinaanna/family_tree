@@ -111,12 +111,12 @@ var OSX = {
 							$('#about').html(user_data.info.comment);
 							if(user_data.info.photo_url != '')
 							{
-								$('#photo').attr('src','trash/avatars/'+user_data.info.photo_url);
+								$('#photo').attr('src','assets/images/uploaded/avatars/'+user_data.info.photo_url);
 								if(user_data.info.photo_url != 'no_avatar.jpg')
 								{
 									$('#text_image').attr('style','display: block');
-									$('#photo_native_size').attr('src','trash/avatars/'+user_data.info.photo_url);
-									initImgCrop('trash/avatars/'+user_data.info.photo_url);
+									$('#photo_native_size').attr('src','assets/images/uploaded/avatars/'+user_data.info.photo_url);
+									initImgCrop('assets/images/uploaded/avatars/'+user_data.info.photo_url);
 								}
 							}
 							else
@@ -128,8 +128,8 @@ var OSX = {
 						{
 							$('#text_image').attr('style','display: none');
 							$('#data_table').attr('style','height: 495px;');
-							$('#photo').attr('src','trash/avatars/no_avatar.jpg');
-							$('#photo_native_size').attr('src','trash/avatars/no_avatar.jpg');
+							$('#photo').attr('src','assets/images/uploaded/avatars/no_avatar.jpg');
+							$('#photo_native_size').attr('src','assets/images/uploaded/avatars/no_avatar.jpg');
 						}
 						upclick({
 							element: upload_input,

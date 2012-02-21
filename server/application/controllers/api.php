@@ -238,7 +238,7 @@ class Api extends CI_Controller {
 		//$json_response = '{"path": "123.jpg", "x1": "1", "x2": "101", "y1": "1", "y2": "101"}';
 		$value = (object)$_REQUEST;
 		$image = $this->image_model;
-		$image->source_file = "..".$value->photo_url;
+		$image->source_file = "../".$value->photo_url;
 		$image->returnType = 'array';
 		$value->x1 = ceil($value->x1);
 	    $value->x2 = ceil($value->x2);
