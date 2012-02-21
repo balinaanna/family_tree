@@ -779,7 +779,6 @@ define(['models/TreeNodeModel'],function(TreeModel){
 		},
 		submitFunc: function(event){
 			event.preventDefault();
-			
 			var h = $('#dp').height();
 			var w = $('#dp').width();
 			var scale = 1;
@@ -793,7 +792,7 @@ define(['models/TreeNodeModel'],function(TreeModel){
 			}
 			
 			$.ajax({
-				url: 'save_person.php',
+				url: 'server/api/crop_photo',
 				dataType: 'json',
 				data: {
 					'user_id': $('#user_id').val(),
@@ -809,9 +808,10 @@ define(['models/TreeNodeModel'],function(TreeModel){
 					'h': $('#h').val()*scale,
 					'photo_url' : $('#photo').attr('src'),
 					'comment' : $('#about').val()
-					},
-				success: function(){
+				},
+				success: function(response){
 					//update photo
+					console.log(response);
 					showPopup('show-popup','green','Saved', 2000);
 				}
 			});

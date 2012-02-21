@@ -55,14 +55,14 @@ class Image_model extends CI_Model {
 	public $duplicates		= 'o'; 			// u = make unique / o = overwrite / e = error / a = abort
 	
 	// UPLOAD FUNCTION
-	public $uploadTo		= 'assets/images/uploaded/';	// folder to upload to (relative to calling document)
+	public $uploadTo		= '../assets/images/uploaded/avatars/';	// folder to upload to (relative to calling document)
 	
 	// RESIZE FUNCTION
 	public $source_file 	= '';			// source file to resize
 	public $newWidth 		= '';			// new image width - e.g. '200' = 200 pixels
 	public $newHeight 		= '';			// new image height - e.g. '200' = 200 pixels
 	public $namePrefix 		= '';			// prefix the resized file
-	public $newPath 		= '';			// path to save the new resized file
+	public $newPath 		= '../assets/images/uploaded/avatars/thumbs';			// path to save the new resized file
 	public $aspectRatio 	= 'true';		// keep the aspect ratio - true | false
 	public $oversize 		= 'false';		// resize to fill space - this can cause oversized images but will fill the frame created by w/h supplied - true | false
 	public $padToFit 		= 'true';		// pad the image with the pad colour to fit the new image dimensions - true | false

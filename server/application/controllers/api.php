@@ -19,12 +19,16 @@ class Api extends CI_Controller {
 		echo json_encode($json);
 	}
 	
-	public function get_tree() {
-			
+	public function get_tree() {		
 		$result = $this->db->query('SELECT  b.* FROM profile_data b
 										WHERE b.user_id="'.$this->session->userdata('user_id').'"
+										ORDER BY b.id
 							    ');
-		$db_result = $result->result();	
+		$db_result = $result->result();
+
+		$session_data = array('prof_id'  => $db_result[0]->user_id);
+		$this->session->set_userdata($session_data);
+
 		//echo json_encode($db_result);
 		$tree1 = array();
 		foreach ($db_result as $key => $value){
@@ -51,14 +55,17 @@ class Api extends CI_Controller {
 		$pass=md5(md5(addslashes($_REQUEST['pass'])));
 		if(isset($_REQUEST['autologin'])){$autologin=addslashes(base64_decode($_REQUEST['autologin']));}
 		if(!$pass){$pass=$autologin;}
-		/*$result = $this->db->query('SELECT b.*, a.pass, a.id as user_id FROM users a, profile_data b
+		/*
+		$result = $this->db->query('SELECT b.*, a.pass, a.id as user_id FROM users a, profile_data b
 										WHERE a.prof_id=b.id AND a.email="'.$email.'" AND a.pass="'.$pass.'"
 									UNION
 									SELECT  b.*, a.pass, a.id as user_id FROM users a, profile_data b
 										WHERE b.user_id=a.id AND a.email="'.$email.'" AND a.pass="'.$pass.'"
-							    ');*/
+							    ');
+		*/
 		$result = $this->db->query('SELECT a.pass, a.id as user_id FROM users a
 										WHERE a.email="'.$email.'" AND a.pass="'.$pass.'"
+										LIMIT 1
 							    ');
 		$db_result = $result->result();
 		if($db_result) {
@@ -69,7 +76,7 @@ class Api extends CI_Controller {
 			
 			$session_data = array(
 			    'user_id'  => $db_result[0]->user_id,
-			    'prof_id'  => $json->id,
+			    //'prof_id'  => $json->id,
 			    'pass'     => $db_result[0]->pass
 			);
 			$this->session->set_userdata($session_data);
@@ -208,33 +215,35 @@ class Api extends CI_Controller {
 	}
 
 	public function save_photo() {
-		$value = json_decode($json_response); // ?
+		$value = (object)$_REQUEST; // ?
 		$image = $this->image_model;
-		$image->uploadTo = '';
 		$image->returnType = 'array';
-		$img = $image->upload($_FILES['photo']);
+		$image->newName = $value->user_id;
+		$img = $image->upload($_FILES['Filedata']);
 
 		$json->action = "save_photo";
 	    $json->status = "1";
-	    $json->response = $img['image']; // $img['path'] ?
+	    $json->response = $img['image']; 
 	    echo json_encode($json);
 	}
 
 	public function crop_photo() {
 		//$json_response = '{"path": "123.jpg", "x1": "1", "x2": "101", "y1": "1", "y2": "101"}';
-		$value = json_decode($json_response);
+		$value = (object)$_REQUEST;
 		$image = $this->image_model;
-		$image->source_file = $value->path;
-		$image->newPath = 'thumbs/';
+		$image->source_file = "..".$value->photo_url;
 		$image->returnType = 'array';
+		$value->x1 = ceil($value->x1);
+	    $value->x2 = ceil($value->x2);
+	    $value->y1 = ceil($value->y1);
+	    $value->y2 = ceil($value->y2);
 		$width = $value->x2 - $value->x1;
 		$height = $value->y2 - $value->y1;
-		$myImage->namePrefix = 'thumb_';
-		$img = $image->crop($width,$height,$value->x1,$value->y1);
+		$img = $image->crop($width, $height, (-1)*$value->x1, (-1)*$value->y1);
 
 		$json->action = "crop_photo";
 	    $json->status = "1";
-	    $json->response = $img['prefix'].$img['image']; // $img['prefix'] ??
+	    $json->response = $img['image'];
 	    echo json_encode($json);
 	}
 }

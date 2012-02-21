@@ -133,7 +133,7 @@ var OSX = {
 						}
 						upclick({
 							element: upload_input,
-							action: 'upload_img.php',
+							action: 'server/api/save_photo',
 							action_params: {'user_id': $('#user_id').val(), 'login_name': 'new'},/* change login !!! */
 							onstart:
 								function(filename)
@@ -144,10 +144,10 @@ var OSX = {
 								function(response) 
 								{
 									resp = JSON.parse(response);
-									if(resp.success)
+									if(resp.status)
 									{
-										$('#photo').attr('src','trash/avatars/'+resp.photo_url);
-										$('#photo_native_size').attr('src','trash/avatars/'+resp.photo_url);
+										$('#photo').attr('src','/assets/images/uploaded/avatars/'+resp.response);
+										$('#photo_native_size').attr('src','/assets/images/uploaded/avatars/'+resp.response);
 										$('#text_image').attr('style','display: block');
 										$('.imgareaselect-outer').attr('style','display:none;');
 										$('.body div').each(function(index){
@@ -157,7 +157,7 @@ var OSX = {
 												this.style.width = 0;
 											}				
 										});										
-										initImgCrop('trash/avatars/'+resp.photo_url);
+										initImgCrop('/assets/images/uploaded/avatars/'+resp.response);
 									}
 									else
 									{
