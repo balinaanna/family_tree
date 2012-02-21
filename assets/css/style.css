@@ -30,9 +30,9 @@
         0 0 0 6px #999,
         0px 1px 1px 7px #bbb;
     box-shadow:
-        0 0 0 5px #fff,
-        0 0 0 6px #999,
-        0px 1px 1px 7px #bbb;
+        0 0 0 4px #fff,
+        0 0 0 5px #999,
+        1px 1px 1px 1px #bbb;
     content: '';
     cursor: pointer;
 }
@@ -94,12 +94,14 @@
 	
 }
 #plus{
+	background-image: url(../pic/slider_btn_zoom_in.png);
 	position: absolute;
 	left: 30px;
 	top: 110px;
 }
 
 #minus{
+	background-image: url(../pic/slider_btn_zoom_out.png);
 	position: absolute;
 	left: 30px;
 	top: 370px;
