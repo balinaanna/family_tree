@@ -25,6 +25,10 @@ class Api extends CI_Controller {
 		echo json_encode($json);
 	}
 	
+	public function logout(){
+		$this->session->sess_destroy();
+	}
+	
 	public function get_tree() {		
 		$result = $this->db->query('SELECT  b.* FROM profile_data b
 										WHERE b.user_id="'.$this->session->userdata('user_id').'"
