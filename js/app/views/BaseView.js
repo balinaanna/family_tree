@@ -222,7 +222,7 @@ define(['models/TreeNodeModel'],function(TreeModel){
                                     var ch_node = this.create_node(data[ch_id]);
                                     ch_node.position.set(nodex.position.x - k*dx, nodex.position.y, 0);
                                     if (data[f_id].ch_ids.length == 2) ch_node.position.set(nodex.position.x - dx, nodex.position.y, 0);
-                                    this.create_relation(0x000000,ch_node,f_node,"father","child",f_id,i-1);
+                                    this.create_relation(0x000000,ch_node,f_node,"father","child",ch_id,i-1);
 				                }                                
                             }
                         }                                
@@ -259,7 +259,7 @@ define(['models/TreeNodeModel'],function(TreeModel){
                                     var ch_node = this.create_node(data[ch_id]);
                                     ch_node.position.set(nodex.position.x + k*dx,nodex.position.y , 0);
                                     if (data[m_id].ch_ids.length == 2) ch_node.position.set(nodex.position.x + dx, nodex.position.y, 0);
-        							this.create_relation(0x000000,ch_node,m_node,"mother","child",m_id,i-1);
+        							this.create_relation(0x000000,ch_node,m_node,"mother","child",ch_id,i-1);
                                 }                                
                             }
                         }
