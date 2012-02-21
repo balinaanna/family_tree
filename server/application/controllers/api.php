@@ -13,9 +13,15 @@ class Api extends CI_Controller {
 	}
 	
 	public function index()	{
-		$json->action = "index.html";
-		$json->status = "0";
-		$json->message = "no action";
+		if($this->session->userdata('user_id')){
+			$json->action = "index.html";
+			$json->status = "1";
+			$json->message = "no action";
+		}else{
+			$json->action = "index.html";
+			$json->status = "0";
+			$json->message = "no action";
+		}
 		echo json_encode($json);
 	}
 	

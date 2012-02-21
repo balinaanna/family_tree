@@ -20,6 +20,7 @@
 
 	</head>
 	<body class="body">
+		<div id="home">
 		<div id="navigator" style="position:absolute; z-index: 100;">
 			<div class="circle arrow-up">
 				<div id="arrowup" class="arrow"></div>
@@ -34,14 +35,14 @@
 				<div id="arrowdown" class="arrow"></div>
 			</div>
 			<div id="plus" class="circle">
-				<img src="assets/pic/slider_btn_zoom_in.png"/>
+				
 			</div>
 			<div id="slider"></div>
 			<div id="minus" class="circle">
-				<img src="assets/pic/slider_btn_zoom_out.png"/>
+				
 			</div>
 		</div>
-		<div id="home">
+		
 		<div id="hint" style="position: absolute; z-index: 100;"></div>
 		<div id="osx-modal-content">
 			<div id="osx-modal-title">
@@ -158,6 +159,14 @@
 				</div>
 			</div>
 		</div>
+		</div>
+		<div id="loginform">
+			<input type="email" id="email" name="email" placeholder="email" /><br/>
+			<input type="password" id="pass" name="pass" placeholder="password" /><br/>
+			<input type="button" id="login" value="Login" /><br/>
+			<label>Or</label><br/>
+			<input type="button" id="register" value="Register" />
+			<div id="infmessage"></div>
 		</div>
 	</body>
 </html>
