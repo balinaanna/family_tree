@@ -161,17 +161,24 @@ class Api extends CI_Controller {
 	}
 	
 	public function save_node() {
-	    //$json_response='{"1":{"l_name":"ffff","b_date":"123","d_date":"456","f_id":"2","m_id":"3","about":"Lorem ipsum dolor sit amet..."}}';
-	    print_r($_REQUEST['json_response']);
-	    $data = json_decode($_REQUEST['json_response']);
-		print_r($data);
-	    foreach($data as $key => $value){
-		$this->db->query('UPDATE `profile_data` SET  `'.$key.'`= "'.$data->$key.'"
-											    
-						    WHERE `id`="'.$data->id.'" AND
+	    $value = (object)$_REQUEST;
+		$this->db->query('UPDATE `profile_data` SET  `f_id`= "'.$value->f_id.'",
+											    `m_id`= "'.$value->m_id.'",
+											    `ch_ids`= "'.$value->ch_ids.'",
+											    `spouse_id`= "'.$value->spouse_id.'",
+											    `f_name`= "'.$value->f_name.'",
+											    `l_name`= "'.$value->l_name.'",
+											    `b_date`= "'.$value->b_date.'",
+											    `d_date`= "'.$value->d_date.'",
+											    `sex`= "'.$value->sex.'",
+											    `photo_url`= "'.$value->photo_url.'",
+											    `comment`= "'.$value->comment.'"
+						    WHERE `id`="'.$value->user_id.'" AND
 							       `user_id`="'.$this->session->userdata('user_id').'"
 					    ');
-	    }
+		if($value->crop) {
+			$json->crop = $this->crop_photo();
+		}
 	    $json->action = "save_node";
 	    $json->status = "1";
 	    echo json_encode($json);
@@ -244,6 +251,6 @@ class Api extends CI_Controller {
 		$json->action = "crop_photo";
 	    $json->status = "1";
 	    $json->response = $img['image'];
-	    echo json_encode($json);
+	    return json_encode($json);
 	}
 }

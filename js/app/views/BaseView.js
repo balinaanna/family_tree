@@ -792,7 +792,7 @@ define(['models/TreeNodeModel'],function(TreeModel){
 			}
 			
 			$.ajax({
-				url: 'server/api/crop_photo',
+				url: 'server/api/save_node',
 				dataType: 'json',
 				data: {
 					'user_id': $('#user_id').val(),
