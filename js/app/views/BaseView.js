@@ -65,7 +65,7 @@ define(['models/TreeNodeModel'],function(TreeModel){
 				this.camera.position.y = 150;
 				this.camera.position.z = 1500;
 				this.scene.add(this.camera);
-				THREE.Object3D._threexDomEvent.camera(this.camera);
+				//THREE.Object3D._threexDomEvent.camera(this.camera);
 				this.create_tree("1", 1);
                 var data2 = this._model.get("tree");
                 for (var key in this.objects){
