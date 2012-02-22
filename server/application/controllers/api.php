@@ -227,10 +227,21 @@ class Api extends CI_Controller {
 						    	WHERE `id`="'.$last_id->id.'" AND
 							       	  `user_id`="'.$this->session->userdata('user_id').'"
 					    	');
-			// $json->crop = $this->crop_photo($value); // If custom width & height
-		}
-		if($value->crop) {	// If photo was croped ( $value->x2!=0 ???? )
-			$json->crop = $this->crop_photo($value);
+			// CUSTOM WIDTH && HEIGHT !!!!
+
+			$image = $this->image_model;
+			$image->source_file = "../".$value->photo_url;
+			$image->returnType = 'array';
+			$value->x1 = (-1)*ceil($value->x1);	
+	  		$value->y1 = (-1)*ceil($value->y1);
+			$width = 300;
+			$height = 300;
+			$img = $image->crop($width, $height, $value->x1, $value->y1);
+
+			$crop->action = "crop_photo";
+	    	$crop->status = "1";
+	    	$crop->response = $img['image'];
+	    	$json->crop = $crop;
 		}
 	    $json->action = "add_node";
 	    $json->status = "1";
@@ -261,21 +272,4 @@ class Api extends CI_Controller {
 	    echo json_encode($json);
 	}
 
-	public function crop_photo($value = (object)$_REQUEST) {
-		$image = $this->image_model;
-		$image->source_file = "../".$value->photo_url;
-		$image->returnType = 'array';
-		$value->x1 = ceil($value->x1);
-	    $value->x2 = ceil($value->x2);
-	    $value->y1 = ceil($value->y1);
-	    $value->y2 = ceil($value->y2);
-		$width = $value->x2 - $value->x1; // Set to some value
-		$height = $value->y2 - $value->y1; // Set to some value
-		$img = $image->crop($width, $height, (-1)*$value->x1, (-1)*$value->y1);
-
-		$json->action = "crop_photo";
-	    $json->status = "1";
-	    $json->response = $img['image'];
-	    return json_encode($json);
-	}
 }
