@@ -208,11 +208,10 @@ class Api extends CI_Controller {
 	
 	public function add_node() {
 	    $value = (object)$_REQUEST;
-	    $photo = ($value->upload) ? pathinfo($value->photo_url) : array('basename' => 0);
-	    $last_id = $this->db->query('INSERT INTO `profile_data`(`user_id`, `id`, `f_id`, `m_id`, `ch_ids`, `spouse_id`, `f_name`, `l_name`, `b_date`, `d_date`, `sex`, `photo_url`, `comment`)
+	    $photo = (!isset($value->upload)) ? pathinfo($value->photo_url) : array('basename' => 0);
+	    $this->db->query('INSERT INTO `profile_data`(`user_id`, `f_id`, `m_id`, `ch_ids`, `spouse_id`, `f_name`, `l_name`, `b_date`, `d_date`, `sex`, `photo_url`, `comment`)
 				    	    VALUES (
 					    		"'.$this->session->userdata('user_id').'",
-					    		"'.$value->id.'",
 								"'.$value->f_id.'",
 							    "'.$value->m_id.'",
 								"'.addslashes(json_encode($value->ch_ids)).'",
@@ -225,24 +224,26 @@ class Api extends CI_Controller {
 								"'.$photo['basename'].'",
 								"'.$value->comment.'"
 							);
-							SELECT * FROM `profile_data` 
-								WHERE `user_id` = "'.$this->session->userdata('user_id').'"" 
-								ORDER BY id DESC 
-								LIMIT 1;
+						');
+		$lastid = $this->db->query('SELECT * FROM `profile_data` 
+								WHERE `user_id` = "'.$this->session->userdata('user_id').'"
+								ORDER BY `id` DESC LIMIT 1;
 					    ');
-		$last_id = $last_id->result();
-		if($value->upload) { // If UPLOAD ( save_photo() ) return success
-			rename("..".$value->photo_url, "../assets/images/uploaded/avatars/".$last_id->id.$photo['extension']);
-			$value->photo_url = "../assets/images/uploaded/avatars/".$last_id->id.$photo['extension'];
+		$last_id = $lastid->result();
+		$last_id = $last_id[0];
+		if(!isset($value->upload)) { // If UPLOAD ( save_photo() ) return success
+			//print_r();
+			rename(BASEPATH."../..".$value->photo_url, BASEPATH."../../assets/images/uploaded/avatars/".$last_id->id.".".$photo['extension']);
+			$value->photo_url = "../assets/images/uploaded/avatars/".$last_id->id.".".$photo['extension'];
 			$this->db->query('UPDATE `profile_data`
-								SET `photo_url`= "'.$last_id->id.$photo['extension'].'"
+								SET `photo_url`= "'.$last_id->id.".".$photo['extension'].'"
 						    	WHERE `id`="'.$last_id->id.'" AND
 							       	  `user_id`="'.$this->session->userdata('user_id').'"
 					    	');
 			// CUSTOM WIDTH && HEIGHT !!!!
 
 			$image = $this->image_model;
-			$image->source_file = "../".$value->photo_url;
+			$image->source_file = BASEPATH."../".$value->photo_url;
 			$image->returnType = 'array';
 			$value->x1 = (-1)*ceil($value->x1);	
 	  		$value->y1 = (-1)*ceil($value->y1);
