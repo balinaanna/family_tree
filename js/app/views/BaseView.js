@@ -806,6 +806,11 @@ define(['models/TreeNodeModel'],function(TreeModel){
 					'y2': $('#y2').val()*scale,
 					'w': $('#w').val()*scale,
 					'h': $('#h').val()*scale,
+					'f_id' : '1',
+					'm_id' : '1',
+					'ch_ids' : '[]',
+					'spouse_id' : '1',
+					'sex' : 'm',
 					'photo_url' : $('#photo').attr('src'),
 					'comment' : $('#about').val(),
 					'crop' : true

@@ -187,7 +187,19 @@ class Api extends CI_Controller {
 							       `user_id`="'.$this->session->userdata('user_id').'"
 					    ');
 		if($value->crop) {
-			$json->crop = $this->crop_photo();
+			$image = $this->image_model;
+			$image->source_file = "../".$value->photo_url;
+			$image->returnType = 'array';
+			$value->x1 = (-1)*ceil($value->x1);	
+	  		$value->y1 = (-1)*ceil($value->y1);
+			$width = 300;
+			$height = 300;
+			$img = $image->crop($width, $height, $value->x1, $value->y1);
+
+			$crop->action = "crop_photo";
+	    	$crop->status = "1";
+	    	$crop->response = $img['image'];
+	    	$json->crop = $crop;
 		}
 	    $json->action = "save_node";
 	    $json->status = "1";
