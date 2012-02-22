@@ -17,7 +17,7 @@ define([],function(){
 		},
 				
 		initialize: function(){
-		this.on("change", function(model, key, atribute){
+		/*this.on("change", function(model, key, atribute){
                 console.log(model);
                 console.log(model.id);
                 console.log(model.changedAttributes());
@@ -34,7 +34,7 @@ define([],function(){
 						}
 				});
             });
-			
+			*/
 		},
 		update: function(key, data){
 			this.set({key: data});

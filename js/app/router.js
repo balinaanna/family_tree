@@ -9,11 +9,9 @@ define(['views/BaseView', 'models/BaseModel'], function(BaseView, BaseModel) {
 		},
 
 		WebApp : function() {
-			// $(document).ready(function(){
+			//$.ajaxSetup({cache:false});
 			$('#home').hide();
 			$('#loginform').hide();
-			//this.el = $('#home');
-			//$.ajaxSetup({cache:false});
 			$('#register').on("click", function() {
 				$.ajax({
 					url : "/server/api/reg",
@@ -27,9 +25,11 @@ define(['views/BaseView', 'models/BaseModel'], function(BaseView, BaseModel) {
 						var resp = JSON.parse(data);
 						if(resp.status == "1") {
 							console.log(data);
+							$('#infmessage').html(resp.message);
 						}
 						if(resp.status == "0") {
 							console.log(data);
+							$('#infmessage').html(resp.message);
 						}
 					}
 				});

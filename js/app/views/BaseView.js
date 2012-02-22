@@ -98,7 +98,7 @@ define(['models/TreeNodeModel'],function(TreeModel){
 					var cube = new THREE.Object3D();
 					// TODO coords
 					if(data.photo_url == "" || data.photo_url == null){data.photo_url = "no_avatar.jpg"};
-					var photo = this.texture('assets/images/uploaded/avatars/thumbs/'+data.photo_url, 235, 235);
+					var photo = this.texture('trash/avatars/'+data.photo_url, 235, 235);
 					photo.position.set(0, 30, 1);
 					this.container.style.background = "url('trash/back_11111.jpg')";
 					
@@ -807,12 +807,10 @@ define(['models/TreeNodeModel'],function(TreeModel){
 					'w': $('#w').val()*scale,
 					'h': $('#h').val()*scale,
 					'photo_url' : $('#photo').attr('src'),
-					'comment' : $('#about').val(),
-					'crop' : true
+					'comment' : $('#about').val()
 				},
 				success: function(response){
 					//update photo
-					console.log(response);
 					showPopup('show-popup','green','Saved', 2000);
 				}
 			});
