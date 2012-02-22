@@ -172,6 +172,8 @@ class Api extends CI_Controller {
 	
 	public function save_node() {
 	    $value = (object)$_REQUEST;
+		print_r($value);
+		print_r($_REQUEST);
 		$this->db->query('UPDATE `profile_data` SET  `f_id`= "'.$value->f_id.'",
 											    `m_id`= "'.$value->m_id.'",
 											    `ch_ids`= "'.$value->ch_ids.'",
