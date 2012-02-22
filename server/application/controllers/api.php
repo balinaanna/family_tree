@@ -197,9 +197,9 @@ class Api extends CI_Controller {
 	}
 	
 	public function add_node() {
-	    //$json_response='{"l_name":"ffff","b_date":"123","d_date":"456","f_id":"2","m_id":"3","about":"Lorem ipsum dolor sit amet..."}};
-	    $value = json_decode($_REQUEST['json_response']);
-	    $this->db->query('INSERT INTO `profile_data`(`user_id`, `id`, `f_id`, `m_id`, `ch_ids`, `spouse_id`, `f_name`, `l_name`, `b_date`, `d_date`, `sex`, `photo_url`, `comment`)
+	    $value = (object)$_REQUEST;
+	    $photo = ($value->upload) ? pathinfo($value->photo_url) : array('basename' => 0);
+	    $last_id = $this->db->query('INSERT INTO `profile_data`(`user_id`, `id`, `f_id`, `m_id`, `ch_ids`, `spouse_id`, `f_name`, `l_name`, `b_date`, `d_date`, `sex`, `photo_url`, `comment`)
 				    	    VALUES (
 					    		"'.$this->session->userdata('user_id').'",
 					    		"'.$value->id.'",
@@ -212,18 +212,46 @@ class Api extends CI_Controller {
 								"'.$value->b_date.'",
 								"'.$value->d_date.'",
 								"'.$value->sex.'",
-								"'.$value->photo_url.'",
+								"'.$photo['basename'].'",
 								"'.$value->comment.'"
-							)
+							);
+							SELECT * FROM `profile_data` 
+								WHERE `user_id` = "'.$this->session->userdata('user_id').'"" 
+								ORDER BY id DESC 
+								LIMIT 1;
 					    ');
+		$last_id = $last_id->result();
+		if($value->upload) { // If UPLOAD ( save_photo() ) return success
+			rename("..".$value->photo_url, "../assets/images/uploaded/avatars/".$last_id->id.$photo['extension']);
+			$value->photo_url = "../assets/images/uploaded/avatars/".$last_id->id.$photo['extension'];
+			$this->db->query('UPDATE `profile_data`
+								SET `photo_url`= "'.$last_id->id.$photo['extension'].'"
+						    	WHERE `id`="'.$last_id->id.'" AND
+							       	  `user_id`="'.$this->session->userdata('user_id').'"
+					    	');
+			// CUSTOM WIDTH && HEIGHT !!!!
+
+			$image = $this->image_model;
+			$image->source_file = "../".$value->photo_url;
+			$image->returnType = 'array';
+			$value->x1 = (-1)*ceil($value->x1);	
+	  		$value->y1 = (-1)*ceil($value->y1);
+			$width = 300;
+			$height = 300;
+			$img = $image->crop($width, $height, $value->x1, $value->y1);
+
+			$crop->action = "crop_photo";
+	    	$crop->status = "1";
+	    	$crop->response = $img['image'];
+	    	$json->crop = $crop;
+		}
 	    $json->action = "add_node";
 	    $json->status = "1";
 	    echo json_encode($json);
 	}
 	
 	public function delete_node() {
-	    //$json_response='{"id":"5"}';
-	    $value = json_decode($_REQUEST['json_response']);
+	    $value->id = $_REQUEST['id'];
 	    $this->db->query('DELETE FROM `profile_data`
 							WHERE `id` = "'.$value->id.'" AND
 							   	`user_id` = "'.$this->session->userdata('user_id').'"
@@ -237,7 +265,7 @@ class Api extends CI_Controller {
 		$value = (object)$_REQUEST; // ?
 		$image = $this->image_model;
 		$image->returnType = 'array';
-		$image->newName = $value->user_id;
+		$image->newName = ($value->user_id) ? $value->user_id : $this->session->userdata('user_id')."_temp";
 		$img = $image->upload($_FILES['Filedata']);
 
 		$json->action = "save_photo";
@@ -246,23 +274,4 @@ class Api extends CI_Controller {
 	    echo json_encode($json);
 	}
 
-	public function crop_photo() {
-		//$json_response = '{"path": "123.jpg", "x1": "1", "x2": "101", "y1": "1", "y2": "101"}';
-		$value = (object)$_REQUEST;
-		$image = $this->image_model;
-		$image->source_file = "../".$value->photo_url;
-		$image->returnType = 'array';
-		$value->x1 = ceil($value->x1);
-	    $value->x2 = ceil($value->x2);
-	    $value->y1 = ceil($value->y1);
-	    $value->y2 = ceil($value->y2);
-		$width = $value->x2 - $value->x1;
-		$height = $value->y2 - $value->y1;
-		$img = $image->crop($width, $height, (-1)*$value->x1, (-1)*$value->y1);
-
-		$json->action = "crop_photo";
-	    $json->status = "1";
-	    $json->response = $img['image'];
-	    return json_encode($json);
-	}
 }
