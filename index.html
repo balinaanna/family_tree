@@ -54,9 +54,7 @@
 			<div id="osx-modal-data">
 				<div id="div-about"></div>
 				<p>
-					<button class="simplemodal-close">
-						Close
-					</button>
+					<input type="button" class="simplemodal-close" value="Close">
 					<span>(or press ESC or click the overlay)</span>
 				</p>
 			</div>
@@ -72,12 +70,12 @@
 			<div id="osx-modal-data-edit">
 				<table id="data_table">
 					<tr>
-						<td style="width: 320px;">
+						<td style="width: 320px;" class="div_form">
 								<div id="photo_upload">
 									<input type="button" id="upload_input" value="Upload photo"> (*.jpg, *.jpeg, *.png, *.gif)
 								</div>
 								<div id="photo_crop">
-									<div id="text_image">Select photo fragment to display</div>
+									<div id="text_image"><span style="text-align: center;">Select photo fragment to display</span></div>
 									<div id="photo_div" style="width: 100%; min-height: 300px;">
 										<img id="photo" alt="" title="" style="max-height: 300px; max-width: 300px; margin: 10px;" />
 										<div id="dp" style="display: none;"><img id="photo_native_size"/></div>
@@ -94,7 +92,7 @@
 								</div>
 						</td>
 						<td>
-							<table>
+							<table id="user_info_div" class="div_form" style="margin-left: 10px;">
 							<tr>
 								<td class="data-edit-field">
 									First name
@@ -146,17 +144,17 @@
 								</td>						
 							</tr>
 							</table>
+							<table>
+								<div id="osx-modal-content-buttons" class="div_form" style="margin-top: 10px; margin-left: 10px; height: 100px; text-align: right;">
+									<input type="submit" id="submit_person" value="Save" />
+									<input type="button" class="simplemodal-close" value="Close">
+									<span>(or press ESC or click the overlay)</span>
+									<div height="30" id="show-popup"></div>
+								</div>
+							</table>
 						</td>
 					</tr>
 				</table>
-				<div id="osx-modal-content-buttons">
-					<input type="submit" id="submit_person" value="Save" />
-					<button class="simplemodal-close">
-						Close
-					</button>
-					<span>(or press ESC or click the overlay)</span>
-					<div height="30" id="show-popup"></div>
-				</div>
 			</div>
 		</div>
 		</div>

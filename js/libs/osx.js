@@ -92,7 +92,7 @@ var OSX = {
 				setTimeout(function () {
 					var h = $("#osx-modal-data-edit", self.container).height()
 					+ title.height()
-					+ 100; // padding
+					+ 85; // padding
 					d.container.animate(
 					{
 						height: h

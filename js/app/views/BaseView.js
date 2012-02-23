@@ -91,7 +91,7 @@ define(['models/TreeNodeModel'],function(TreeModel){
 				this.stats.domElement.style.position = 'absolute';
 				this.stats.domElement.style.top = '0px';
 				this.stats.domElement.style.right = '0px';
-				this.container.appendChild(this.stats.domElement);					
+				this.container.appendChild(this.stats.domElement);
 		},
 		
 		create_node: function (data){
