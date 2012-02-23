@@ -47,9 +47,7 @@
 				<div id="osx-modal-data">
 					<div id="div-about"></div>
 					<p>
-						<button class="simplemodal-close">
-							Close
-						</button>
+						<input type="button" class="simplemodal-close" value="Close">
 						<span>(or press ESC or click the overlay)</span>
 					</p>
 				</div>
@@ -64,14 +62,14 @@
 				<div id="osx-modal-data-edit">
 					<table id="data_table">
 						<tr>
-							<td style="width: 320px;">
+							<td style="width: 320px;" class="div_form">
 							<div id="photo_upload">
 								<input type="button" id="upload_input" value="Upload photo">
 								(*.jpg, *.jpeg, *.png, *.gif)
 							</div>
 							<div id="photo_crop">
 								<div id="text_image">
-									Select photo fragment to display
+									<span style="text-align: center;">Select photo fragment to display</span>
 								</div>
 								<div id="photo_div" style="width: 100%; min-height: 300px;">
 									<img id="photo" alt="" title="" style="max-height: 300px; max-width: 300px; margin: 10px;" />
@@ -89,7 +87,7 @@
 								<input type="hidden" id="h" name="h" value="" />
 							</div></td>
 							<td>
-							<table>
+							<table id="user_info_div" class="div_form" style="margin-left: 10px;">
 								<tr>
 									<td class="data-edit-field"> First name </td>
 									<td class="data-edit-data">
@@ -118,7 +116,7 @@
 								<tr>
 									<td class="data-edit-field"> Gender</td>
 									<td>
-									<input type="radio" name="gender" value="m"  />
+									<input type="radio" name="gender" value="m" checked />
 									Male
 									<input type="radio" name="gender" value="f" />
 									Female </td>
@@ -127,17 +125,17 @@
 									<td class="data-edit-field"> About </td>
 									<td class="data-edit-data">									<textarea id="about" name="about" class="mceEditor"></textarea></td>
 								</tr>
+							</table>
+							<table>
+								<div id="osx-modal-content-buttons" class="div_form" style="margin-top: 10px; margin-left: 10px; height: 100px; text-align: right;">
+									<input type="submit" id="submit_person" value="Save" />
+									<input type="button" class="simplemodal-close" value="Close">
+									<span>(or press ESC or click the overlay)</span>
+									<div height="30" id="show-popup"></div>
+								</div>
 							</table></td>
 						</tr>
 					</table>
-					<div id="osx-modal-content-buttons">
-						<input type="submit" id="submit_person" value="Save" />
-						<button class="simplemodal-close">
-							Close
-						</button>
-						<span>(or press ESC or click the overlay)</span>
-						<div height="30" id="show-popup"></div>
-					</div>
 				</div>
 			</div>
 		</div>
@@ -151,13 +149,13 @@
 					Login Form
 					<form id="login" method="post" action="./">
 						<p>
-						<label>Email*:</label>	
-						<input type="text" name="loginEmail" id="loginEmail" placeholder="Email" />
+							<label>Email*:</label>
+							<input type="text" name="loginEmail" id="loginEmail" placeholder="Email" />
 						</p>
 						<p>
-						<label>Password*:</label>	
-						<input type="password" name="loginPass" id="loginPass" placeholder="Password" />
-						<a href="#" id="flipToRecover" class="flipLink">Forgot?</a>
+							<label>Password*:</label>
+							<input type="password" name="loginPass" id="loginPass" placeholder="Password" />
+							<a href="#" id="flipToRecover" class="flipLink">Forgot?</a>
 						</p>
 						<br/>
 						<input type="submit" id="loginbtn" name="submit" value="Login" />
@@ -167,24 +165,24 @@
 					Signup Form
 					<form id="register" method="post" action="./">
 						<p>
-						<label>Email*:</label>	
-						<input type="text" name="regEmail" id="regEmail" placeholder="Your Email" />
+							<label>Email*:</label>
+							<input type="text" name="regEmail" id="regEmail" placeholder="Your Email" />
 						</p>
 						<p>
-						<label>Password*:</label>	
-						<input type="password" name="password" id="password" placeholder="Password" />
+							<label>Password*:</label>
+							<input type="password" name="password" id="password" placeholder="Password" />
 						</p>
 						<p>
-						<label>First Name:</label>	
-						<input type="text" name="f_name" id="f_name" placeholder="Your Name" />
+							<label>First Name:</label>
+							<input type="text" name="f_name" id="f_name" placeholder="Your Name" />
 						</p>
 						<p>
-						<label>Last Name:</label>	
-						<input type="text" name="l_name" id="l_name" placeholder="Your Last Name" />
+							<label>Last Name:</label>
+							<input type="text" name="l_name" id="l_name" placeholder="Your Last Name" />
 						</p>
 						<p>
-						<label>Birth date:</label>	
-						<input type="date" name="b_date" id="b_date" placeholder="Your Birthday" />
+							<label>Birth date:</label>
+							<input type="date" name="b_date" id="b_date" placeholder="Your Birthday" />
 						</p>
 						<br/>
 						<input type="submit" id="registrationbtn" name="submit" value="Signup" />

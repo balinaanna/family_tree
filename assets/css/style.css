@@ -109,7 +109,8 @@
 	background: rgba(245,255,250, 0.6);
 	border-radius: 10px;
 }
-#loginform input {
+
+#loginform input, #osx-modal-content-edit input {
 
 	margin: 5px 0px 5px 0px;
 	font-size: 11px; font-family: Tahoma; color: #fff; font-weight: bold; text-transform: uppercase;
@@ -134,6 +135,7 @@
 	-moz-text-shadow: 0px 1px 1px #fff;
 	-webkit-text-shadow: 0px 1px 1px #fff;
 	color: #333;
+	height: 20px;
 }
 #loginform input:hover {
 	background-color: #ccc;
@@ -333,6 +335,7 @@ table.pop_up {
 	height: 10px;
 	background: #ffffff url(notifications/delete_categoriesBtt.gif) no-repeat 80% 100%;
 }
+
 #hint {
 	border: 1px solid #fff;
 	border-radius: 5px;
@@ -348,3 +351,37 @@ table.pop_up {
 	color: #fff;
 	opacity: 0;
 }
+
+
+.div_form{
+    border:1px solid #fff;
+    border-radius:5px;
+    -webkit-border-radius:5px; /* Safari, Chrome */
+    -moz-border-radius:5px; /* Firefox */
+    box-shadow: 0 0 5px 2px #1A3457;
+    -webkit-box-shadow: 0 0 5px 2px #1A3457; /* Safari, Chrome */
+    -moz-box-shadow: 0 0 5px 2px #1A3457; /* Firefox */
+    background: #f0f0f0;
+    margin: 0 auto;
+	padding: 3 5 3 5;
+	color: #000;
+}
+
+#hint{
+    border:1px solid #fff;
+    border-radius:5px;
+    -webkit-border-radius:5px; /* Safari, Chrome */
+    -moz-border-radius:5px; /* Firefox */
+    box-shadow: 0 0 5px 2px #1A3457;
+    -webkit-box-shadow: 0 0 5px 2px #1A3457; /* Safari, Chrome */
+    -moz-box-shadow: 0 0 5px 2px #1A3457; /* Firefox */
+    background: #000;
+    text-align: center;
+    margin: 0 auto;
+	padding: 3 5 3 5;
+	color: #fff;
+    opacity: 0;
+}
+
+#text_image {text-align: center;}
+

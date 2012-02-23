@@ -1,4 +1,4 @@
-define(['views/BaseView2', 'models/BaseModel'], function(BaseView, BaseModel) {
+define(['views/BaseView', 'models/BaseModel'], function(BaseView, BaseModel) {
 	return Backbone.Router.extend({
 
 		initialize : function(options) {
