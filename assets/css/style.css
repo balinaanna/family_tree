@@ -110,8 +110,43 @@
 	border-radius: 10px;
 }
 #loginform input {
-	font: 30px;
-	border-radius: 5px;
+
+	margin: 5px 0px 5px 0px;
+	font-size: 11px; font-family: Tahoma; color: #fff; font-weight: bold; text-transform: uppercase;
+	
+	box-shadow: 0px 1px 3px #000;
+	-o-box-shadow: 0px 1px 3px #000;
+	-moz-box-shadow: 0px 1px 3px #000;
+	-webkit-box-shadow: 0px 1px 3px #000;
+
+	border-radius: 3px;
+	-o-border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+
+	background-color: #ddd;
+	background: -o-linear-gradient(bottom, #ddd, #eee);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #eee), color-stop(1, #ddd));
+	background: -moz-linear-gradient(bottom, #ddd, #eee);
+	border: 1px solid #fff;
+	text-shadow: 0px 1px 1px #fff;
+	-o-text-shadow: 0px 1px 1px #fff;
+	-moz-text-shadow: 0px 1px 1px #fff;
+	-webkit-text-shadow: 0px 1px 1px #fff;
+	color: #333;
+}
+#loginform input:hover {
+	background-color: #ccc;
+	background: -o-linear-gradient(bottom, #ccc, #ddd);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #ddd), color-stop(1, #ccc));
+	background: -moz-linear-gradient(bottom, #ccc, #ddd);
+	border: 1px solid #ddd;
+}
+#loginform input:active {
+	box-shadow: 0px 0px 3px #000;
+	-o-box-shadow: 0px 0px 3px #000;
+	-moz-box-shadow: 0px 0px 3px #000;
+	-webkit-box-shadow: 0px 0px 3px #000;
 }
 #home {
 	display: none;
