@@ -1,4 +1,4 @@
-define(['views/BaseView2', 'models/BaseModel'], function(BaseView, BaseModel) {
+define(['views/BaseView_0', 'models/BaseModel'], function(BaseView, BaseModel) {
 	return Backbone.Router.extend({
 
 		initialize : function(options) {
@@ -11,7 +11,7 @@ define(['views/BaseView2', 'models/BaseModel'], function(BaseView, BaseModel) {
 		WebApp : function() {
 			//$.ajaxSetup({cache:false});
 			$('#home').hide();
-			$('#loginform').hide();
+			$('#formContainer').hide();
 			$(".tab").click(function() {
 				var X = $(this).attr('id');
 
@@ -82,7 +82,7 @@ define(['views/BaseView2', 'models/BaseModel'], function(BaseView, BaseModel) {
 				success : $.proxy(function(data) {
 					var resp = JSON.parse(data);
 					if(resp.status == "1") {
-						$('#loginform').hide();
+						$('#formContainer').hide();
 						$('#home').show();
 						this.canvasLoad();
 					}

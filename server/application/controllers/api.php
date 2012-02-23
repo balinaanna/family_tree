@@ -176,7 +176,7 @@ class Api extends CI_Controller {
 		print_r($_REQUEST);
 		$this->db->query('UPDATE `profile_data` SET  `f_id`= "'.$value->f_id.'",
 											    `m_id`= "'.$value->m_id.'",
-											    `ch_ids`= "'.$value->ch_ids.'",
+											    `ch_ids`= "'.addslashes(json_encode($value->ch_ids)).'",
 											    `spouse_id`= "'.$value->spouse_id.'",
 											    `f_name`= "'.$value->f_name.'",
 											    `l_name`= "'.$value->l_name.'",
@@ -185,53 +185,11 @@ class Api extends CI_Controller {
 											    `sex`= "'.$value->sex.'",
 											    `photo_url`= "'.$value->photo_url.'",
 											    `comment`= "'.$value->comment.'"
-						    WHERE `id`="'.$value->user_id.'" AND
+						    WHERE `id`="'.$value->id.'" AND
 							       `user_id`="'.$this->session->userdata('user_id').'"
 					    ');
+		if(!isset($value->crop)){$value->crop=0;}
 		if($value->crop) {
-			$json->crop = $this->crop_photo();
-		}
-	    $json->action = "save_node";
-	    $json->status = "1";
-	    echo json_encode($json);
-	}
-	
-public function add_node() {
-	    $value = (object)$_REQUEST;
-	    $photo ="";// ($value->upload) ? pathinfo($value->photo_url) : array('basename' => 0);
-	    $last_id = $this->db->query('INSERT INTO `profile_data`(`user_id`, `id`, `f_id`, `m_id`, `ch_ids`, `spouse_id`, `f_name`, `l_name`, `b_date`, `d_date`, `sex`, `photo_url`, `comment`)
-				    	    VALUES (
-					    		"'.$this->session->userdata('user_id').'",
-					    		"'.$value->id.'",
-								"'.$value->f_id.'",
-							    "'.$value->m_id.'",
-								"'.addslashes(json_encode($value->ch_ids)).'",
-								"'.$value->spouse_id.'",
-								"'.$value->f_name.'",
-								"'.$value->l_name.'",
-								"'.$value->b_date.'",
-								"'.$value->d_date.'",
-								"'.$value->sex.'",
-								"'.$value->photo_url.'",
-								"'.$value->comment.'"
-							);');
-		$last_id = $this->db->query('SELECT * FROM profile_data 
-								WHERE `user_id` = "'.$this->session->userdata('user_id').'" 
-								ORDER BY id_num DESC 
-								LIMIT 1;
-					    ');
-		$last_id = $last_id->result();
-		$json->db = $last_id;
-		/*if($value->upload) { // If UPLOAD ( save_photo() ) return success
-			rename("..".$value->photo_url, "../assets/images/uploaded/avatars/".$last_id->id.$photo['extension']);
-			$value->photo_url = "../assets/images/uploaded/avatars/".$last_id->id.$photo['extension'];
-			$this->db->query('UPDATE `profile_data`
-								SET `photo_url`= "'.$last_id->id.$photo['extension'].'"
-						    	WHERE `id`="'.$last_id->id.'" AND
-							       	  `user_id`="'.$this->session->userdata('user_id').'"
-					    	');
-			// CUSTOM WIDTH && HEIGHT !!!!
-
 			$image = $this->image_model;
 			$image->source_file = "../".$value->photo_url;
 			$image->returnType = 'array';
@@ -245,7 +203,64 @@ public function add_node() {
 	    	$crop->status = "1";
 	    	$crop->response = $img['image'];
 	    	$json->crop = $crop;
-		}*/
+		}
+	    $json->action = "save_node";
+	    $json->status = "1";
+	    echo json_encode($json);
+	}
+	
+public function add_node() {
+$value = (object)$_REQUEST;
+	    $photo = (!isset($value->upload)) ? pathinfo($value->photo_url) : array('basename' => 0);
+	    $this->db->query('INSERT INTO `profile_data`(`user_id`, `f_id`, `m_id`, `ch_ids`, `spouse_id`, `f_name`, `l_name`, `b_date`, `d_date`, `sex`, `photo_url`, `comment`)
+				    	    VALUES (
+					    		"'.$this->session->userdata('user_id').'",
+								"'.$value->f_id.'",
+							    "'.$value->m_id.'",
+								"'.addslashes(json_encode($value->ch_ids)).'",
+								"'.addslashes(json_encode($value->spouse_id)).'",
+								"'.$value->f_name.'",
+								"'.$value->l_name.'",
+								"'.$value->b_date.'",
+								"'.$value->d_date.'",
+								"'.$value->sex.'",
+								"'.$photo['basename'].'",
+								"'.addslashes($value->comment).'"
+							);
+						');
+		$lastid = $this->db->query('SELECT * FROM `profile_data` 
+								WHERE `user_id` = "'.$this->session->userdata('user_id').'"
+								ORDER BY `id` DESC LIMIT 1;
+					    ');
+		$last_id = $lastid->result();
+		$last_id = $last_id[0];
+		//if(!isset($value->upload)){$value->upload=0;}
+		if(!isset($value->upload)) { // If UPLOAD ( save_photo() ) return success
+			//print_r();
+			rename(BASEPATH."../..".$value->photo_url, BASEPATH."../../assets/images/uploaded/avatars/".$last_id->id.".".$photo['extension']);
+			$value->photo_url = "../assets/images/uploaded/avatars/".$last_id->id.".".$photo['extension'];
+			$this->db->query('UPDATE `profile_data`
+								SET `photo_url`= "'.$last_id->id.".".$photo['extension'].'"
+						    	WHERE `id`="'.$last_id->id.'" AND
+							       	  `user_id`="'.$this->session->userdata('user_id').'"
+					    	');
+			// CUSTOM WIDTH && HEIGHT !!!!
+
+			$image = $this->image_model;
+			$image->source_file = BASEPATH."../".$value->photo_url;
+			$image->returnType = 'array';
+			$value->x1 = (-1)*ceil($value->x1);	
+	  		$value->y1 = (-1)*ceil($value->y1);
+			$width = 300;
+			$height = 300;
+			$img = $image->crop($width, $height, $value->x1, $value->y1);
+
+			$crop->action = "crop_photo";
+	    	$crop->status = "1";
+	    	$crop->response = $img['image'];
+	    	$json->crop = $crop;
+		}
+		$json->addnode = $last_id;
 	    $json->action = "add_node";
 	    $json->status = "1";
 	    echo json_encode($json);

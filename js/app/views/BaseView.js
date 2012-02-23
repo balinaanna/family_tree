@@ -795,7 +795,7 @@ define(['models/TreeNodeModel'],function(TreeModel){
 				url: 'server/api/save_node',
 				dataType: 'json',
 				data: {
-					'user_id': $('#user_id').val(),
+					//'user_id': $('#user_id').val(),
 					'f_name' : $('#f_name').val(),
 					'l_name' : $('#l_name').val(),
 					'b_date' : $('#b_date').val(),
@@ -806,6 +806,11 @@ define(['models/TreeNodeModel'],function(TreeModel){
 					'y2': $('#y2').val()*scale,
 					'w': $('#w').val()*scale,
 					'h': $('#h').val()*scale,
+					'f_id' : '1',
+					'm_id' : '1',
+					'ch_ids' : '[]',
+					'spouse_id' : '1',
+					'sex' : 'm',
 					'photo_url' : $('#photo').attr('src'),
 					'comment' : $('#about').val()
 				},
@@ -814,6 +819,38 @@ define(['models/TreeNodeModel'],function(TreeModel){
 					showPopup('show-popup','green','Saved', 2000);
 				}
 			});
+			/*
+			$.ajax({
+				url: 'server/api/add_node',
+				dataType: 'json',
+				data: {
+					//'user_id': $('#user_id').val(),
+					'f_name' : $('#f_name').val(),
+					'l_name' : $('#l_name').val(),
+					'b_date' : $('#b_date').val(),
+					'd_date' : $('#d_date').val(),
+					'x1': $('#x1').val()*scale,
+					'y1': $('#y1').val()*scale,
+					'x2': $('#x2').val()*scale,
+					'y2': $('#y2').val()*scale,
+					'w': $('#w').val()*scale,
+					'h': $('#h').val()*scale,
+					'f_id' : '1',
+					'm_id' : '1',
+					'ch_ids' : '[]',
+					'spouse_id' : '1',
+					'sex' : 'm',
+					'photo_url' : $('#photo').attr('src'),
+					'comment' : $('#about').val(),
+					'crop' : true
+				},
+				success: function(response){
+					//update photo
+					console.log(response);
+					showPopup('show-popup','green','Saved', 2000);
+				}
+			});
+			*/
 		}
 		
 	});
