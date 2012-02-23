@@ -196,9 +196,9 @@ class Api extends CI_Controller {
 	    echo json_encode($json);
 	}
 	
-	public function add_node() {
+public function add_node() {
 	    $value = (object)$_REQUEST;
-	    $photo = ($value->upload) ? pathinfo($value->photo_url) : array('basename' => 0);
+	    $photo ="";// ($value->upload) ? pathinfo($value->photo_url) : array('basename' => 0);
 	    $last_id = $this->db->query('INSERT INTO `profile_data`(`user_id`, `id`, `f_id`, `m_id`, `ch_ids`, `spouse_id`, `f_name`, `l_name`, `b_date`, `d_date`, `sex`, `photo_url`, `comment`)
 				    	    VALUES (
 					    		"'.$this->session->userdata('user_id').'",
@@ -212,16 +212,17 @@ class Api extends CI_Controller {
 								"'.$value->b_date.'",
 								"'.$value->d_date.'",
 								"'.$value->sex.'",
-								"'.$photo['basename'].'",
+								"'.$value->photo_url.'",
 								"'.$value->comment.'"
-							);
-							SELECT * FROM `profile_data` 
-								WHERE `user_id` = "'.$this->session->userdata('user_id').'"" 
-								ORDER BY id DESC 
+							);');
+		$last_id = $this->db->query('SELECT * FROM profile_data 
+								WHERE `user_id` = "'.$this->session->userdata('user_id').'" 
+								ORDER BY id_num DESC 
 								LIMIT 1;
 					    ');
 		$last_id = $last_id->result();
-		if($value->upload) { // If UPLOAD ( save_photo() ) return success
+		$json->db = $last_id;
+		/*if($value->upload) { // If UPLOAD ( save_photo() ) return success
 			rename("..".$value->photo_url, "../assets/images/uploaded/avatars/".$last_id->id.$photo['extension']);
 			$value->photo_url = "../assets/images/uploaded/avatars/".$last_id->id.$photo['extension'];
 			$this->db->query('UPDATE `profile_data`
@@ -244,7 +245,7 @@ class Api extends CI_Controller {
 	    	$crop->status = "1";
 	    	$crop->response = $img['image'];
 	    	$json->crop = $crop;
-		}
+		}*/
 	    $json->action = "add_node";
 	    $json->status = "1";
 	    echo json_encode($json);

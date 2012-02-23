@@ -1,4 +1,4 @@
-define(['views/BaseView', 'models/BaseModel'], function(BaseView, BaseModel) {
+define(['views/BaseView2', 'models/BaseModel'], function(BaseView, BaseModel) {
 	return Backbone.Router.extend({
 
 		initialize : function(options) {
@@ -12,7 +12,23 @@ define(['views/BaseView', 'models/BaseModel'], function(BaseView, BaseModel) {
 			//$.ajaxSetup({cache:false});
 			$('#home').hide();
 			$('#loginform').hide();
-			$('#register').on("click", function() {
+			$(".tab").click(function() {
+				var X = $(this).attr('id');
+
+				if(X == 'registertab') {
+					$("#logintab").removeClass('select');
+					$("#registertab").addClass('select');
+					$("#loginbox").hide();
+					$("#signupbox").show();
+				} else {
+					$("#registertab").removeClass('select');
+					$("#logintab").addClass('select');
+					$("#signupbox").hide();
+					$("#loginbox").show();
+				}
+
+			});
+			$('#registerbtn').on("click", function() {
 				$.ajax({
 					url : "/server/api/reg",
 					type : "POST",
@@ -34,8 +50,8 @@ define(['views/BaseView', 'models/BaseModel'], function(BaseView, BaseModel) {
 					}
 				});
 			});
-			$('#login').on("click", $.proxy(this.login,this));
-				
+			$('#loginbtn').on("click", $.proxy(this.login, this));
+
 			$.ajax({
 				url : "/server/api/",
 				type : "GET",
@@ -48,19 +64,20 @@ define(['views/BaseView', 'models/BaseModel'], function(BaseView, BaseModel) {
 						this.canvasLoad();
 					}
 					if(answ.status == "0") {
-						$('#loginform').show();
+						$('#formContainer').show();
 					}
 				}, this)
 			});
 			console.log('offLineWebApplication router start');
 		},
-		login : function() {
+		login : function(event) {
+			event.preventDefault();
 			$.ajax({
 				url : "/server/api/login",
 				type : "POST",
 				data : {
-					"email" : $("#email").val(),
-					"pass" : $("#pass").val(),
+					"email" : $("#loginEmail").val(),
+					"pass" : $("#loginPass").val(),
 				},
 				success : $.proxy(function(data) {
 					var resp = JSON.parse(data);
