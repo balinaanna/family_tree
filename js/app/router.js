@@ -28,7 +28,7 @@ define(['views/BaseView', 'models/BaseModel'], function(BaseView, BaseModel) {
 				}
 
 			});
-			$('#registerbtn').on("click", function() {
+			$('#registrationbtn').on("click", function() {
 				$.ajax({
 					url : "/server/api/reg",
 					type : "POST",
@@ -50,6 +50,7 @@ define(['views/BaseView', 'models/BaseModel'], function(BaseView, BaseModel) {
 					}
 				});
 			});
+			this.autologin(this);
 			$('#loginbtn').on("click", $.proxy(this.login, this));
 
 			$.ajax({
@@ -78,6 +79,30 @@ define(['views/BaseView', 'models/BaseModel'], function(BaseView, BaseModel) {
 				data : {
 					"email" : $("#loginEmail").val(),
 					"pass" : $("#loginPass").val(),
+				},
+				success : $.proxy(function(data) {
+					var resp = JSON.parse(data);
+					if(resp.status == "1") {
+						$('#formContainer').hide();
+						localStorage.setItem("email", resp.email);
+						localStorage.setItem("autologin", resp.autologin);
+						$('#home').show();
+						this.canvasLoad();
+					}
+					if(resp.status == "0") {
+						console.log(data);
+						$('#infmessage').html(resp.message);
+					}
+				}, this)
+			});
+		},
+		autologin : function(event) {
+			$.ajax({
+				url : "/server/api/login",
+				type : "POST",
+				data : {
+					"email" : localStorage.getItem("email"),
+					"autologin" : localStorage.getItem("autologin"),
 				},
 				success : $.proxy(function(data) {
 					var resp = JSON.parse(data);
