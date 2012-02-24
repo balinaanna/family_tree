@@ -104,11 +104,25 @@ var OSX = {
 						if(data.action == 'edit_person')
 						{
 							$('#user_id').val(user_data.info.user_id);
+							$('#f_id').val(user_data.info.f_id);
+							$('#m_id').val(user_data.info.m_id);
+							$('#ch_ids').val(user_data.info.ch_ids);
+							$('#spouse_id').val(user_data.info.spouse_id);
 							$('#f_name').val(user_data.info.f_name);
 							$('#l_name').val(user_data.info.l_name);
 							$('#b_date').val(user_data.info.b_date);
 							$('#d_date').val(user_data.info.b_date);
 							$('#about').html(user_data.info.comment);
+							
+							if(user_data.info.sex == 'm') 
+							{
+								$('#m_radio').attr('checked', true);
+							}
+							else if(user_data.info.sex == 'f') 
+							{
+								$('#f_radio').attr('checked', true);
+							}
+							
 							if(user_data.info.photo_url != '')
 							{
 								$('#photo').attr('src','assets/images/uploaded/avatars/'+user_data.info.photo_url);
