@@ -53,7 +53,6 @@ define(['views/BaseView', 'models/BaseModel'], function(BaseView, BaseModel) {
 					}
 				});
 			});
-			this.autologin(this);
 			$('#loginbtn').on("click", $.proxy(this.login, this));
 
 			$.ajax({
@@ -69,6 +68,7 @@ define(['views/BaseView', 'models/BaseModel'], function(BaseView, BaseModel) {
 					}
 					if(answ.status == "0") {
 						$('#formContainer').show();
+						this.autologin(this);
 					}
 				}, this)
 			});
@@ -115,8 +115,7 @@ define(['views/BaseView', 'models/BaseModel'], function(BaseView, BaseModel) {
 						this.canvasLoad();
 					}
 					if(resp.status == "0") {
-						console.log(data);
-						$('#infmessage').html(resp.message);
+						
 					}
 				}, this)
 			});
