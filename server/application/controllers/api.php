@@ -116,6 +116,10 @@ class Api extends CI_Controller {
 		    echo json_encode($json);
 		    die();
 		}
+		@$f_name = addslashes($_REQUEST['f_name']);
+		@$l_name = addslashes($_REQUEST['l_name']);
+		@$b_date = addslashes($_REQUEST['b_date']);
+		@$sex = addslashes($_REQUEST['sex']);
 		$res = $this->db->query('SELECT * FROM users WHERE email="'.$email.'"');
 		if(!$res->result()){
 			$result = $this->db->query('INSERT INTO users(`id`, `prof_id`, `email`, `pass`)
@@ -125,26 +129,26 @@ class Api extends CI_Controller {
 										WHERE a.email="'.$email.'" AND a.pass="'.$pass.'"
 							    	');
 			$db_result = $result->result();
-			$this->db->query('INSERT INTO `profile_data`(`user_id`, `id`, `f_id`, `m_id`, `ch_ids`, `spouse_id`, `f_name`, `l_name`, `b_date`, `d_date`, `sex`, `photo_url`, `comment`)
-				    	    VALUES (
-					    		"'.$db_result[0]->user_id.'",
-					    		"1",
-								"",
-							    "",
-								"[]",
-								"",
-								"",
-								"",
-								"",
-								"",
-								"",
-								"",
-								""
-							)
-					    ');
+			$this->db->query('INSERT INTO `profile_data`(`user_id`, `f_id`, `m_id`, `ch_ids`, `spouse_id`, `f_name`, `l_name`, `b_date`, `d_date`, `sex`, `photo_url`, `comment`)
+				    	    	VALUES (
+					    			"'.$db_result[0]->user_id.'",
+									"",
+							    	"",
+									"[]",
+									"",
+									"'.$f_name.'",
+									"'.$l_name.'",
+									"'.$b_date.'",
+									"",
+									"'.$sex.'",
+									"",
+									""
+								)');
+			$this->db->query('UPDATE `users` SET `prof_id`=(SELECT `id` FROM `profile_data` WHERE `user_id`="'.$db_result[0]->user_id.'" LIMIT 1) WHERE email="'.$email.'"');		    	
 			$json->action = "registration";
 			$json->status = "1";
-			$this->email_model->send($email, 'Family Tree Registration', 'Thanks for registration');
+			$json->message = "Registration successful";
+			//$this->email_model->send($email, 'Family Tree Registration', 'Thanks for registration');
 		} else {
 			$json->action = "registration";
 			$json->status = "0";

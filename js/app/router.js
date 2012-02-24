@@ -29,23 +29,26 @@ define(['views/BaseView', 'models/BaseModel'], function(BaseView, BaseModel) {
 
 			});
 			$('#registrationbtn').on("click", function() {
+				event.preventDefault();
 				$.ajax({
 					url : "/server/api/reg",
 					type : "POST",
 					data : {
-						"email" : $("#email").val(),
-						"pass" : $("#pass").val(),
+						"email" : $("#regEmail").val(),
+						"pass" : $("#password").val(),
+						"f_name" : $("#first_name").val(),
+						"l_name" : $("#last_name").val(),
+						"b_date" : $("#birth_date").val(),
+						"sex" : $("input[@name='s']:checked").val()
 					},
 					success : function(data) {
 						console.log(data);
 						var resp = JSON.parse(data);
 						if(resp.status == "1") {
-							console.log(data);
-							$('#infmessage').html(resp.message);
+							$('#reg_result').html(resp.message);
 						}
 						if(resp.status == "0") {
-							console.log(data);
-							$('#infmessage').html(resp.message);
+							$('#reg_result').html(resp.message);
 						}
 					}
 				});
