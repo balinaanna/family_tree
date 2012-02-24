@@ -62,9 +62,9 @@ class Api extends CI_Controller {
 	
 	public function login() {
 		$email=addslashes($_REQUEST['email']);
-		$pass=md5(md5(addslashes($_REQUEST['pass'])));
-		if(isset($_REQUEST['autologin'])){$autologin=addslashes(base64_decode($_REQUEST['autologin']));}
-		if(!$pass){$pass=$autologin;}
+		if(isset($_REQUEST['pass'])){$pass=md5(md5(addslashes($_REQUEST['pass'])));}
+		elseif(isset($_REQUEST['autologin'])){$pass=addslashes($_REQUEST['autologin']);}
+		else {$pass="";}
 		/*
 		$result = $this->db->query('SELECT b.*, a.pass, a.id as user_id FROM users a, profile_data b
 										WHERE a.prof_id=b.id AND a.email="'.$email.'" AND a.pass="'.$pass.'"
@@ -81,12 +81,12 @@ class Api extends CI_Controller {
 		if($db_result) {
 			$json->action = "login";
 			$json->status = "1";
-			$json->id=$db_result[0]->user_id;
-			$json->pass=base64_encode($db_result[0]->pass);
+			$json->id = $db_result[0]->user_id;
+			$json->email = $email;
+			$json->autologin = $pass;
 			
 			$session_data = array(
 			    'user_id'  => $db_result[0]->user_id,
-			    //'prof_id'  => $json->id,
 			    'pass'     => $db_result[0]->pass
 			);
 			$this->session->set_userdata($session_data);
