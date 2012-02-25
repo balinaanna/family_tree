@@ -28,7 +28,7 @@ define(['views/BaseView', 'models/BaseModel'], function(BaseView, BaseModel) {
 				}
 
 			});
-			$('#registerbtn').on("click", function() {
+			$('#registrationbtn').on("click", function() {
 				$.ajax({
 					url : "/server/api/reg",
 					type : "POST",
