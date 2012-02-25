@@ -33,7 +33,7 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 		
 		initialize: function(){
 			//test model
-			this.data2.id = 43;
+			this.data2.id = 1; //TODO set user_id=>id fr0m local storage
 			$.ajaxSetup({ cache: false });
 			this.collection = new TreeCollection();	
 			this.collection.fetch({//url: '/data2.json',
