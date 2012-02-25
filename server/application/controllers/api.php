@@ -184,7 +184,7 @@ class Api extends CI_Controller {
 											    `d_date`= "'.$value->d_date.'",
 											    `sex`= "'.$value->sex.'",
 											    `photo_url`= "'.$value->photo_url.'",
-											    `comment`= "'.$value->comment.'"
+											    `comment`= "'.addslashes($value->comment).'"
 						    WHERE `id`="'.$value->id.'" AND
 							       `user_id`="'.$this->session->userdata('user_id').'"
 					    ');
@@ -218,7 +218,7 @@ $value = (object)$_REQUEST;
 								"'.$value->f_id.'",
 							    "'.$value->m_id.'",
 								"'.addslashes(json_encode($value->ch_ids)).'",
-								"'.addslashes(json_encode($value->spouse_id)).'",
+								"'.$value->spouse_id.'",
 								"'.$value->f_name.'",
 								"'.$value->l_name.'",
 								"'.$value->b_date.'",
