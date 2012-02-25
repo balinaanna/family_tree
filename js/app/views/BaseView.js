@@ -36,10 +36,10 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 			this.data2.id = 1;
 			$.ajaxSetup({ cache: false });
 			this.collection = new TreeCollection();	
-			this.collection.fetch({//url: '/data2.json',
+			this.collection.fetch({url: '/data2.json',
     				success: $.proxy(function(collection) {
        						console.log(JSON.stringify(collection.toJSON()));
-       						//console.log(collection.toJSON());
+       						console.log(collection.toJSON());
        						//this.createTree("1",1);
        						var arr = collection.toJSON();
        						for(key in arr){       							
@@ -311,17 +311,17 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
                     }
                 }
    			}
-		},
+		},spouseState: null,
         create_spouse: function(nodex){
             var data2 = this.data2;
             var data = data2.tree;
             var id = data[data2.id].spouse_id;
             if (data[data2.id].sex == "m"){
                 var dx = this.width_spouse_for_m + this.nodeWidth + 600;
-                if (dx < this.chWidth[data2.id]) dx = this.chWidth[data2.id] 
+                if (dx < this.chWidth[data2.id]) {dx = this.chWidth[data2.id];} else {this.spouseState = dx - this.chWidth[data2.id];}
             }else{
                 var dx = -this.width_spouse_for_f - this.nodeWidth - 600;
-                if (dx > -this.chWidth[data2.id]) dx = -this.chWidth[data2.id]
+                if (dx > -this.chWidth[data2.id]) {dx = -this.chWidth[data2.id]} else {this.spouseState = -dx - this.chWidth[data2.id];}
             }
             var node = this.create_node(data[id]);
 			for (var key in this.objects){
@@ -368,16 +368,12 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
                     }
 					
                     if (relation == "mother"){
-                        //parent.lineC = line;
                         parent.child = child;
                         child.mother = parent;
-                        //child.lineM = line;
                     }
                     if (relation == "father"){
-                        //parent.lineC = line;
                         parent.child = child;
                         child.father = parent;
-                        //child.lineF = line;
                     }
 		},
         lines: function(color, child, parent, spouse){
@@ -405,66 +401,25 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
         chSide: {},
         chLShift: {},
         chRShift: {},
-        countChildren: function(id){
-            var data2 = this.data2;
-            var data = data2.tree;
-            var sumWidth = 0;
-            var w = this.nodeWidth + 150;
-        
-            for (var key in data[id].ch_ids){                
-                var ch_id = data[id].ch_ids[key];                
-                var width = 0;
-                if (key == 0){
-                    var width = 0;
-                } else {
-                    width += w;
-                }
-                
-                if (data[ch_id].spouse_id) {
-                    width += w;
-                    if (data[ch_id].sex == "m") {this.chSide[ch_id] = "r"} else {this.chSide[ch_id] = "l"} 
-                }
-                this.chWidth[ch_id] = width;
-                
-                this.countChildren(ch_id);
-            }
-            for (var key in data[id].ch_ids){                
-                if (data[id].ch_ids.length > 1){
-                    sumWidth += this.chWidth[data[id].ch_ids[key]];
-                    if (data[id].sex == "m"){
-                        if (key == 0){
-                            if (this.chSide[data[id].ch_ids[key]] == "l") sumWidth -= this.chWidth[data[id].ch_ids[key]];
-                            if (this.chRShift[data[id].ch_ids[key]]) sumWidth += this.chRShift[data[id].ch_ids[key]];
-                        }
-                        if (key>0 && key < data[id].ch_ids.length-1){
-                            if (this.chLShift[data[id].ch_ids[key]]) sumWidth += this.chLShift[data[id].ch_ids[key]];
-                            if (this.chRShift[data[id].ch_ids[key]]) sumWidth += this.chRShift[data[id].ch_ids[key]];
-                        }
-                        if (key == data[id].ch_ids.length-1){
-                            if (this.chSide[data[id].ch_ids[key]] == "r") sumWidth -= this.chWidth[data[id].ch_ids[key]];
-                            if (this.chLShift[data[id].ch_ids[key]]) sumWidth += this.chLShift[data[id].ch_ids[key]];
-                        }
+        countChildren: function(id, i){
+            if (i<4){
+                var data2 = this.data2;
+                var data = data2.tree;
+                var sumWidth = 0;
+                var w = this.nodeWidth + 150;
+            
+                for (var key in data[id].ch_ids){                
+                    var ch_id = data[id].ch_ids[key];                
+                    var width = w;
+                    
+                    if (data[ch_id].spouse_id && data[ch_id].ch_ids) {
+                        //width += 150;
+                        if (data[ch_id].sex == "m") {this.chSide[ch_id] = "r"} else {this.chSide[ch_id] = "l"} 
                     }
-                    if (data[id].sex == "f"){
-                        if (key == 0){
-                            if (this.chSide[data[id].ch_ids[key]] == "r") sumWidth -= this.chWidth[data[id].ch_ids[key]];
-                            if (this.chLShift[data[id].ch_ids[key]]) sumWidth += this.chLShift[data[id].ch_ids[key]];
-                        }
-                        if (key>0 && key < data[id].ch_ids.length-1){
-                            if (this.chLShift[data[id].ch_ids[key]]) sumWidth += this.chLShift[data[id].ch_ids[key]];
-                            if (this.chRShift[data[id].ch_ids[key]]) sumWidth += this.chRShift[data[id].ch_ids[key]];
-                        }
-                        if (key == data[id].ch_ids.length-1){
-                            if (this.chSide[data[id].ch_ids[key]] == "l") sumWidth -= this.chWidth[data[id].ch_ids[key]];
-                            if (this.chRShift[data[id].ch_ids[key]]) sumWidth += this.chRShift[data[id].ch_ids[key]];
-                        }
-                    }
-		}
-                if (!this.chWidth[id]) this.chWidth[id] = 0; 
-                if (this.chWidth[id] < sumWidth){
-                    this.chWidth[id] = sumWidth;
+                    this.chWidth[ch_id] = width;
+                    
+                    this.countChildren(ch_id, i+1);
                 }
-
                 if (data[id].ch_ids){
                     var fId = data[id].ch_ids[0];
                     var lId = data[id].ch_ids[data[id].ch_ids.length-1];
@@ -479,32 +434,69 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
                         }
                     }
                     if (data[id].ch_ids.length == 1){
-                        if (this.chSide[fId] == "l") {this.chLShift[id] = this.chWidth[fId];if(this.chLShift[fId]){this.chLShift[id] += this.chLShift[fId];}}
-                        if (this.chSide[fId] == "r") {this.chRShift[id] = this.chWidth[fId];if(this.chRShift[lId]){this.chRShift[id] += this.chRShift[lId];}}
+                        if (this.chSide[fId] == "l") {this.chLShift[id] = this.chWidth[fId] - this.chWidth[id]*1/2;this.chLShift[id] += this.chWidth[id]*1/2;if(this.chLShift[fId]){this.chLShift[id] += this.chLShift[fId];}}
+                        if (this.chSide[fId] == "r") {this.chRShift[id] = this.chWidth[fId] - this.chWidth[id]*1/2;this.chRShift[id] += this.chWidth[id]*1/2;if(this.chRShift[fId]){this.chRShift[id] += this.chRShift[fId];}}
                     }
                 }
-            /*for (var key in data[id].ch_ids){                
-                sumWidth += this.chWidth[data[id].ch_ids[key]];
-                if (this.chLShift[data[id].ch_ids[key]]) sumWidth += this.chLShift[data[id].ch_ids[key]];
-                if (this.chRShift[data[id].ch_ids[key]]) sumWidth += this.chRShift[data[id].ch_ids[key]];
-            }
-            if (!this.chWidth[id]) this.chWidth[id] = 0; 
-            if (this.chWidth[id] < sumWidth){
-                this.chWidth[id] = sumWidth;
-            }*/
+                if (data[id].ch_ids){
+                    for (var key in data[id].ch_ids){
+                        var ch_id = data[id].ch_ids[key];
+                        if (data[id].ch_ids.length > 1){
+                            if (data[id].sex == "m"){
+                                if (key == 0){
+                                    if (this.chSide[data[id].ch_ids[key]] == "l") sumWidth += w;
+                                    if (this.chSide[data[id].ch_ids[key]] != "l") sumWidth += this.chWidth[data[id].ch_ids[key]] + w;
+                                    if (!this.chSide[data[id].ch_ids[key]]) sumWidth -= w;
+                                    if (this.chRShift[data[id].ch_ids[key]]) sumWidth += this.chRShift[data[id].ch_ids[key]];
+                                }
+                                if (key>0 && key < data[id].ch_ids.length-1){
+                                    if (this.chLShift[data[id].ch_ids[key]]) sumWidth += this.chLShift[data[id].ch_ids[key]];
+                                    sumWidth += this.chWidth[data[id].ch_ids[key]] + w;
+                                    if (!this.chSide[data[id].ch_ids[key]]) sumWidth -= w;
+                                    if (this.chRShift[data[id].ch_ids[key]]) sumWidth += this.chRShift[data[id].ch_ids[key]];
+                                }
+                                if (key == data[id].ch_ids.length-1){
+                                    if (this.chSide[data[id].ch_ids[key]] == "l") sumWidth += this.chWidth[data[id].ch_ids[key]];
+                                    if (this.chLShift[data[id].ch_ids[key]]) sumWidth += this.chLShift[data[id].ch_ids[key]];
+                                }
+                            }
+                            if (data[id].sex == "f"){
+                                if (key == 0){
+                                    if (this.chSide[data[id].ch_ids[key]] == "r") sumWidth += w;
+                                    if (this.chSide[data[id].ch_ids[key]] != "r") sumWidth += this.chWidth[data[id].ch_ids[key]] + w;
+                                    if (!this.chSide[data[id].ch_ids[key]]) sumWidth -= w;
+                                    if (this.chLShift[data[id].ch_ids[key]]) sumWidth += this.chLShift[data[id].ch_ids[key]];
+                                }
+                                if (key>0 && key < data[id].ch_ids.length-1){
+                                    if (this.chLShift[data[id].ch_ids[key]]) sumWidth += this.chLShift[data[id].ch_ids[key]];
+                                    sumWidth += this.chWidth[data[id].ch_ids[key]] + w;
+                                    if (!this.chSide[data[id].ch_ids[key]]) sumWidth -= w;
+                                    if (this.chRShift[data[id].ch_ids[key]]) sumWidth += this.chRShift[data[id].ch_ids[key]];
+                                }
+                                if (key == data[id].ch_ids.length-1){
+                                    if (this.chSide[data[id].ch_ids[key]] == "r") sumWidth += this.chWidth[data[id].ch_ids[key]];
+                                    if (this.chRShift[data[id].ch_ids[key]]) sumWidth += this.chRShift[data[id].ch_ids[key]];
+                                }
+                            }
+                        }
+                    }
+                }
+                if (!this.chWidth[id]) this.chWidth[id] = 0;
+                if (data[id].ch_ids != [] && sumWidth != 0){
+                    this.chWidth[id] = sumWidth;
+                }
             }
         },
-        createChildren: function(id, nodex) {
+        createChildren: function(id, nodex, i) {
 			var data2 = this.data2;
             var data = data2.tree;
             var dx = 0;
             
-            if (data[id].ch_ids){
+            if (data[id].ch_ids && i<4){
                 for (var key in data[id].ch_ids){
                     var ch_id = data[id].ch_ids[key];
                     var chNode = this.create_node(data[ch_id]);
                     
-                    dx += this.chWidth[ch_id];
                     for (var k in this.objects){
                         if (this.objects[k].info.user_id == data[nodex.info.user_id].spouse_id) var spNodex = this.objects[k];
                     }
@@ -514,31 +506,32 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
                             if (key == 0){
                                 chNode.position.set(nodex.position.x, nodex.position.y + 200 + this.nodeHeight, 0);
                             }else{
-                                if (this.chRShift[data[id].ch_ids[key-1]]) dx += this.chRShift[data[id].ch_ids[key-1]] - this.chWidth[data[id].ch_ids[key]];
+                                if (this.spouseState && i == 1) dx += this.spouseState/(data[id].ch_ids.length - 1);
+                                if (this.chRShift[data[id].ch_ids[key-1]]) dx += this.chRShift[data[id].ch_ids[key-1]];
                                 if (this.chLShift[ch_id]) dx += this.chLShift[ch_id];
-                                if (this.chSide[ch_id] == "r") dx -= this.chWidth[ch_id];
-                                if (this.chSide[data[id].ch_ids[key-1]] == "r") dx += this.chWidth[data[id].ch_ids[key-1]];
+                                if (this.chSide[ch_id] == "l") dx += this.chWidth[ch_id];
+                                if (this.chSide[data[id].ch_ids[key-1]] == "r" || !this.chSide[data[id].ch_ids[key-1]]) dx += this.chWidth[data[id].ch_ids[key-1]];
+                                if (this.chSide[data[id].ch_ids[key-1]]) dx += this.nodeWidth + 150;
                                 chNode.position.set(nodex.position.x + dx, nodex.position.y + 200 + this.nodeHeight, 0);
                             }
                         } else if (data[nodex.info.user_id].sex == "f"){
                             if (key == 0){
                                 chNode.position.set(nodex.position.x, nodex.position.y + 200 + this.nodeHeight, 0);
                             }else{
-                                if (this.chLShift[data[id].ch_ids[key-1]]) dx += this.chLShift[data[id].ch_ids[key-1]] - this.chWidth[data[id].ch_ids[key]];
+                                if (this.spouseState && i == 1) dx += this.spouseState/(data[id].ch_ids.length - 1);
+                                if (this.chLShift[data[id].ch_ids[key-1]]) dx += this.chLShift[data[id].ch_ids[key-1]];
                                 if (this.chRShift[ch_id]) dx += this.chRShift[ch_id];
-                                if (this.chSide[ch_id] == "l") dx -= this.chWidth[ch_id];
-                                if (this.chSide[data[id].ch_ids[key-1]] == "l") dx += this.chWidth[data[id].ch_ids[key-1]];
+                                if (this.chSide[ch_id] == "r") dx += this.chWidth[ch_id];
+                                if (this.chSide[data[id].ch_ids[key-1]] == "l" || !this.chSide[data[id].ch_ids[key-1]]) dx += this.chWidth[data[id].ch_ids[key-1]];
+                                if (this.chSide[data[id].ch_ids[key-1]]) dx += this.nodeWidth + 150;
                                 chNode.position.set(nodex.position.x - dx, nodex.position.y + 200 + this.nodeHeight, 0);
                             }
-                        }
-                        if (data[id].ch_ids.length == 2 && key == 1){
-                            chNode.position.set(spNodex.position.x, nodex.position.y + 200 + this.nodeHeight, 0);
                         }
                     } else {
                         chNode.position.set((nodex.position.x + spNodex.position.x)/2, nodex.position.y + 200 + this.nodeHeight, 0);
                     }
                     
-                    if (data[ch_id].spouse_id != 0){
+                    if (data[ch_id].spouse_id){
                         var chSpId = data[ch_id].spouse_id;
                         var chSpNode = this.create_node(data[chSpId]);
                         
@@ -556,20 +549,20 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
                         this.create_relation(chNode,nodex,"mother","child",ch_id,1);
                         this.create_relation(chNode,spNodex,"father","",ch_id,1);
                     }
-                    this.createChildren(ch_id, chNode);
+                    this.createChildren(ch_id, chNode, i+1);
                 }
             }
 		},
 		createTree: function(){
 			var data2 = this.data2;
             var data = data2.tree;
-            //data2.id=36;
+            //data2.id=26;
             this.create_tree(data2.id, 1);
             
             for (var key in this.objects){
                 if (this.objects[key].info.user_id == data2.id) var nodeX = this.objects[key];
             }
-            this.countChildren(data2.id);
+            this.countChildren(data2.id, 1);
             if(data[data2.id].spouse_id){
                 this.create_spouse(nodeX);
             }
@@ -577,7 +570,7 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
             console.log(this.chLShift);
             console.log(this.chRShift);
             console.log(this.chSide);
-            this.createChildren(data2.id, nodeX);
+            this.createChildren(data2.id, nodeX, 1);
             for (var key in this.objects){
                 if (this.objects[key].father && this.objects[key].mother){
                     if (this.objects[key].father) this.lines(0x000000,this.objects[key],this.objects[key].father);
