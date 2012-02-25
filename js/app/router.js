@@ -29,23 +29,27 @@ define(['views/BaseView', 'models/BaseModel'], function(BaseView, BaseModel) {
 
 			});
 			$('#registrationbtn').on("click", function() {
+
+				event.preventDefault();
 				$.ajax({
 					url : "/server/api/reg",
 					type : "POST",
 					data : {
-						"email" : $("#email").val(),
-						"pass" : $("#pass").val(),
+						"email" : $("#regEmail").val(),
+						"pass" : $("#password").val(),
+						"f_name" : $("#first_name").val(),
+						"l_name" : $("#last_name").val(),
+						"b_date" : $("#birth_date").val(),
+						"sex" : $("input[@name='s']:checked").val()
 					},
 					success : function(data) {
 						console.log(data);
 						var resp = JSON.parse(data);
 						if(resp.status == "1") {
-							console.log(data);
-							$('#infmessage').html(resp.message);
+							$('#reg_result').html(resp.message);
 						}
 						if(resp.status == "0") {
-							console.log(data);
-							$('#infmessage').html(resp.message);
+							$('#reg_result').html(resp.message);
 						}
 					}
 				});
@@ -65,6 +69,7 @@ define(['views/BaseView', 'models/BaseModel'], function(BaseView, BaseModel) {
 					}
 					if(answ.status == "0") {
 						$('#formContainer').show();
+						this.autologin(this);
 					}
 				}, this)
 			});
@@ -83,12 +88,35 @@ define(['views/BaseView', 'models/BaseModel'], function(BaseView, BaseModel) {
 					var resp = JSON.parse(data);
 					if(resp.status == "1") {
 						$('#formContainer').hide();
+						localStorage.setItem("email", resp.email);
+						localStorage.setItem("autologin", resp.autologin);
 						$('#home').show();
 						this.canvasLoad();
 					}
 					if(resp.status == "0") {
 						console.log(data);
 						$('#infmessage').html(resp.message);
+					}
+				}, this)
+			});
+		},
+		autologin : function(event) {
+			$.ajax({
+				url : "/server/api/login",
+				type : "POST",
+				data : {
+					"email" : localStorage.getItem("email"),
+					"autologin" : localStorage.getItem("autologin"),
+				},
+				success : $.proxy(function(data) {
+					var resp = JSON.parse(data);
+					if(resp.status == "1") {
+						$('#formContainer').hide();
+						$('#home').show();
+						this.canvasLoad();
+					}
+					if(resp.status == "0") {
+						
 					}
 				}, this)
 			});

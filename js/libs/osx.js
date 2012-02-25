@@ -1,22 +1,6 @@
 var OSX = {
 	container: null,
 	user_info: null,
-	init_view: function (info) {
-		//view person info on double click
-		$("#osx-modal-content").modal({
-			appendTo : "#home",
-			overlayId: 'osx-overlay',
-			containerId: 'osx-container',
-			closeHTML: null,
-			minHeight: 80,
-			opacity: 65,
-			position: ['0',],
-			overlayClose: true,
-			onOpen: OSX.open_view,
-			onClose: OSX.close
-		});
-		user_info=info;
-	},
 	init_edit: function (info, user_info) {
 		//edit or add new person
 		data = info;
@@ -31,41 +15,8 @@ var OSX = {
 			position: ['0',],
 			overlayClose: true,
 			onOpen: OSX.open_edit,
-			onClose: OSX.close,
-			/*onShow: function() {
-				initMCE();
-			}*/
+			onClose: OSX.close
 		});
-	},
-	open_view: function (d) {
-		//view person info on double click
-		var self = this;
-		self.container = d.container[0];
-		d.overlay.fadeIn('slow', function () {
-			$("#osx-modal-content", self.container).show();
-			var title = $("#osx-modal-title", self.container);
-			title=$("#osx-modal-title").html(user_info.l_name+" "+user_info.f_name+" ("+user_info.b_date+" - "+user_info.d_date+")");
-			title.show();
-			$("#div-about").append(user_info.comment);
-			d.container.slideDown('slow', function () {
-				setTimeout(function () {
-					var h = $("#osx-modal-data", self.container).height()
-					+ title.height()
-					+ 20; // padding
-					d.container.animate(
-					{
-						height: h
-					},
-					200,
-					function () {
-						$("div.close", self.container).show();
-						$("#osx-modal-data", self.container).show();
-					}
-					);
-				}, 300);
-			});
-		});
-
 	},
 	open_edit: function (d) {
 		//edit or add new person
@@ -104,11 +55,25 @@ var OSX = {
 						if(data.action == 'edit_person')
 						{
 							$('#user_id').val(user_data.info.user_id);
+							$('#f_id').val(user_data.info.f_id);
+							$('#m_id').val(user_data.info.m_id);
+							$('#ch_ids').val(user_data.info.ch_ids);
+							$('#spouse_id').val(user_data.info.spouse_id);
 							$('#f_name').val(user_data.info.f_name);
 							$('#l_name').val(user_data.info.l_name);
 							$('#b_date').val(user_data.info.b_date);
 							$('#d_date').val(user_data.info.b_date);
 							$('#about').html(user_data.info.comment);
+							
+							if(user_data.info.sex == 'm') 
+							{
+								$('#m_radio').attr('checked', true);
+							}
+							else if(user_data.info.sex == 'f') 
+							{
+								$('#f_radio').attr('checked', true);
+							}
+							
 							if(user_data.info.photo_url != '')
 							{
 								$('#photo').attr('src','assets/images/uploaded/avatars/'+user_data.info.photo_url);

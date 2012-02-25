@@ -141,7 +141,12 @@ define(['models/TreeNodeModel'],function(TreeModel){
 						"b_date" : data.b_date,
 						"d_date" : data.d_date,
 						"comment" : data.comment,
-						"photo_url" : data.photo_url
+						"photo_url" : data.photo_url,
+						"sex" : data.sex,
+						"f_id" : data.f_id,
+						"m_id" : data.m_id,
+						"ch_ids" : data.ch_ids,
+						"spouse_id" : data.spouse_id
 					};
 					cube.mother;
 					cube.father;
@@ -790,12 +795,21 @@ define(['models/TreeNodeModel'],function(TreeModel){
 			{
 				scale = w/300;
 			}
+			var sex;
+			if($('#m_radio').attr('checked')) 
+			{
+				sex = 'm';
+			}
+			else if($('#f_radio').attr('checked')) 
+			{
+				sex = 'f';
+			}
 			
 			$.ajax({
 				url: 'server/api/save_node',
 				dataType: 'json',
 				data: {
-					//'user_id': $('#user_id').val(),
+					'id': $('#user_id').val(),
 					'f_name' : $('#f_name').val(),
 					'l_name' : $('#l_name').val(),
 					'b_date' : $('#b_date').val(),
@@ -806,11 +820,11 @@ define(['models/TreeNodeModel'],function(TreeModel){
 					'y2': $('#y2').val()*scale,
 					'w': $('#w').val()*scale,
 					'h': $('#h').val()*scale,
-					'f_id' : '1',
-					'm_id' : '1',
-					'ch_ids' : '[]',
-					'spouse_id' : '1',
-					'sex' : 'm',
+					'f_id' : $('#f_id').val(),
+					'm_id' : $('#m_id').val(),
+					'ch_ids' : $('#ch_ids').val(),
+					'spouse_id' : $('#spouse_id').val(),
+					'sex' : sex,
 					'photo_url' : $('#photo').attr('src'),
 					'comment' : $('#about').val()
 				},

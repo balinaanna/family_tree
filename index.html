@@ -37,21 +37,6 @@
 				<div id="minus" class="circle"></div>
 			</div>
 			<div id="hint" style="position: absolute; z-index: 100;"></div>
-			<div id="osx-modal-content">
-				<div id="osx-modal-title">
-					OSX Style Modal Dialog
-				</div>
-				<div class="close">
-					<a href="#" class="simplemodal-close">x</a>
-				</div>
-				<div id="osx-modal-data">
-					<div id="div-about"></div>
-					<p>
-						<input type="button" class="simplemodal-close" value="Close">
-						<span>(or press ESC or click the overlay)</span>
-					</p>
-				</div>
-			</div>
 			<div id="osx-modal-content-edit">
 				<div id="osx-modal-title-edit">
 					OSX Style Modal Dialog
@@ -92,6 +77,10 @@
 									<td class="data-edit-field"> First name </td>
 									<td class="data-edit-data">
 									<input type="hidden" id="user_id" name="user_id"/>
+									<input type="hidden" id="f_id" name="f_id"/>
+									<input type="hidden" id="m_id" name="m_id"/>
+									<input type="hidden" id="ch_ids" name="ch_ids"/>
+									<input type="hidden" id="spouse_id" name="spouse_id"/>
 									<input id="f_name" name="f_name"/>
 									</td>
 								</tr>
@@ -116,14 +105,16 @@
 								<tr>
 									<td class="data-edit-field"> Gender</td>
 									<td>
-									<input type="radio" name="gender" value="m" checked />
+									<input type="radio" id="m_radio" name="gender" value="m" checked />
 									Male
-									<input type="radio" name="gender" value="f" />
+									<input type="radio" id="f_radio" name="gender" value="f" />
 									Female </td>
 								</tr>
 								<tr>
 									<td class="data-edit-field"> About </td>
-									<td class="data-edit-data">									<textarea id="about" name="about" class="mceEditor"></textarea></td>
+									<td class="data-edit-data">									
+										<textarea id="about" name="about" class="mceEditor"></textarea>
+									</td>
 								</tr>
 							</table>
 							<table>
@@ -131,7 +122,7 @@
 									<input type="submit" id="submit_person" value="Save" />
 									<input type="button" class="simplemodal-close" value="Close">
 									<span>(or press ESC or click the overlay)</span>
-									<div height="30" id="show-popup"></div>
+									<div id="show-popup"></div>
 								</div>
 							</table></td>
 						</tr>
@@ -174,19 +165,25 @@
 						</p>
 						<p>
 							<label>First Name:</label>
-							<input type="text" name="f_name" id="f_name" placeholder="Your Name" />
+							<input type="text" name="first_name" id="first_name" placeholder="Your Name" />
 						</p>
 						<p>
 							<label>Last Name:</label>
-							<input type="text" name="l_name" id="l_name" placeholder="Your Last Name" />
+							<input type="text" name="last_name" id="last_name" placeholder="Your Last Name" />
 						</p>
 						<p>
 							<label>Birth date:</label>
-							<input type="date" name="b_date" id="b_date" placeholder="Your Birthday" />
+							<input type="date" name="birth_date" id="birth_date" placeholder="Your Birthday" />
+						</p>
+						<p>
+							<label>Sex:</label>
+							<input type="radio" name="s" id="s" value="m" />
+							<input type="radio" name="s" id="s" value="f" />
 						</p>
 						<br/>
 						<input type="submit" id="registrationbtn" name="submit" value="Signup" />
 					</form>
+					<div id="reg_result"></div>
 				</div>
 			</div>
 		</div>
