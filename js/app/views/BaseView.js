@@ -1113,7 +1113,7 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 				data.f_id = this.TempObj.node.info.f_id;
 				data.m_id = this.TempObj.node.info.m_id;
 				data.ch_ids = this.TempObj.node.info.ch_ids;
-				data.id = this.TempObj.node.info.id;
+				data.id = this.TempObj.node.info.user_id;
 				data.spouse_id = this.TempObj.node.info.spouse_id;
 				this.saveNode({data: data});
 			};
@@ -1142,7 +1142,7 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 			return this.resp;
 		},
 		saveNode : function(options) {
-
+			
 			$.ajax({
 				url : 'server/api/save_node',
 				dataType : 'json',
