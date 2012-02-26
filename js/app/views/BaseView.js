@@ -18,7 +18,7 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 		imgPlusSize : 70,
         SELECTED: null,
         data1:{},
-		data2: {},
+		data2:{},
 		TempObj : {},
 		
 		events: {
@@ -36,29 +36,26 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 			this.data2.id = 1; //TODO set user_id=>id fr0m local storage
 			$.ajaxSetup({cache: false});
 			this.collection = new TreeCollection();	
-			this.collection.fetch({url: '/data2.json',
-    				success: $.proxy(function(collection) {
-       						console.log(JSON.stringify(collection.toJSON()));
-       						console.log(collection.toJSON());
-       						//this.createTree("1",1);
-       						var arr = collection.toJSON();
-       						for(key in arr){       							
-       							this.data1[arr[key].id] = arr[key];
-       							if(this.data1[arr[key].id].f_id == "0") {
-       								this.data1[arr[key].id].f_id = "";
-       							}
-       							if(this.data1[arr[key].id].m_id == "0") {
-       								this.data1[arr[key].id].m_id = "";
-       							}
-       							if(this.data1[arr[key].id].spouse_id == "0") {
-       								this.data1[arr[key].id].spouse_id = "";
-       							}
-       						}
-       						this.data2.tree = this.data1;
-       						console.log(this.data2);
-       						this.createTree();
-       					},this)});  	
-				
+			this.collection.fetch({
+                url: '/data2.json',
+				success: $.proxy(function(collection) {
+					var arr = collection.toJSON();
+					for(key in arr){       							
+						this.data1[arr[key].id] = arr[key];
+						if(this.data1[arr[key].id].f_id == "0") {
+							this.data1[arr[key].id].f_id = "";
+						}
+						if(this.data1[arr[key].id].m_id == "0") {
+							this.data1[arr[key].id].m_id = "";
+						}
+						if(this.data1[arr[key].id].spouse_id == "0") {
+							this.data1[arr[key].id].spouse_id = "";
+						}
+					}
+					this.data2.tree = this.data1;
+					this.createTree();
+				},this)});
+			
 			
 			//navigation
 			$("#slider").slider({
@@ -74,105 +71,89 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 			$('#navigator').on('mousemove', function(){$('#navigator').css('opacity', '0.7');});
 			$('#navigator').on('mouseout', function(){$('#navigator').css('opacity', '0.3');});
 				
-				this.container = document.createElement('div');
-				//this.el.append($("#navigator"));
-				$(this.el).append(this.container);
-				var info = document.createElement('div');
-				this.el.appendChild(info);
-				//$(this.container).append($("#osx-modal-data-edit"));
-				this.scene = new THREE.Scene();
-				this.camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 10000);
-				this.camera.position.y = 150;
-				this.camera.position.z = 1500;
-				this.scene.add(this.camera);
-				//THREE.Object3D._threexDomEvent.camera(this.camera);
-				/*this.create_tree("1", 1);
-                var data2 = this._model.get("tree");
-                for (var key in this.objects){
-                    if (this.objects[key].info.user_id == data2.id) var nodeX = this.objects[key];
-                }
-                this.countChildren(this._model.get("tree").id,0);
-                this.create_spouse();
-                this.createChildren(this._model.get("tree").id, nodeX);*/
-                //console.log(this.objects);
-                //console.log(this._model.get("tree"));
-                //console.log(this.chWidth);
-				/*for(var key in this.objects) {
-					this.objects[key].children[0].on('dblclick', function(event) {
-						OSX.init_view(event.target.parent.info);
-					});
-				}*/
-				this.projector = new THREE.Projector();
-				this.onMouseDownPosition = new THREE.Vector2();
-				this.renderer = new THREE.CanvasRenderer();
-				this.renderer.setSize(window.innerWidth, window.innerHeight);
-				this.container.appendChild(this.renderer.domElement);
-				this.stats = new Stats();
-				this.stats.domElement.style.position = 'absolute';
-				this.stats.domElement.style.top = '0px';
-				this.stats.domElement.style.right = '0px';
-				this.container.appendChild(this.stats.domElement);
+			this.container = document.createElement('div');
+			//this.el.append($("#navigator"));
+			$(this.el).append(this.container);
+			var info = document.createElement('div');
+			this.el.appendChild(info);
+			//$(this.container).append($("#osx-modal-data-edit"));
+			this.scene = new THREE.Scene();
+			this.camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 10000);
+			this.camera.position.y = 150;
+			this.camera.position.z = 3000;
+			this.scene.add(this.camera);
+			
+			this.projector = new THREE.Projector();
+			this.onMouseDownPosition = new THREE.Vector2();
+			this.renderer = new THREE.CanvasRenderer();
+			this.renderer.setSize(window.innerWidth, window.innerHeight);
+			this.container.appendChild(this.renderer.domElement);
+			this.stats = new Stats();
+			this.stats.domElement.style.position = 'absolute';
+			this.stats.domElement.style.top = '0px';
+			this.stats.domElement.style.right = '0px';
+			this.container.appendChild(this.stats.domElement);
 		},
 		
 		create_node: function (data){
-					var cube = new THREE.Object3D();
-					// TODO coords
-					if(data.photo_url == "" || data.photo_url == null){data.photo_url = "no_avatar.jpg"};
-					var photo = this.texture('assets/images/uploaded/avatars/'+data.photo_url, 260, 260);
-					photo.position.set(0, 40, 1);
-					//this.container.style.background = "url('trash/back_11111.jpg')";
-					
-					var elems = {
-                        'parent': {
-                            width: this.imgPlusSize, height: this.imgPlusSize, path: 'trash/add.png', trPath: 'trash/add_tr.png', posX: this.mouseX, posY: this.mouseY - Math.floor(this.nodeHeight / 2)+20
-                        },
-                        'child': {
-                            width: this.imgPlusSize, height: this.imgPlusSize, path: 'trash/add.png', trPath: 'trash/add_tr.png', posX: this.mouseX, posY: this.mouseY + Math.floor(this.nodeHeight / 2)
-                        },
-                        //'arrow': {
-                        //    width: 30, height: 48, path: 'trash/arrow.png', posX: this.mouseX, posY: this.mouseY - 30 - Math.floor(this.nodeHeight / 2)
-                        //},
-                        'edit': {
-                            width: this.imgPlusSize, height: this.imgPlusSize, path: 'trash/edit.png', trPath: 'trash/edit_tr.png', posX: this.mouseX+this.nodeWidth/4, posY: this.mouseY + Math.floor(this.nodeHeight / 2)
-                        },
-                        'delete': {
-                            width: this.imgPlusSize, height: this.imgPlusSize, path: 'trash/delete.png', trPath: 'trash/delete_tr.png', posX: this.mouseX-this.nodeWidth/4, posY: this.mouseY + Math.floor(this.nodeHeight / 2)
-                        }
-                    };
-					
-					cube.add(this.texture('trash/pol1.png', this.nodeWidth, this.nodeHeight));			// children[0]					
-					
-					var minVal = -0.2;
-					var maxVal = 0.2;
-					var floatVal = 2;
-					var randVal = minVal+(Math.random()*(maxVal-minVal));
-					cube.rotation.z = typeof floatVal=='undefined'?Math.round(randVal):randVal.toFixed(floatVal);
-					
-				   
-					cube.add(photo);			// children[1]
-					cube.add(this.text(data));	// children[2]
-					
-                    for(var key in elems){
-						cube.add(this.nodeElement(elems[key], key));
-                    }
-					cube.info = {
-						"l_name" : data.l_name,
-						"f_name" : data.f_name,
-						"b_date" : data.b_date,
-						"d_date" : data.d_date,
-						"comment" : data.comment,
-						"photo_url" : data.photo_url,
-						"sex" : data.sex,
-						"f_id" : data.f_id,
-						"m_id" : data.m_id,
-						"ch_ids" : data.ch_ids,
-						"spouse_id" : data.spouse_id
-					};
-					cube.mother;
-					cube.father;
-					cube.child;
-					
-					return cube;
+			var cube = new THREE.Object3D();
+			// TODO coords
+			if(data.photo_url == "" || data.photo_url == null){data.photo_url = "no_avatar.jpg"};
+			var photo = this.texture('assets/images/uploaded/avatars/'+data.photo_url, 260, 260);
+			photo.position.set(0, 40, 1);
+			//this.container.style.background = "url('trash/back_11111.jpg')";
+			
+			var elems = {
+                'parent': {
+                    width: this.imgPlusSize, height: this.imgPlusSize, path: 'trash/add.png', trPath: 'trash/add_tr.png', posX: this.mouseX, posY: this.mouseY - Math.floor(this.nodeHeight / 2)+20
+                },
+                'child': {
+                    width: this.imgPlusSize, height: this.imgPlusSize, path: 'trash/add.png', trPath: 'trash/add_tr.png', posX: this.mouseX, posY: this.mouseY + Math.floor(this.nodeHeight / 2)
+                },
+                //'arrow': {
+                //    width: 30, height: 48, path: 'trash/arrow.png', posX: this.mouseX, posY: this.mouseY - 30 - Math.floor(this.nodeHeight / 2)
+                //},
+                'edit': {
+                    width: this.imgPlusSize, height: this.imgPlusSize, path: 'trash/edit.png', trPath: 'trash/edit_tr.png', posX: this.mouseX+this.nodeWidth/4, posY: this.mouseY + Math.floor(this.nodeHeight / 2)
+                },
+                'delete': {
+                    width: this.imgPlusSize, height: this.imgPlusSize, path: 'trash/delete.png', trPath: 'trash/delete_tr.png', posX: this.mouseX-this.nodeWidth/4, posY: this.mouseY + Math.floor(this.nodeHeight / 2)
+                }
+            };
+			
+			cube.add(this.texture('trash/pol1.png', this.nodeWidth, this.nodeHeight));			// children[0]					
+			
+			var minVal = -0.2;
+			var maxVal = 0.2;
+			var floatVal = 2;
+			var randVal = minVal+(Math.random()*(maxVal-minVal));
+			cube.rotation.z = typeof floatVal=='undefined'?Math.round(randVal):randVal.toFixed(floatVal);
+			
+		   
+			cube.add(photo);			// children[1]
+			cube.add(this.text(data));	// children[2]
+			
+            for(var key in elems){
+                cube.add(this.nodeElement(elems[key], key));
+            }
+			cube.info = {
+				"l_name" : data.l_name,
+				"f_name" : data.f_name,
+				"b_date" : data.b_date,
+				"d_date" : data.d_date,
+				"comment" : data.comment,
+				"photo_url" : data.photo_url,
+				"sex" : data.sex,
+				"f_id" : data.f_id,
+				"m_id" : data.m_id,
+				"ch_ids" : data.ch_ids,
+				"spouse_id" : data.spouse_id
+			};
+			cube.mother;
+			cube.father;
+			cube.child;
+			
+			return cube;
 		},
         nodeElement: function(elem, name){
             var element = new THREE.Mesh(new THREE.PlaneGeometry(elem.width, elem.height));
@@ -293,7 +274,8 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
                     }
                 }
    			}
-		},spouseState: null,
+		},
+        spouseState: null,
         create_spouse: function(nodex){
             var data2 = this.data2;
             var data = data2.tree;
@@ -401,7 +383,7 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
                 var sumWidth = 0;
                 var w = this.nodeWidth + 150;
             
-                for (var key in data[id].ch_ids){                
+                for (var key in data[id].ch_ids){
                     var ch_id = data[id].ch_ids[key];                
                     var width = w;
                     
@@ -559,10 +541,10 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
             if(data[data2.id].spouse_id){
                 this.create_spouse(nodeX);
             }
-            console.log(this.chWidth);
-            console.log(this.chLShift);
-            console.log(this.chRShift);
-            console.log(this.chSide);
+            //console.log(this.chWidth);
+            //console.log(this.chLShift);
+            //console.log(this.chRShift);
+            //console.log(this.chSide);
             this.createChildren(data2.id, nodeX, 1);
             for (var key in this.objects){
                 if (this.objects[key].father) this.lines(0x000000,this.objects[key],this.objects[key].father);
@@ -608,6 +590,56 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 					item.position.z = 1;
 					return item;
 		},
+        redrawTree: function(id){
+            ///////////////////////////////////////    CHANGE VIEW     ////////////////////////////////////////////////
+                    this.data2.id = id;
+                    
+                    this.objects = [];
+                    this.data2.tree = [];
+                    this.chWidth = {};
+                    this.chLShift = {};
+                    this.chRShift = {};
+                    this.chSide = {};
+                    this.width_spouse_for_f = 0;
+                    this.width_spouse_for_m = 0;
+                    this.spouseState = false;
+                    $.ajaxSetup({ cache: false });
+        			this.collection = new TreeCollection();
+        			this.collection.fetch({
+                        url: '/data2.json',
+        				success: $.proxy(function(collection) {
+        					var arr = collection.toJSON();
+        					for(key in arr){       							
+        						this.data1[arr[key].id] = arr[key];
+        						if(this.data1[arr[key].id].f_id == "0") {
+        							this.data1[arr[key].id].f_id = "";
+        						}
+        						if(this.data1[arr[key].id].m_id == "0") {
+        							this.data1[arr[key].id].m_id = "";
+        						}
+        						if(this.data1[arr[key].id].spouse_id == "0") {
+        							this.data1[arr[key].id].spouse_id = "";
+        						}
+        					}
+        					this.data2.tree = this.data1;
+        					this.createTree();
+        				},this)});
+        			
+        			this.container.removeChild(this.renderer.domElement);
+                    
+        			this.scene = new THREE.Scene();
+        			this.camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 10000);
+        			this.camera.position.y = 150;
+        			this.camera.position.z = 3000;
+        			this.scene.add(this.camera);
+        			
+        			this.projector = new THREE.Projector();
+        			this.onMouseDownPosition = new THREE.Vector2();
+        			this.renderer = new THREE.CanvasRenderer();
+        			this.renderer.setSize(window.innerWidth, window.innerHeight);
+                    this.container.appendChild(this.renderer.domElement);
+                    ///////////////////////////////////////////////////////////////////////////////////////////////////
+        },
 		onDocumentMouseDown: function(event) {
 
 				event.preventDefault();
@@ -627,93 +659,98 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 		},
 		
 		onClick: function(event) {
-				event.preventDefault();
-				var vector = new THREE.Vector3(this.mouse.x, this.mouse.y, 0.5);
-				this.projector.unprojectVector(vector, this.camera);
-				var ray = new THREE.Ray(this.camera.position, vector.subSelf(this.camera.position).normalize());
-				var intersects = ray.intersectObjects(this.objects);
-				if(intersects.length > 0) {
-					for(i = 0; i < intersects.length; i++)
-					{
-						if(intersects[i].object.name == 'child') {
-							nodex = intersects[i].object.parent;
-							this.TempObj = {
-								"action" : 'add_child',
-								node : nodex
-							};
-							OSX.init_edit({"action": 'add_child'}, intersects[i].object.parent);
-						}
-						else if(intersects[i].object.name == 'parent')
-						{	/////////////////////////////////////   ADDING PARENT    /////////////////////////////////////////
-                            if (!intersects[0].object.parent.father || !intersects[0].object.parent.mother){
-                                nodex = intersects[i].object.parent;
-                               /* i = nodex.generation+1;
-                                var n_id = nodex.info.user_id;
-                                var p_id = this.objects.length+1;
-                               // data = JSON.parse(this.tree);
-                                data = this.treeObj;
-                                if (data[n_id].f_id == ""){
-                                    var m_id = data[n_id].m_id;
-                                    data[n_id].m_id = "";
-                                    data[n_id].f_id = p_id;
-                                } else if (data[n_id].m_id == ""){
-                                    var f_id = data[n_id].f_id;
-                                    data[n_id].f_id = "";
-                                    data[n_id].m_id = p_id;
-                                }
-                                var addNode = {};
-                                addNode[n_id] = data[n_id];
-                                addNode[p_id] = {
-                                                    "l_name":"newName",
-                                                    "f_name":"newfname",
-                                                    "f_id":"",
-                                                    "m_id":"",
-                                                    "ch_ids": n_id,
-                                                    "spouse_id":"",
-                                                    "b_date":"1920",
-                                                    "d_date":"0",
-                                                    "sex":"f",
-                                                    "photo_url":"back_3.jpg",
-                                                    "comment":"comment"
-                                                };
-                                 //tree2 = JSON.stringify(addNode);
-                                 this.create_tree(addNode,n_id,i,nodex);
-                                 if (f_id){
-                                    data[n_id].f_id = f_id;
-                                    f_id = null;
-                                 } else if (m_id) {
-                                    data[n_id].m_id = m_id;
-                                    m_id = null;
-                                 }
-                                 data[p_id] = addNode[p_id];
-                                 this.treeObj = data;
-                                 this._model.update("tree",this.treeObj);
-                                 console.log(this._model.get("tree",this.treeObj));*/
-                                 this.TempObj = {
-										"action" : 'add_parent',
-										node : nodex
-									};
-								 OSX.init_edit({"action": 'add_parent'}, nodex);
-                            }                            
-                            //////////////////////////////////////////////////////////////////////////////////////////////////
-						} else if(intersects[i].object.name == 'edit')
-						{
-							//edit persone 
-							nodex = intersects[i].object.parent;
-							this.TempObj = {
-								"action" : 'edit_person',
-								node : nodex
-							};
-							OSX.init_edit({'action': 'edit_person'}, nodex);
-						}else if(intersects[i].object.name == 'delete')
-						{
-							// delete node
-						}
+			event.preventDefault();
+			var vector = new THREE.Vector3(this.mouse.x, this.mouse.y, 0.5);
+			this.projector.unprojectVector(vector, this.camera);
+			var ray = new THREE.Ray(this.camera.position, vector.subSelf(this.camera.position).normalize());
+			var intersects = ray.intersectObjects(this.objects);
+			if(intersects.length > 0) {
+			    var but = false;
+                for(i = 0; i < intersects.length; i++) {
+					if(intersects[i].object.name == 'child') {
+						nodex = intersects[i].object.parent;
+						this.TempObj = {
+							"action" : 'add_child',
+							node : nodex
+						};
+						OSX.init_edit({"action": 'add_child'}, intersects[i].object.parent);
+                        but = true;
 					}
-                    
-				} else {
-					
+					else if(intersects[i].object.name == 'parent')
+					{	/////////////////////////////////////   ADDING PARENT    /////////////////////////////////////////
+                        /*if (!intersects[0].object.parent.father || !intersects[0].object.parent.mother){
+                            nodex = intersects[i].object.parent;
+                           /* i = nodex.generation+1;
+                            var n_id = nodex.info.user_id;
+                            var p_id = this.objects.length+1;
+                           // data = JSON.parse(this.tree);
+                            data = this.treeObj;
+                            if (data[n_id].f_id == ""){
+                                var m_id = data[n_id].m_id;
+                                data[n_id].m_id = "";
+                                data[n_id].f_id = p_id;
+                            } else if (data[n_id].m_id == ""){
+                                var f_id = data[n_id].f_id;
+                                data[n_id].f_id = "";
+                                data[n_id].m_id = p_id;
+                            }
+                            var addNode = {};
+                            addNode[n_id] = data[n_id];
+                            addNode[p_id] = {
+                                                "l_name":"newName",
+                                                "f_name":"newfname",
+                                                "f_id":"",
+                                                "m_id":"",
+                                                "ch_ids": n_id,
+                                                "spouse_id":"",
+                                                "b_date":"1920",
+                                                "d_date":"0",
+                                                "sex":"f",
+                                                "photo_url":"back_3.jpg",
+                                                "comment":"comment"
+                                            };
+                             //tree2 = JSON.stringify(addNode);
+                             this.create_tree(addNode,n_id,i,nodex);
+                             if (f_id){
+                                data[n_id].f_id = f_id;
+                                f_id = null;
+                             } else if (m_id) {
+                                data[n_id].m_id = m_id;
+                                m_id = null;
+                             }
+                             data[p_id] = addNode[p_id];
+                             this.treeObj = data;
+                             this._model.update("tree",this.treeObj);
+                             console.log(this._model.get("tree",this.treeObj));
+                             this.TempObj = {
+									"action" : 'add_parent',
+									node : nodex
+								};
+							 OSX.init_edit({"action": 'add_parent'}, nodex);*/
+                        //}
+                        //////////////////////////////////////////////////////////////////////////////////////////////////
+                        but = true;
+					} else if(intersects[i].object.name == 'edit') {
+						//edit persone 
+						nodex = intersects[i].object.parent;
+						this.TempObj = {
+							"action" : 'edit_person',
+							node : nodex
+						};
+						OSX.init_edit({'action': 'edit_person'}, nodex);
+                        but = true;
+					}else if(intersects[i].object.name == 'delete') {
+						// delete node
+                        but = true;
+					}
 				}
+                if (!but){
+                    this.redrawTree(intersects[0].object.parent.info.user_id);
+                }
+                
+			} else {
+				
+			}
 		},
 		
 		onDocumentMouseMove: function(event) {
