@@ -188,7 +188,7 @@ class Api extends CI_Controller {
 											    `d_date`= "'.$value->d_date.'",
 											    `sex`= "'.$value->sex.'",
 											    `photo_url`= "'.$value->photo_url.'",
-											    `comment`= "'.$value->comment.'"
+											    `comment`= "'.addslashes($value->comment).'"
 						    WHERE `id`="'.$value->id.'" AND
 							       `user_id`="'.$this->session->userdata('user_id').'"
 					    ');
