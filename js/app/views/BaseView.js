@@ -36,7 +36,7 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 			this.data2.id = 1; //TODO set user_id=>id fr0m local storage
 			$.ajaxSetup({ cache: false });
 			this.collection = new TreeCollection();	
-			this.collection.fetch({//url: '/data2.json',
+			this.collection.fetch({url: '/data2.json',
     				success: $.proxy(function(collection) {
        						console.log(JSON.stringify(collection.toJSON()));
        						console.log(collection.toJSON());
@@ -211,7 +211,7 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
                             if (this.objects[k].info.user_id == data[f_id].ch_ids[k2]) this.objects[k].father = f_node;
                         }
                     }
-                    this.create_relation(nodex,f_node,"father","parent",f_id,i);
+                    if (f_node) this.create_relation(nodex,f_node,"father","parent",f_id,i);
                     if (data[f_id].ch_ids.length == 1 || i > 2) f_node.position.set(nodex.position.x - (Math.pow((4 - i), 0.5)) * this.nodeWidth, (i - 1) * (-this.nodeHeight - 200), 0);
                     
                     if (data[f_id].ch_ids.length > 1 && i < 3){
@@ -242,7 +242,7 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
                             if (this.objects[k].info.user_id == data[m_id].ch_ids[k2]) this.objects[k].mother = m_node;
                         }
                     }
-					this.create_relation(nodex,m_node,"mother","parent",m_id,i);
+					if (m_node) this.create_relation(nodex,m_node,"mother","parent",m_id,i);
                     if (data[m_id].ch_ids.length == 1 || i > 2) m_node.position.set(nodex.position.x + (Math.pow((4 - i), 0.5)) * this.nodeWidth, (i - 1) * (-this.nodeHeight - 200), 0);
 					if (data[m_id].ch_ids.length > 1 && i < 3){
                         if (data[id].sex=="m"){
@@ -320,13 +320,13 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 				var f_id = data[id].f_id;
 				var f_node = this.create_node(data[f_id]);
 				f_node.position.set(nodex.position.x - 300, spouse_node.position.y - this.nodeHeight - 200, 0);
-				this.create_relation(nodex,f_node,"father","parent",f_id,2);
+				if (f_node) this.create_relation(nodex,f_node,"father","parent",f_id,2);
 			};
 			if(data[id].m_id) {
 				var m_id = data[id].m_id;
 				var m_node = this.create_node(data[m_id]);
 				m_node.position.set(nodex.position.x + 300, spouse_node.position.y - this.nodeHeight - 200, 0);
-				this.create_relation(nodex,m_node,"mother","parent",m_id,2);
+				if (m_node) this.create_relation(nodex,m_node,"mother","parent",m_id,2);
 			};
         },
 		create_relation: function(child,parent,relation,adding,id,generation) {
@@ -360,20 +360,31 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 		},
         lines: function(color, child, parent, spouse){
             var lineMat = new THREE.LineBasicMaterial({
-				color : color,
+				//color : color,
 				opacity : 1,
-				linewidth : 3
+				linewidth : 2
 			});
             var geom = new THREE.Geometry();
                 geom.vertices.push(new THREE.Vertex(new THREE.Vector3(child.position.x, child.position.y, -10)));
 				
             if (!spouse){
                 geom.vertices.push(new THREE.Vertex(new THREE.Vector3(child.position.x, child.position.y - 250, -10)));
-				geom.vertices.push(new THREE.Vertex(new THREE.Vector3((child.mother.position.x + child.father.position.x)/2, child.position.y - 250, -10)));
-                geom.vertices.push(new THREE.Vertex(new THREE.Vector3((child.mother.position.x + child.father.position.x)/2, parent.position.y, -10)));
-				
+				if (child.mother && child.father){
+				    geom.vertices.push(new THREE.Vertex(new THREE.Vector3((child.mother.position.x + child.father.position.x)/2, child.position.y - 250, -10)));
+                    geom.vertices.push(new THREE.Vertex(new THREE.Vector3((child.mother.position.x + child.father.position.x)/2, parent.position.y, -10)));
+                    geom.vertices.push(new THREE.Vertex(new THREE.Vector3(parent.position.x, parent.position.y, -10)));
+				}
+                if (child.mother && !child.father){
+                    geom.vertices.push(new THREE.Vertex(new THREE.Vector3(child.position.x, child.mother.position.y, -10)));
+                    geom.vertices.push(new THREE.Vertex(new THREE.Vector3(child.mother.position.x, child.mother.position.y, -10)));
+                }
+                if (!child.mother && child.father){
+                    geom.vertices.push(new THREE.Vertex(new THREE.Vector3(child.position.x, child.father.position.y, -10)));
+                    geom.vertices.push(new THREE.Vertex(new THREE.Vector3(child.father.position.x, child.father.position.y, -10)));
+                }
+            } else {
+                geom.vertices.push(new THREE.Vertex(new THREE.Vector3(parent.position.x, parent.position.y, -10)));
             }
-			    geom.vertices.push(new THREE.Vertex(new THREE.Vector3(parent.position.x, parent.position.y, -10)));
 				
             line = new THREE.Line(geom, lineMat);
             
@@ -526,10 +537,10 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
                     }
                     if (data[nodex.info.user_id].sex == "m"){
                         this.create_relation(chNode,nodex,"father","child",ch_id,1);
-                        this.create_relation(chNode,spNodex,"mother","",ch_id,1);
+                        if (spNodex) this.create_relation(chNode,spNodex,"mother","",ch_id,1);
                     }else if (data[nodex.info.user_id].sex == "f"){
                         this.create_relation(chNode,nodex,"mother","child",ch_id,1);
-                        this.create_relation(chNode,spNodex,"father","",ch_id,1);
+                        if (spNodex) this.create_relation(chNode,spNodex,"father","",ch_id,1);
                     }
                     this.createChildren(ch_id, chNode, i+1);
                 }
@@ -554,16 +565,15 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
             console.log(this.chSide);
             this.createChildren(data2.id, nodeX, 1);
             for (var key in this.objects){
-                if (this.objects[key].father && this.objects[key].mother){
-                    if (this.objects[key].father) this.lines(0x000000,this.objects[key],this.objects[key].father);
-                    if (this.objects[key].mother) this.lines(0x000000,this.objects[key],this.objects[key].mother);
-                }else{
-                    if (data[this.objects[key].info.user_id].spouse_id){
-                        for (var k in this.objects){
-                            if (this.objects[k].info.user_id == data[this.objects[key].info.user_id].spouse_id) var spNode = this.objects[k];
-                        }
-                        this.lines(0x000000,this.objects[key],spNode,true);
+                if (this.objects[key].father) this.lines(0x000000,this.objects[key],this.objects[key].father);
+                if (this.objects[key].mother) this.lines(0x000000,this.objects[key],this.objects[key].mother);
+                
+                if (data[this.objects[key].info.user_id].spouse_id){
+                    for (var k in this.objects){
+                        if (this.objects[k].info.user_id == data[this.objects[key].info.user_id].spouse_id) {var spNode = this.objects[k]; break;}
                     }
+                    if (spNode) this.lines(0x000000,this.objects[key],spNode,true);
+                    spNode = null;
                 }
             }
 		},
