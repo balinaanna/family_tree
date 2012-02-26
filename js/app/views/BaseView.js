@@ -592,7 +592,7 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 					item.position.z = 1;
 					return item;
 		},
-        changeView: function(id){
+        redrawTree: function(id){
             ///////////////////////////////////////    CHANGE VIEW     ////////////////////////////////////////////////
                     this.data2.id = id;
                     
@@ -747,7 +747,7 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 					}
 				}
                 if (!but){
-                    this.changeView(intersects[0].object.parent.info.user_id);
+                    this.redrawTree(intersects[0].object.parent.info.user_id);
                 }
                 
 			} else {
