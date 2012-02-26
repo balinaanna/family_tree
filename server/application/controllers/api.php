@@ -11,7 +11,7 @@ class Api extends CI_Controller {
 		$this->load->model('pass_recover_model');
 		$this->load->model('image_model');
 	}
-	
+
 	public function index()	{
 		if($this->session->userdata('user_id')){
 			$json->action = "index.html";
@@ -24,11 +24,11 @@ class Api extends CI_Controller {
 		}
 		echo json_encode($json);
 	}
-	
+
 	public function logout(){
 		$this->session->sess_destroy();
 	}
-	
+
 	public function get_tree() {		
 		$result = $this->db->query('SELECT  b.* FROM profile_data b
 										WHERE b.user_id="'.$this->session->userdata('user_id').'"
@@ -59,12 +59,12 @@ class Api extends CI_Controller {
 		//print_r($tree);
 		echo json_encode($tree);	
 	}
-	
+
 	public function login() {
 		$email=addslashes($_REQUEST['email']);
-		$pass=md5(md5(addslashes($_REQUEST['pass'])));
-		if(isset($_REQUEST['autologin'])){$autologin=addslashes(base64_decode($_REQUEST['autologin']));}
-		if(!$pass){$pass=$autologin;}
+		if(isset($_REQUEST['pass'])){$pass=md5(md5(addslashes($_REQUEST['pass'])));}
+		elseif(isset($_REQUEST['autologin'])){$pass=addslashes($_REQUEST['autologin']);}
+		else {$pass="";}
 		/*
 		$result = $this->db->query('SELECT b.*, a.pass, a.id as user_id FROM users a, profile_data b
 										WHERE a.prof_id=b.id AND a.email="'.$email.'" AND a.pass="'.$pass.'"
@@ -81,16 +81,16 @@ class Api extends CI_Controller {
 		if($db_result) {
 			$json->action = "login";
 			$json->status = "1";
-			$json->id=$db_result[0]->user_id;
-			$json->pass=base64_encode($db_result[0]->pass);
-			
+			$json->id = $db_result[0]->user_id;
+			$json->email = $email;
+			$json->autologin = $pass;
+
 			$session_data = array(
 			    'user_id'  => $db_result[0]->user_id,
-			    //'prof_id'  => $json->id,
 			    'pass'     => $db_result[0]->pass
 			);
 			$this->session->set_userdata($session_data);
-			
+
 		} else {
 			$json->action = "login";
 			$json->status = "0";
@@ -98,7 +98,7 @@ class Api extends CI_Controller {
 		}
 		echo json_encode($json);
 	}
-	
+
 	public function reg() {
 		$email=addslashes($_REQUEST['email']);
 		if( $this->email_model->is_valid_email($email) == false ) {
@@ -116,6 +116,10 @@ class Api extends CI_Controller {
 		    echo json_encode($json);
 		    die();
 		}
+		@$f_name = addslashes($_REQUEST['f_name']);
+		@$l_name = addslashes($_REQUEST['l_name']);
+		@$b_date = addslashes($_REQUEST['b_date']);
+		@$sex = addslashes($_REQUEST['sex']);
 		$res = $this->db->query('SELECT * FROM users WHERE email="'.$email.'"');
 		if(!$res->result()){
 			$result = $this->db->query('INSERT INTO users(`id`, `prof_id`, `email`, `pass`)
@@ -125,26 +129,26 @@ class Api extends CI_Controller {
 										WHERE a.email="'.$email.'" AND a.pass="'.$pass.'"
 							    	');
 			$db_result = $result->result();
-			$this->db->query('INSERT INTO `profile_data`(`user_id`, `id`, `f_id`, `m_id`, `ch_ids`, `spouse_id`, `f_name`, `l_name`, `b_date`, `d_date`, `sex`, `photo_url`, `comment`)
-				    	    VALUES (
-					    		"'.$db_result[0]->user_id.'",
-					    		"1",
-								"",
-							    "",
-								"[]",
-								"",
-								"",
-								"",
-								"",
-								"",
-								"",
-								"",
-								""
-							)
-					    ');
+			$this->db->query('INSERT INTO `profile_data`(`user_id`, `f_id`, `m_id`, `ch_ids`, `spouse_id`, `f_name`, `l_name`, `b_date`, `d_date`, `sex`, `photo_url`, `comment`)
+				    	    	VALUES (
+					    			"'.$db_result[0]->user_id.'",
+									"",
+							    	"",
+									"[]",
+									"",
+									"'.$f_name.'",
+									"'.$l_name.'",
+									"'.$b_date.'",
+									"",
+									"'.$sex.'",
+									"",
+									""
+								)');
+			$this->db->query('UPDATE `users` SET `prof_id`=(SELECT `id` FROM `profile_data` WHERE `user_id`="'.$db_result[0]->user_id.'" LIMIT 1) WHERE email="'.$email.'"');		    	
 			$json->action = "registration";
 			$json->status = "1";
-			$this->email_model->send($email, 'Family Tree Registration', 'Thanks for registration');
+			$json->message = "Registration successful";
+			//$this->email_model->send($email, 'Family Tree Registration', 'Thanks for registration');
 		} else {
 			$json->action = "registration";
 			$json->status = "0";
@@ -152,7 +156,7 @@ class Api extends CI_Controller {
 		}
 		echo json_encode($json);
 	}
-	
+
 	public function pass_recover() {
 		$email = addslashes($_REQUEST['email']);
 		$res = $this->db->query('SELECT * FROM users WHERE email="'.$email.'"');
@@ -169,11 +173,11 @@ class Api extends CI_Controller {
 		}
 		echo json_encode($json);
 	}
-	
+
 	public function save_node() {
 	    $value = (object)$_REQUEST;
-		print_r($value);
-		print_r($_REQUEST);
+		//print_r($value);
+		//print_r($_REQUEST);
 		$this->db->query('UPDATE `profile_data` SET  `f_id`= "'.$value->f_id.'",
 											    `m_id`= "'.$value->m_id.'",
 											    `ch_ids`= "'.addslashes(json_encode($value->ch_ids)).'",
@@ -184,7 +188,7 @@ class Api extends CI_Controller {
 											    `d_date`= "'.$value->d_date.'",
 											    `sex`= "'.$value->sex.'",
 											    `photo_url`= "'.$value->photo_url.'",
-											    `comment`= "'.addslashes($value->comment).'"
+											    `comment`= "'.$value->comment.'"
 						    WHERE `id`="'.$value->id.'" AND
 							       `user_id`="'.$this->session->userdata('user_id').'"
 					    ');
@@ -208,7 +212,7 @@ class Api extends CI_Controller {
 	    $json->status = "1";
 	    echo json_encode($json);
 	}
-	
+
 public function add_node() {
 $value = (object)$_REQUEST;
 	    $photo = (!isset($value->upload)) ? pathinfo($value->photo_url) : array('basename' => 0);
@@ -218,7 +222,7 @@ $value = (object)$_REQUEST;
 								"'.$value->f_id.'",
 							    "'.$value->m_id.'",
 								"'.addslashes(json_encode($value->ch_ids)).'",
-								"'.$value->spouse_id.'",
+								"'.addslashes(json_encode($value->spouse_id)).'",
 								"'.$value->f_name.'",
 								"'.$value->l_name.'",
 								"'.$value->b_date.'",
@@ -265,7 +269,7 @@ $value = (object)$_REQUEST;
 	    $json->status = "1";
 	    echo json_encode($json);
 	}
-	
+
 	public function delete_node() {
 	    $value->id = $_REQUEST['id'];
 	    $this->db->query('DELETE FROM `profile_data`
