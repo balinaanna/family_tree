@@ -611,143 +611,146 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 		},
 		
 		onClick: function(event) {
-				event.preventDefault();
-				var vector = new THREE.Vector3(this.mouse.x, this.mouse.y, 0.5);
-				this.projector.unprojectVector(vector, this.camera);
-				var ray = new THREE.Ray(this.camera.position, vector.subSelf(this.camera.position).normalize());
-				var intersects = ray.intersectObjects(this.objects);
-				if(intersects.length > 0) {
-				    var but = false;
-                    for(i = 0; i < intersects.length; i++) {
-						if(intersects[i].object.name == 'child') {
-							nodex = intersects[i].object.parent;
-							this.TempObj = {
-								"action" : 'add_child',
-								node : nodex
-							};
-							OSX.init_edit({"action": 'add_child'}, intersects[i].object.parent);
-                            but = true;
-						}
-						else if(intersects[i].object.name == 'parent')
-						{	/////////////////////////////////////   ADDING PARENT    /////////////////////////////////////////
-                            /*if (!intersects[0].object.parent.father || !intersects[0].object.parent.mother){
-                                nodex = intersects[i].object.parent;
-                               /* i = nodex.generation+1;
-                                var n_id = nodex.info.user_id;
-                                var p_id = this.objects.length+1;
-                               // data = JSON.parse(this.tree);
-                                data = this.treeObj;
-                                if (data[n_id].f_id == ""){
-                                    var m_id = data[n_id].m_id;
-                                    data[n_id].m_id = "";
-                                    data[n_id].f_id = p_id;
-                                } else if (data[n_id].m_id == ""){
-                                    var f_id = data[n_id].f_id;
-                                    data[n_id].f_id = "";
-                                    data[n_id].m_id = p_id;
-                                }
-                                var addNode = {};
-                                addNode[n_id] = data[n_id];
-                                addNode[p_id] = {
-                                                    "l_name":"newName",
-                                                    "f_name":"newfname",
-                                                    "f_id":"",
-                                                    "m_id":"",
-                                                    "ch_ids": n_id,
-                                                    "spouse_id":"",
-                                                    "b_date":"1920",
-                                                    "d_date":"0",
-                                                    "sex":"f",
-                                                    "photo_url":"back_3.jpg",
-                                                    "comment":"comment"
-                                                };
-                                 //tree2 = JSON.stringify(addNode);
-                                 this.create_tree(addNode,n_id,i,nodex);
-                                 if (f_id){
-                                    data[n_id].f_id = f_id;
-                                    f_id = null;
-                                 } else if (m_id) {
-                                    data[n_id].m_id = m_id;
-                                    m_id = null;
-                                 }
-                                 data[p_id] = addNode[p_id];
-                                 this.treeObj = data;
-                                 this._model.update("tree",this.treeObj);
-                                 console.log(this._model.get("tree",this.treeObj));
-                                 this.TempObj = {
-										"action" : 'add_parent',
-										node : nodex
-									};
-								 OSX.init_edit({"action": 'add_parent'}, nodex);*/
-                            //}
-                            //////////////////////////////////////////////////////////////////////////////////////////////////
-                            but = true;
-						} else if(intersects[i].object.name == 'edit') {
-							//edit persone 
-							nodex = intersects[i].object.parent;
-							this.TempObj = {
-								"action" : 'edit_person',
-								node : nodex
-							};
-							OSX.init_edit({'action': 'edit_person'}, nodex);
-                            but = true;
-						}else if(intersects[i].object.name == 'delete') {
-							// delete node
-                            but = true;
-						}
+			event.preventDefault();
+			var vector = new THREE.Vector3(this.mouse.x, this.mouse.y, 0.5);
+			this.projector.unprojectVector(vector, this.camera);
+			var ray = new THREE.Ray(this.camera.position, vector.subSelf(this.camera.position).normalize());
+			var intersects = ray.intersectObjects(this.objects);
+			if(intersects.length > 0) {
+			    var but = false;
+                for(i = 0; i < intersects.length; i++) {
+					if(intersects[i].object.name == 'child') {
+						nodex = intersects[i].object.parent;
+						this.TempObj = {
+							"action" : 'add_child',
+							node : nodex
+						};
+						OSX.init_edit({"action": 'add_child'}, intersects[i].object.parent);
+                        but = true;
 					}
-                    if (!but){
-                        ///////////////////////////////////////    CHANGE VIEW     ////////////////////////////////////////////////
-                        this.data2.id = intersects[0].object.parent.info.user_id;
-                        
-                        this.objects.length = 0;
-                        this.data2.tree.length = 0;
-                        this.chWidth.length = 0;
-                        this.chLShift.length = 0;
-                        this.chRShift.length = 0;
-                        this.chSide.length = 0;
-                        $.ajaxSetup({ cache: false });
-            			this.collection = new TreeCollection();
-            			this.collection.fetch({
-                            url: '/data2.json',
-            				success: $.proxy(function(collection) {
-            					var arr = collection.toJSON();
-            					for(key in arr){       							
-            						this.data1[arr[key].id] = arr[key];
-            						if(this.data1[arr[key].id].f_id == "0") {
-            							this.data1[arr[key].id].f_id = "";
-            						}
-            						if(this.data1[arr[key].id].m_id == "0") {
-            							this.data1[arr[key].id].m_id = "";
-            						}
-            						if(this.data1[arr[key].id].spouse_id == "0") {
-            							this.data1[arr[key].id].spouse_id = "";
-            						}
-            					}
-            					this.data2.tree = this.data1;
-            					this.createTree();
-            				},this)});
-            			
-            			this.container.removeChild(this.renderer.domElement);
-                        
-            			this.scene = new THREE.Scene();
-            			this.camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 10000);
-            			this.camera.position.y = 150;
-            			this.camera.position.z = 3000;
-            			this.scene.add(this.camera);
-            			
-            			this.projector = new THREE.Projector();
-            			this.onMouseDownPosition = new THREE.Vector2();
-            			this.renderer = new THREE.CanvasRenderer();
-            			this.renderer.setSize(window.innerWidth, window.innerHeight);
-                        this.container.appendChild(this.renderer.domElement);
-                        ///////////////////////////////////////////////////////////////////////////////////////////////////
-                        return;
-                    }
-                    
-				} else {
-					
+					else if(intersects[i].object.name == 'parent')
+					{	/////////////////////////////////////   ADDING PARENT    /////////////////////////////////////////
+                        /*if (!intersects[0].object.parent.father || !intersects[0].object.parent.mother){
+                            nodex = intersects[i].object.parent;
+                           /* i = nodex.generation+1;
+                            var n_id = nodex.info.user_id;
+                            var p_id = this.objects.length+1;
+                           // data = JSON.parse(this.tree);
+                            data = this.treeObj;
+                            if (data[n_id].f_id == ""){
+                                var m_id = data[n_id].m_id;
+                                data[n_id].m_id = "";
+                                data[n_id].f_id = p_id;
+                            } else if (data[n_id].m_id == ""){
+                                var f_id = data[n_id].f_id;
+                                data[n_id].f_id = "";
+                                data[n_id].m_id = p_id;
+                            }
+                            var addNode = {};
+                            addNode[n_id] = data[n_id];
+                            addNode[p_id] = {
+                                                "l_name":"newName",
+                                                "f_name":"newfname",
+                                                "f_id":"",
+                                                "m_id":"",
+                                                "ch_ids": n_id,
+                                                "spouse_id":"",
+                                                "b_date":"1920",
+                                                "d_date":"0",
+                                                "sex":"f",
+                                                "photo_url":"back_3.jpg",
+                                                "comment":"comment"
+                                            };
+                             //tree2 = JSON.stringify(addNode);
+                             this.create_tree(addNode,n_id,i,nodex);
+                             if (f_id){
+                                data[n_id].f_id = f_id;
+                                f_id = null;
+                             } else if (m_id) {
+                                data[n_id].m_id = m_id;
+                                m_id = null;
+                             }
+                             data[p_id] = addNode[p_id];
+                             this.treeObj = data;
+                             this._model.update("tree",this.treeObj);
+                             console.log(this._model.get("tree",this.treeObj));
+                             this.TempObj = {
+									"action" : 'add_parent',
+									node : nodex
+								};
+							 OSX.init_edit({"action": 'add_parent'}, nodex);*/
+                        //}
+                        //////////////////////////////////////////////////////////////////////////////////////////////////
+                        but = true;
+					} else if(intersects[i].object.name == 'edit') {
+						//edit persone 
+						nodex = intersects[i].object.parent;
+						this.TempObj = {
+							"action" : 'edit_person',
+							node : nodex
+						};
+						OSX.init_edit({'action': 'edit_person'}, nodex);
+                        but = true;
+					}else if(intersects[i].object.name == 'delete') {
+						// delete node
+                        but = true;
+					}
 				}
+                if (!but){
+                    ///////////////////////////////////////    CHANGE VIEW     ////////////////////////////////////////////////
+                    this.data2.id = intersects[0].object.parent.info.user_id;
+                    
+                    this.objects = [];
+                    this.data2.tree = [];
+                    this.chWidth = {};
+                    this.chLShift = {};
+                    this.chRShift = {};
+                    this.chSide = {};
+                    this.width_spouse_for_f = 0;
+                    this.width_spouse_for_m = 0;
+                    this.spouseState = false;
+                    $.ajaxSetup({ cache: false });
+        			this.collection = new TreeCollection();
+        			this.collection.fetch({
+                        url: '/data2.json',
+        				success: $.proxy(function(collection) {
+        					var arr = collection.toJSON();
+        					for(key in arr){       							
+        						this.data1[arr[key].id] = arr[key];
+        						if(this.data1[arr[key].id].f_id == "0") {
+        							this.data1[arr[key].id].f_id = "";
+        						}
+        						if(this.data1[arr[key].id].m_id == "0") {
+        							this.data1[arr[key].id].m_id = "";
+        						}
+        						if(this.data1[arr[key].id].spouse_id == "0") {
+        							this.data1[arr[key].id].spouse_id = "";
+        						}
+        					}
+        					this.data2.tree = this.data1;
+        					this.createTree();
+        				},this)});
+        			
+        			this.container.removeChild(this.renderer.domElement);
+                    
+        			this.scene = new THREE.Scene();
+        			this.camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 10000);
+        			this.camera.position.y = 150;
+        			this.camera.position.z = 3000;
+        			this.scene.add(this.camera);
+        			
+        			this.projector = new THREE.Projector();
+        			this.onMouseDownPosition = new THREE.Vector2();
+        			this.renderer = new THREE.CanvasRenderer();
+        			this.renderer.setSize(window.innerWidth, window.innerHeight);
+                    this.container.appendChild(this.renderer.domElement);
+                    ///////////////////////////////////////////////////////////////////////////////////////////////////
+                    return;
+                }
+                
+			} else {
+				
+			}
 		},
 		
 		onDocumentMouseMove: function(event) {
