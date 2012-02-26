@@ -14,7 +14,7 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 		onMouseDownPosition: null,
 		mouse : new THREE.Vector2(),
 		nodeWidth : 360,
-		nodeHeight : 350,			
+		nodeHeight : 450,			
 		imgPlusSize : 70,
         SELECTED: null,
         data1:{},
@@ -34,7 +34,7 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 		initialize: function(){
 			//test model
 			this.data2.id = 1; //TODO set user_id=>id fr0m local storage
-			$.ajaxSetup({ cache: false });
+			$.ajaxSetup({cache: false});
 			this.collection = new TreeCollection();	
 			this.collection.fetch({url: '/data2.json',
     				success: $.proxy(function(collection) {
@@ -118,13 +118,13 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 					var cube = new THREE.Object3D();
 					// TODO coords
 					if(data.photo_url == "" || data.photo_url == null){data.photo_url = "no_avatar.jpg"};
-					var photo = this.texture('assets/images/uploaded/avatars/'+data.photo_url, 235, 235);
-					photo.position.set(0, 30, 1);
-					this.container.style.background = "url('trash/back_11111.jpg')";
+					var photo = this.texture('assets/images/uploaded/avatars/'+data.photo_url, 260, 260);
+					photo.position.set(0, 40, 1);
+					//this.container.style.background = "url('trash/back_11111.jpg')";
 					
 					var elems = {
                         'parent': {
-                            width: this.imgPlusSize, height: this.imgPlusSize, path: 'trash/add.png', trPath: 'trash/add_tr.png', posX: this.mouseX, posY: this.mouseY - Math.floor(this.nodeHeight / 2)
+                            width: this.imgPlusSize, height: this.imgPlusSize, path: 'trash/add.png', trPath: 'trash/add_tr.png', posX: this.mouseX, posY: this.mouseY - Math.floor(this.nodeHeight / 2)+20
                         },
                         'child': {
                             width: this.imgPlusSize, height: this.imgPlusSize, path: 'trash/add.png', trPath: 'trash/add_tr.png', posX: this.mouseX, posY: this.mouseY + Math.floor(this.nodeHeight / 2)
@@ -140,7 +140,7 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
                         }
                     };
 					
-					cube.add(this.texture('trash/polaroid.png', this.nodeWidth*0.8, this.nodeHeight));			// children[0]					
+					cube.add(this.texture('trash/pol1.png', this.nodeWidth, this.nodeHeight));			// children[0]					
 					
 					var minVal = -0.2;
 					var maxVal = 0.2;
@@ -153,7 +153,7 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 					cube.add(this.text(data));	// children[2]
 					
                     for(var key in elems){
-                        cube.add(this.nodeElement(elems[key], key));
+						cube.add(this.nodeElement(elems[key], key));
                     }
 					cube.info = {
 						"l_name" : data.l_name,
@@ -593,12 +593,10 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 					canvas.height = this.nodeHeight;
 					var context = canvas.getContext("2d");
 					context.fillStyle = "black";
-					context.font = 'italic 22px Arial Black';
+					context.font = 'italic 30px Arial Black';
 					//TODO text align
-					context.fillText(data.f_name, this.nodeWidth * 0.2, this.nodeHeight * 0.83);
-					context.fillText(data.l_name, this.nodeWidth * 0.5, this.nodeHeight * 0.83);
-					context.fillText(data.b_date, this.nodeWidth * 0.3, this.nodeHeight * 0.9);
-					context.fillText(data.d_date, this.nodeWidth * 0.55, this.nodeHeight * 0.9);
+					context.fillText(data.f_name+' '+data.l_name, this.nodeWidth * 0.15, this.nodeHeight * 0.78);
+					context.fillText(data.b_date+' - '+data.d_date, this.nodeWidth * 0.15, this.nodeHeight * 0.85);
 					var tex = new THREE.Texture(canvas);
 					tex.needsUpdate = true;
 					var mat = new THREE.MeshBasicMaterial({
@@ -729,7 +727,6 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 
 				if( intersects.length > 0 ) {
 					this.container.style.cursor = 'pointer';
-					
 					hint = false;
 					for(i = 0; i < intersects.length; i++)
 					{
@@ -806,7 +803,7 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 						intersects[0].object.parent.redrawLine();
 					}
                     
-				} else {
+				} else {					
 					$('#hint').css('opacity','0');
 					$('#hint').css('left',-100);
 					$('#hint').css('top',-100);

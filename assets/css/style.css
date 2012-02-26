@@ -1,16 +1,32 @@
 #navigator {
 	position: absolute;
 	width: 100px;
-	height: 410px;
-	/*background-color: #aaaaaa;*/
-	background-color: transparent;
-	opacity: 0.3;
-	border: 1px solid #fff;
-	box-shadow: 0 0 5px 2px #1A3457;
-	-webkit-box-shadow: 0 0 5px 2px #1A3457; /* Safari, Chrome */
-	-moz-box-shadow: 0 0 5px 2px #1A3457; /* Firefox */
+	/*height: 410px;*/
+	top: 0;
+	bottom: 0;
+	background-color: #617c83;
+	/*background-color: transparent;*/
+	opacity: 0.5;
+	border: 0px solid #fff;
+	box-shadow: 0 0 10px 2px #1A3457;
+	-webkit-box-shadow: 0 0 10px 2px #1A3457; /* Safari, Chrome */
+	-moz-box-shadow: 0 0 10px 2px #1A3457; /* Firefox */
 	margin: 0 auto;
 	padding: 3 5 3 5;
+	/*
+	background-image: linear-gradient(bottom, rgb(97,124,131) 0%, rgb(182,207,212) 48%, rgb(97,124,131) 100%);
+	background-image: -o-linear-gradient(bottom, rgb(97,124,131) 0%, rgb(182,207,212) 48%, rgb(97,124,131) 100%);
+	background-image: -moz-linear-gradient(bottom, rgb(97,124,131) 0%, rgb(182,207,212) 48%, rgb(97,124,131) 100%);
+	background-image: -webkit-linear-gradient(bottom, rgb(97,124,131) 0%, rgb(182,207,212) 48%, rgb(97,124,131) 100%);
+	background-image: -ms-linear-gradient(bottom, rgb(97,124,131) 0%, rgb(182,207,212) 48%, rgb(97,124,131) 100%);
+	background-image: -webkit-gradient(
+		linear,
+		left bottom,
+		left top,
+		color-stop(0, rgb(97,124,131)),
+		color-stop(0.48, rgb(182,207,212)),
+		color-stop(1, rgb(97,124,131))
+	);*/
 }
 .circle {
 	float: left;
@@ -97,7 +113,23 @@
 	top: 370px;
 }
 .body {
-	background-image: url(/trash/back_11111.jpg);
+	/*background-image: url(/trash/back_11111.jpg);*/
+	background-image: linear-gradient(bottom, rgb(97,124,131) 0%, rgb(182,207,212) 48%, rgb(97,124,131) 100%);
+	background-image: -o-linear-gradient(bottom, rgb(97,124,131) 0%, rgb(182,207,212) 48%, rgb(97,124,131) 100%);
+	background-image: -moz-linear-gradient(bottom, rgb(97,124,131) 0%, rgb(182,207,212) 48%, rgb(97,124,131) 100%);
+	background-image: -webkit-linear-gradient(bottom, rgb(97,124,131) 0%, rgb(182,207,212) 48%, rgb(97,124,131) 100%);
+	background-image: -ms-linear-gradient(bottom, rgb(97,124,131) 0%, rgb(182,207,212) 48%, rgb(97,124,131) 100%);
+	background-image: -webkit-gradient(
+		linear,
+		left bottom,
+		left top,
+		color-stop(0, rgb(97,124,131)),
+		color-stop(0.48, rgb(182,207,212)),
+		color-stop(1, rgb(97,124,131))
+	);    
+/*background: -webkit-gradient(linear, left top, left bottom, from(#e6e6fa), to(#FFFFE0));
+    background-repeat: no-repeat;*/
+/*background-color: #e6e6fa/*a5b8bd*//**//*617c83*//*b6cfd4*/;
 	margin: 0;
 }
 #loginform {
