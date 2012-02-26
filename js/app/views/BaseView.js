@@ -617,8 +617,8 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 				var ray = new THREE.Ray(this.camera.position, vector.subSelf(this.camera.position).normalize());
 				var intersects = ray.intersectObjects(this.objects);
 				if(intersects.length > 0) {
-                    for(i = 0; i < intersects.length; i++)
-					{
+				    var but = false;
+                    for(i = 0; i < intersects.length; i++) {
 						if(intersects[i].object.name == 'child') {
 							nodex = intersects[i].object.parent;
 							this.TempObj = {
@@ -626,6 +626,7 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 								node : nodex
 							};
 							OSX.init_edit({"action": 'add_child'}, intersects[i].object.parent);
+                            but = true;
 						}
 						else if(intersects[i].object.name == 'parent')
 						{	/////////////////////////////////////   ADDING PARENT    /////////////////////////////////////////
@@ -680,8 +681,8 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 								 OSX.init_edit({"action": 'add_parent'}, nodex);*/
                             //}
                             //////////////////////////////////////////////////////////////////////////////////////////////////
-						} else if(intersects[i].object.name == 'edit')
-						{
+                            but = true;
+						} else if(intersects[i].object.name == 'edit') {
 							//edit persone 
 							nodex = intersects[i].object.parent;
 							this.TempObj = {
@@ -689,58 +690,60 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 								node : nodex
 							};
 							OSX.init_edit({'action': 'edit_person'}, nodex);
-						}else if(intersects[i].object.name == 'delete')
-						{
+                            but = true;
+						}else if(intersects[i].object.name == 'delete') {
 							// delete node
-						}else{
-                            ///////////////////////////////////////    CHANGE VIEW     ////////////////////////////////////////////////
-                            this.data2.id = intersects[0].object.parent.info.user_id;
-                            
-                            this.objects.length = 0;
-                            this.data2.tree.length = 0;
-                            this.chWidth.length = 0;
-                            this.chLShift.length = 0;
-                            this.chRShift.length = 0;
-                            this.chSide.length = 0;
-                            $.ajaxSetup({ cache: false });
-                			this.collection = new TreeCollection();
-                			this.collection.fetch({
-                                url: '/data2.json',
-                				success: $.proxy(function(collection) {
-                					var arr = collection.toJSON();
-                					for(key in arr){       							
-                						this.data1[arr[key].id] = arr[key];
-                						if(this.data1[arr[key].id].f_id == "0") {
-                							this.data1[arr[key].id].f_id = "";
-                						}
-                						if(this.data1[arr[key].id].m_id == "0") {
-                							this.data1[arr[key].id].m_id = "";
-                						}
-                						if(this.data1[arr[key].id].spouse_id == "0") {
-                							this.data1[arr[key].id].spouse_id = "";
-                						}
-                					}
-                					this.data2.tree = this.data1;
-                					this.createTree();
-                				},this)});
-                			
-                			this.container.removeChild(this.renderer.domElement);
-                            
-                			this.scene = new THREE.Scene();
-                			this.camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 10000);
-                			this.camera.position.y = 150;
-                			this.camera.position.z = 3000;
-                			this.scene.add(this.camera);
-                			
-                			this.projector = new THREE.Projector();
-                			this.onMouseDownPosition = new THREE.Vector2();
-                			this.renderer = new THREE.CanvasRenderer();
-                			this.renderer.setSize(window.innerWidth, window.innerHeight);
-                            this.container.appendChild(this.renderer.domElement);
-                            ///////////////////////////////////////////////////////////////////////////////////////////////////
-                            return;
+                            but = true;
 						}
 					}
+                    if (!but){
+                        ///////////////////////////////////////    CHANGE VIEW     ////////////////////////////////////////////////
+                        this.data2.id = intersects[0].object.parent.info.user_id;
+                        
+                        this.objects.length = 0;
+                        this.data2.tree.length = 0;
+                        this.chWidth.length = 0;
+                        this.chLShift.length = 0;
+                        this.chRShift.length = 0;
+                        this.chSide.length = 0;
+                        $.ajaxSetup({ cache: false });
+            			this.collection = new TreeCollection();
+            			this.collection.fetch({
+                            url: '/data2.json',
+            				success: $.proxy(function(collection) {
+            					var arr = collection.toJSON();
+            					for(key in arr){       							
+            						this.data1[arr[key].id] = arr[key];
+            						if(this.data1[arr[key].id].f_id == "0") {
+            							this.data1[arr[key].id].f_id = "";
+            						}
+            						if(this.data1[arr[key].id].m_id == "0") {
+            							this.data1[arr[key].id].m_id = "";
+            						}
+            						if(this.data1[arr[key].id].spouse_id == "0") {
+            							this.data1[arr[key].id].spouse_id = "";
+            						}
+            					}
+            					this.data2.tree = this.data1;
+            					this.createTree();
+            				},this)});
+            			
+            			this.container.removeChild(this.renderer.domElement);
+                        
+            			this.scene = new THREE.Scene();
+            			this.camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 10000);
+            			this.camera.position.y = 150;
+            			this.camera.position.z = 3000;
+            			this.scene.add(this.camera);
+            			
+            			this.projector = new THREE.Projector();
+            			this.onMouseDownPosition = new THREE.Vector2();
+            			this.renderer = new THREE.CanvasRenderer();
+            			this.renderer.setSize(window.innerWidth, window.innerHeight);
+                        this.container.appendChild(this.renderer.domElement);
+                        ///////////////////////////////////////////////////////////////////////////////////////////////////
+                        return;
+                    }
                     
 				} else {
 					
