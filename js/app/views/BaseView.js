@@ -33,13 +33,13 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 		
 		initialize: function(){
 			//test model
-			this.data2.id = 1; //TODO set user_id=>id fr0m local storage
+			this.data2.id = localStorage.getItem("prof_id"); //TODO set user_id=>id fr0m local storage
 			$.ajaxSetup({cache: false});
 			this.collection = new TreeCollection();	
 			this.collection.fetch({
-                url: '/data2.json',
+                //url: '/data2.json',
 				success: $.proxy(function(collection) {
-					var arr = collection.toJSON();
+					var arr = collection.toJSON();console.log(arr);
 					for(key in arr){       							
 						this.data1[arr[key].id] = arr[key];
 						if(this.data1[arr[key].id].f_id == "0") {
@@ -53,6 +53,7 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 						}
 					}
 					this.data2.tree = this.data1;
+					console.log(this.data2.tree);
 					this.createTree();
 				},this)});
 			
@@ -96,7 +97,7 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 		},
 		
 		create_node: function (data){
-			var cube = new THREE.Object3D();
+			var cube = new THREE.Object3D();console.log(data);
 			// TODO coords
 			if(data.photo_url == "" || data.photo_url == null){data.photo_url = "no_avatar.jpg"};
 			var photo = this.texture('assets/images/uploaded/avatars/'+data.photo_url, 260, 260);
@@ -503,7 +504,8 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
                             }
                         }
                     } else {
-                        chNode.position.set((nodex.position.x + spNodex.position.x)/2, nodex.position.y + 200 + this.nodeHeight, 0);
+                        if (spNodex) {chNode.position.set((nodex.position.x + spNodex.position.x)/2, nodex.position.y + 200 + this.nodeHeight, 0);}
+						if (!spNodex) chNode.position.set(nodex.position.x, nodex.position.y + 200 + this.nodeHeight, 0);
                     }
                     
                     if (data[ch_id].spouse_id){
@@ -606,7 +608,7 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
                     $.ajaxSetup({ cache: false });
         			this.collection = new TreeCollection();
         			this.collection.fetch({
-                        url: '/data2.json',
+                        //url: '/data2.json',
         				success: $.proxy(function(collection) {
         					var arr = collection.toJSON();
         					for(key in arr){       							
@@ -625,19 +627,19 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
         					this.createTree();
         				},this)});
         			
-        			this.container.removeChild(this.renderer.domElement);
+        			//this.container.removeChild(this.renderer.domElement);
                     
         			this.scene = new THREE.Scene();
-        			this.camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 10000);
-        			this.camera.position.y = 150;
-        			this.camera.position.z = 3000;
+        			//this.camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 10000);
+        			//this.camera.position.y = 150;
+        			//this.camera.position.z = 3000;
         			this.scene.add(this.camera);
         			
-        			this.projector = new THREE.Projector();
-        			this.onMouseDownPosition = new THREE.Vector2();
-        			this.renderer = new THREE.CanvasRenderer();
-        			this.renderer.setSize(window.innerWidth, window.innerHeight);
-                    this.container.appendChild(this.renderer.domElement);
+        			//this.projector = new THREE.Projector();
+        			//this.onMouseDownPosition = new THREE.Vector2();
+        			//this.renderer = new THREE.CanvasRenderer();
+        			//this.renderer.setSize(window.innerWidth, window.innerHeight);
+                    //this.container.appendChild(this.renderer.domElement);
                     ///////////////////////////////////////////////////////////////////////////////////////////////////
         },
 		onDocumentMouseDown: function(event) {
@@ -678,7 +680,7 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 					}
 					else if(intersects[i].object.name == 'parent')
 					{	/////////////////////////////////////   ADDING PARENT    /////////////////////////////////////////
-                        /*if (!intersects[0].object.parent.father || !intersects[0].object.parent.mother){
+                        if (!intersects[0].object.parent.father || !intersects[0].object.parent.mother){
                             nodex = intersects[i].object.parent;
                            /* i = nodex.generation+1;
                             var n_id = nodex.info.user_id;
@@ -721,13 +723,13 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
                              data[p_id] = addNode[p_id];
                              this.treeObj = data;
                              this._model.update("tree",this.treeObj);
-                             console.log(this._model.get("tree",this.treeObj));
+                             console.log(this._model.get("tree",this.treeObj));*/
                              this.TempObj = {
 									"action" : 'add_parent',
 									node : nodex
 								};
-							 OSX.init_edit({"action": 'add_parent'}, nodex);*/
-                        //}
+							 OSX.init_edit({"action": 'add_parent'}, nodex);
+                        }
                         //////////////////////////////////////////////////////////////////////////////////////////////////
                         but = true;
 					} else if(intersects[i].object.name == 'edit') {
