@@ -51,6 +51,9 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 						if(this.data1[arr[key].id].spouse_id == "0") {
 							this.data1[arr[key].id].spouse_id = "";
 						}
+						if(this.data1[arr[key].id].ch_ids == "[]") {
+							this.data1[arr[key].id].ch_ids = [];
+						}
 					}
 					this.data2.tree = this.data1;
 					console.log(this.data2.tree);
@@ -1089,17 +1092,26 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 			console.log(data.sex);
 			console.log(data);
 			if(this.TempObj.action == "add_parent"){
+				data.action = this.TempObj.action;
+				data.send_node_id = this.TempObj.node.info.id;
 				if(!data.ch_ids){
 					data.ch_ids = [];
 					}
 				data.ch_ids.push(this.TempObj.node.info.id);
 				data.f_id = "";
 				data.m_id = "";
+				if(this.TempObj.node.info.m_id !=""){
+					data.spouse_id = this.TempObj.node.info.m_id;
+				}
+				if(this.TempObj.node.info.f_id !=""){
+					data.spouse_id = this.TempObj.node.info.f_id;
+				}
 				$.ajax({
 				url : 'server/api/add_node',
 				dataType : 'json',
 				data : data,
-				success : $.proxy(function(response) {console.log(response);
+				success : $.proxy(this.addNode, this),
+					/*function(response) {console.log(response);
 					//update photo
 					//data=response.addnode.id
 					if(response.addnode.sex == "m"){
@@ -1108,42 +1120,45 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 					if(response.addnode.sex == "f"){
 						this.TempObj.node.info.m_id = response.addnode.id;
 					}
-					this.saveNode({data: this.TempObj.node.info});
+					//this.saveNode({data: this.TempObj.node.info});
 					showPopup('show-popup', 'green', 'Saved', 2000);
 					
-				}, this),
+				}, this),*/
 				error : function(error) {
 					console.log(error.responseText);
 				}
 			});
 			}
 			if(this.TempObj.action == "add_child"){
-				
+				data.action = this.TempObj.action;
+				data.send_node_id = this.TempObj.node.info.id;
 				if(this.TempObj.node.info.sex == "m") {
 					data.f_id = this.TempObj.node.info.id;
-					data.m_id = "";
+					this.TempObj.node.info.spouse_id !="" ? data.m_id = this.TempObj.node.info.spouse_id : data.m_id = "";
 				}
 				if(this.TempObj.node.info.sex == "f") {
 					data.m_id = this.TempObj.node.info.id;
-					data.f_id = "";
+					this.TempObj.node.info.spouse_id !="" ? data.f_id = this.TempObj.node.info.spouse_id : data.f_id = "";
 				}
 				$.ajax({
 				url : 'server/api/add_node',
 				dataType : 'json',
 				data : data,
-				success : $.proxy(function(response) {
+				success : $.proxy(this.addNode, this),
+					/*function(response) {
 					//update photo
 					this.TempObj.node.info.ch_ids.push(response.addnode.id);
 					this.saveNode({data: this.TempObj.node.info});
-					showPopup('show-popup', 'green', 'Saved', 2000);
+					showPopup('show-popup', 'green', 'Saved', 2000);*/
 					
-				}, this),
+				//}, this),
 				error : function(error) {
 					console.log(error.responseText);
 				}
 			});
 			};
 			if(this.TempObj.action == "add_partner"){
+				data.action = this.TempObj.action;
 				//need button
 			};
 			if(this.TempObj.action == "edit_person"){
@@ -1161,22 +1176,11 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 			console.log(data);
 			
 		},
-		addNode : function(options) {
-			$.ajax({
-				url : 'server/api/add_node',
-				dataType : 'json',
-				data : options.data,
-				success : $.proxy(function(response) {
-					//update photo
-					this.resp = response;
-					showPopup('show-popup', 'green', 'Saved', 2000);
-					console.log(this);
-				}, this),
-				error : function(error) {
-					console.log(error.responseText);
-				}
-			});
-			return this.resp;
+		addNode : function(response) {
+			//this.TempObj.node.info.ch_ids.push(response.addnode.id);
+			//this.saveNode({data: this.TempObj.node.info});
+			this.redrawTree();
+			showPopup('show-popup', 'green', 'Saved', 2000);
 		},
 		saveNode : function(options) {
 			
