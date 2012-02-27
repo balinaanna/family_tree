@@ -69,8 +69,8 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 				},this)
 			});
 			$('#navigator').on("click", "div", $.proxy(this.navigation, this));
-			$('#navigator').on('mousemove', function(){$('#navigator').css('opacity', '0.7');});
-			$('#navigator').on('mouseout', function(){$('#navigator').css('opacity', '0.3');});
+			$('#navigator').on('mousemove', function(){$('#navigator').css('opacity', '0.8');});
+			$('#navigator').on('mouseout', function(){$('#navigator').css('opacity', '0.5');});
 				
 			this.container = document.createElement('div');
 			//this.el.append($("#navigator"));
