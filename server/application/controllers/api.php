@@ -73,7 +73,7 @@ class Api extends CI_Controller {
 										WHERE b.user_id=a.id AND a.email="'.$email.'" AND a.pass="'.$pass.'"
 							    ');
 		*/
-		$result = $this->db->query('SELECT a.pass, a.id as user_id FROM users a
+		$result = $this->db->query('SELECT a.pass, a.id as user_id, a.prof_id FROM users a
 										WHERE a.email="'.$email.'" AND a.pass="'.$pass.'"
 										LIMIT 1
 							    ');
@@ -82,12 +82,14 @@ class Api extends CI_Controller {
 			$json->action = "login";
 			$json->status = "1";
 			$json->id = $db_result[0]->user_id;
+			$json->prof_id = $db_result[0]->prof_id;
 			$json->email = $email;
 			$json->autologin = $pass;
 
 			$session_data = array(
 			    'user_id'  => $db_result[0]->user_id,
-			    'pass'     => $db_result[0]->pass
+			    'pass'     => $db_result[0]->pass,
+				'prof_id' => $db_result[0]->prof_id
 			);
 			$this->session->set_userdata($session_data);
 
