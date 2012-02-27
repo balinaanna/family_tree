@@ -1082,10 +1082,10 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 				data.ch_ids.push(this.TempObj.node.info.id);
 				data.f_id = "";
 				data.m_id = "";
-				if(this.TempObj.node.info.m_id !=""){
+				if(this.TempObj.node.info.m_id){ console.log(this.TempObj.node.info.m_id);
 					data.spouse_id = this.TempObj.node.info.m_id;
 				}
-				if(this.TempObj.node.info.f_id !=""){
+				if(this.TempObj.node.info.f_id){ console.log(this.TempObj.node.info.f_id);
 					data.spouse_id = this.TempObj.node.info.f_id;
 				}
 				$.ajax({
@@ -1161,7 +1161,8 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 		addNode : function(response) {
 			//this.TempObj.node.info.ch_ids.push(response.addnode.id);
 			//this.saveNode({data: this.TempObj.node.info});
-			this.redrawTree();
+			//this.redrawTree();
+			console.log(response);
 			showPopup('show-popup', 'green', 'Saved', 2000);
 		},
 		saveNode : function(options) {

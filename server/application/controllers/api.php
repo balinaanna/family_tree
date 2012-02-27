@@ -244,7 +244,7 @@ class Api extends CI_Controller {
 								"'.$value->f_id.'",
 							    "'.$value->m_id.'",
 								"'.addslashes(json_encode($value->ch_ids)).'",
-								"'.addslashes(json_encode($value->spouse_id)).'",
+								"'.$value->spouse_id.'",
 								"'.$value->f_name.'",
 								"'.$value->l_name.'",
 								"'.$value->b_date.'",
@@ -280,14 +280,18 @@ class Api extends CI_Controller {
 		}
 		if($_REQUEST['action'] == 'add_parent'){
 			if($value->sex =="m"){
-				//$send_node = $this->db->query('SELECT * FROM `profile_data` WHERE id='.$_REQUEST['send_node_id']);
-				//$send_node = $send_node->result();
+				if($_REQUEST['spouse_id']!=''){
+					$this->db->query('UPDATE `profile_data` SET `spouse_id`="'.$last_id->id.'" WHERE id='.$_REQUEST['spouse_id']);
+				};
 				$this->db->query('UPDATE `profile_data` SET `f_id`="'.$last_id->id.'" WHERE id='.$_REQUEST['send_node_id']);
 			}
 			if($value->sex =="f"){
+				if($_REQUEST['spouse_id']!=''){
+					$this->db->query('UPDATE `profile_data` SET `spouse_id`="'.$last_id->id.'" WHERE id='.$_REQUEST['spouse_id']);
+				};
 				$this->db->query('UPDATE `profile_data` SET `m_id`="'.$last_id->id.'" WHERE id='.$_REQUEST['send_node_id']);
 			}
-			
+			print_r($_REQUEST['spouse_id']);
 		}
 		if($_REQUEST['action'] == 'add_spouse'){
 			
