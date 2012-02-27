@@ -14,7 +14,7 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 		onMouseDownPosition: null,
 		mouse : new THREE.Vector2(),
 		nodeWidth : 360,
-		nodeHeight : 350,			
+		nodeHeight : 450,			
 		imgPlusSize : 70,
         SELECTED: null,
         data1:{},
@@ -33,13 +33,13 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 		
 		initialize: function(){
 			//test model
-			this.data2.id = 1; //TODO set user_id=>id fr0m local storage
-			$.ajaxSetup({ cache: false });
+			this.data2.id = 42; //TODO set user_id=>id fr0m local storage
+			$.ajaxSetup({cache: false});
 			this.collection = new TreeCollection();	
 			this.collection.fetch({
-                url: '/data2.json',
+                //url: '/data2.json',
 				success: $.proxy(function(collection) {
-					var arr = collection.toJSON();
+					var arr = collection.toJSON();console.log(arr);
 					for(key in arr){       							
 						this.data1[arr[key].id] = arr[key];
 						if(this.data1[arr[key].id].f_id == "0") {
@@ -53,6 +53,7 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 						}
 					}
 					this.data2.tree = this.data1;
+					console.log(this.data2.tree);
 					this.createTree();
 				},this)});
 			
@@ -99,13 +100,13 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 			var cube = new THREE.Object3D();
 			// TODO coords
 			if(data.photo_url == "" || data.photo_url == null){data.photo_url = "no_avatar.jpg"};
-			var photo = this.texture('assets/images/uploaded/avatars/'+data.photo_url, 235, 235);
-			photo.position.set(0, 30, 1);
-			this.container.style.background = "url('trash/back_11111.jpg')";
+			var photo = this.texture('assets/images/uploaded/avatars/'+data.photo_url, 260, 260);
+			photo.position.set(0, 40, 1);
+			//this.container.style.background = "url('trash/back_11111.jpg')";
 			
 			var elems = {
                 'parent': {
-                    width: this.imgPlusSize, height: this.imgPlusSize, path: 'trash/add.png', trPath: 'trash/add_tr.png', posX: this.mouseX, posY: this.mouseY - Math.floor(this.nodeHeight / 2)
+                    width: this.imgPlusSize, height: this.imgPlusSize, path: 'trash/add.png', trPath: 'trash/add_tr.png', posX: this.mouseX, posY: this.mouseY - Math.floor(this.nodeHeight / 2)+20
                 },
                 'child': {
                     width: this.imgPlusSize, height: this.imgPlusSize, path: 'trash/add.png', trPath: 'trash/add_tr.png', posX: this.mouseX, posY: this.mouseY + Math.floor(this.nodeHeight / 2)
@@ -121,7 +122,7 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
                 }
             };
 			
-			cube.add(this.texture('trash/polaroid.png', this.nodeWidth*0.8, this.nodeHeight));			// children[0]					
+			cube.add(this.texture('trash/pol1.png', this.nodeWidth, this.nodeHeight));			// children[0]					
 			
 			var minVal = -0.2;
 			var maxVal = 0.2;
@@ -503,7 +504,8 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
                             }
                         }
                     } else {
-                        chNode.position.set((nodex.position.x + spNodex.position.x)/2, nodex.position.y + 200 + this.nodeHeight, 0);
+                        if (spNodex) {chNode.position.set((nodex.position.x + spNodex.position.x)/2, nodex.position.y + 200 + this.nodeHeight, 0);}
+						if (!spNodex) chNode.position.set(nodex.position.x, nodex.position.y + 200 + this.nodeHeight, 0);
                     }
                     
                     if (data[ch_id].spouse_id){
@@ -575,12 +577,10 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 					canvas.height = this.nodeHeight;
 					var context = canvas.getContext("2d");
 					context.fillStyle = "black";
-					context.font = 'italic 22px Arial Black';
+					context.font = 'italic 30px Arial Black';
 					//TODO text align
-					context.fillText(data.f_name, this.nodeWidth * 0.2, this.nodeHeight * 0.83);
-					context.fillText(data.l_name, this.nodeWidth * 0.5, this.nodeHeight * 0.83);
-					context.fillText(data.b_date, this.nodeWidth * 0.3, this.nodeHeight * 0.9);
-					context.fillText(data.d_date, this.nodeWidth * 0.55, this.nodeHeight * 0.9);
+					context.fillText(data.f_name+' '+data.l_name, this.nodeWidth * 0.15, this.nodeHeight * 0.78);
+					context.fillText(data.b_date+' - '+data.d_date, this.nodeWidth * 0.15, this.nodeHeight * 0.85);
 					var tex = new THREE.Texture(canvas);
 					tex.needsUpdate = true;
 					var mat = new THREE.MeshBasicMaterial({
@@ -608,7 +608,7 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
                     $.ajaxSetup({ cache: false });
         			this.collection = new TreeCollection();
         			this.collection.fetch({
-                        url: '/data2.json',
+                        //url: '/data2.json',
         				success: $.proxy(function(collection) {
         					var arr = collection.toJSON();
         					for(key in arr){       							
@@ -680,7 +680,7 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 					}
 					else if(intersects[i].object.name == 'parent')
 					{	/////////////////////////////////////   ADDING PARENT    /////////////////////////////////////////
-                        /*if (!intersects[0].object.parent.father || !intersects[0].object.parent.mother){
+                        if (!intersects[0].object.parent.father || !intersects[0].object.parent.mother){
                             nodex = intersects[i].object.parent;
                            /* i = nodex.generation+1;
                             var n_id = nodex.info.user_id;
@@ -723,13 +723,13 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
                              data[p_id] = addNode[p_id];
                              this.treeObj = data;
                              this._model.update("tree",this.treeObj);
-                             console.log(this._model.get("tree",this.treeObj));
+                             console.log(this._model.get("tree",this.treeObj));*/
                              this.TempObj = {
 									"action" : 'add_parent',
 									node : nodex
 								};
-							 OSX.init_edit({"action": 'add_parent'}, nodex);*/
-                        //}
+							 OSX.init_edit({"action": 'add_parent'}, nodex);
+                        }
                         //////////////////////////////////////////////////////////////////////////////////////////////////
                         but = true;
 					} else if(intersects[i].object.name == 'edit') {
@@ -766,7 +766,6 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 
 				if( intersects.length > 0 ) {
 					this.container.style.cursor = 'pointer';
-					
 					hint = false;
 					for(i = 0; i < intersects.length; i++)
 					{
@@ -843,7 +842,7 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 						intersects[0].object.parent.redrawLine();
 					}
                     
-				} else {
+				} else {					
 					$('#hint').css('opacity','0');
 					$('#hint').css('left',-100);
 					$('#hint').css('top',-100);
