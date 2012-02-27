@@ -214,7 +214,8 @@ class Api extends CI_Controller {
 	}
 
 public function add_node() {
-$value = (object)$_REQUEST;
+	if(!isset($_REQUEST['ch_ids'])){$_REQUEST['ch_ids']='[]';}
+	$value = (object)$_REQUEST;
 	    $photo = (!isset($value->upload)) ? pathinfo($value->photo_url) : array('basename' => 0);
 	    $this->db->query('INSERT INTO `profile_data`(`user_id`, `f_id`, `m_id`, `ch_ids`, `spouse_id`, `f_name`, `l_name`, `b_date`, `d_date`, `sex`, `photo_url`, `comment`)
 				    	    VALUES (
@@ -238,6 +239,20 @@ $value = (object)$_REQUEST;
 					    ');
 		$last_id = $lastid->result();
 		$last_id = $last_id[0];
+		if($value->f_id!=""){
+			$ch_ids=$this->db->query('SELECT ch_ids FROM `profile_data` WHERE id='.$value->f_id);
+			$ch_ids=$ch_ids->result();
+			$ch_ids=json_decode($ch_ids);
+			$ch_ids[]=$last_id->id;
+			$this->db->query('UPDATE `profile_data` SET `ch_ids`="'.json_encode($ch_ids).'") WHERE id='.$value->f_id);
+		}
+		if($value->m_id!=""){
+			$ch_ids=$this->db->query('SELECT ch_ids FROM `profile_data` WHERE id='.$value->m_id);
+			$ch_ids=$ch_ids->result();
+			$ch_ids=json_decode($ch_ids);
+			$ch_ids[]=$last_id->id;
+			$this->db->query('UPDATE `profile_data` SET `ch_ids`="'.json_encode($ch_ids).'") WHERE id='.$value->m_id);
+		}
 		//if(!isset($value->upload)){$value->upload=0;}
 		if(!isset($value->upload)) { // If UPLOAD ( save_photo() ) return success
 			//print_r();
