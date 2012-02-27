@@ -27,13 +27,12 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 			"mousemove canvas" : "onDocumentMouseMove", 
 			"mousewheel canvas" : "onDocumentMouseWheel",
 			"click canvas": "onClick",
-			//"click #osx-modal-content-edit": "submitFunc",
-			"click #submit_person": "submitFunc"//?			
+			"click #submit_person": "submitFunc"		
 		},
 		
 		initialize: function(){
 			//test model
-			this.data2.id = localStorage.getItem("prof_id"); //TODO set user_id=>id fr0m local storage
+			this.data2.id = localStorage.getItem("prof_id");
 			$.ajaxSetup({cache: false});
 			this.collection = new TreeCollection();	
 			this.collection.fetch({
@@ -667,48 +666,7 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 					{	/////////////////////////////////////   ADDING PARENT    /////////////////////////////////////////
                         if (!intersects[0].object.parent.father || !intersects[0].object.parent.mother){
                             nodex = intersects[i].object.parent;
-                           /* i = nodex.generation+1;
-                            var n_id = nodex.info.user_id;
-                            var p_id = this.objects.length+1;
-                           // data = JSON.parse(this.tree);
-                            data = this.treeObj;
-                            if (data[n_id].f_id == ""){
-                                var m_id = data[n_id].m_id;
-                                data[n_id].m_id = "";
-                                data[n_id].f_id = p_id;
-                            } else if (data[n_id].m_id == ""){
-                                var f_id = data[n_id].f_id;
-                                data[n_id].f_id = "";
-                                data[n_id].m_id = p_id;
-                            }
-                            var addNode = {};
-                            addNode[n_id] = data[n_id];
-                            addNode[p_id] = {
-                                                "l_name":"newName",
-                                                "f_name":"newfname",
-                                                "f_id":"",
-                                                "m_id":"",
-                                                "ch_ids": n_id,
-                                                "spouse_id":"",
-                                                "b_date":"1920",
-                                                "d_date":"0",
-                                                "sex":"f",
-                                                "photo_url":"back_3.jpg",
-                                                "comment":"comment"
-                                            };
-                             //tree2 = JSON.stringify(addNode);
-                             this.create_tree(addNode,n_id,i,nodex);
-                             if (f_id){
-                                data[n_id].f_id = f_id;
-                                f_id = null;
-                             } else if (m_id) {
-                                data[n_id].m_id = m_id;
-                                m_id = null;
-                             }
-                             data[p_id] = addNode[p_id];
-                             this.treeObj = data;
-                             this._model.update("tree",this.treeObj);
-                             console.log(this._model.get("tree",this.treeObj));*/
+                
                              this.TempObj = {
 									"action" : 'add_parent',
 									node : nodex
@@ -948,90 +906,7 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 			this.renderer.render(this.scene, this.camera);
 			
 		},
-		/*submitFunc: function(event){
-			event.preventDefault();
-			var h = $('#dp').height();
-			var w = $('#dp').width();
-			var scale = 1;
-			if(h > 300 || w > 300)
-			{
-				scale = h/300;
-			}
-			if(w > h)
-			{
-				scale = w/300;
-			}
-			var sex;
-			if($('#m_radio').attr('checked')) 
-			{
-				sex = 'm';
-			}
-			else if($('#f_radio').attr('checked')) 
-			{
-				sex = 'f';
-			}
-			
-			$.ajax({
-				url: 'server/api/save_node',
-				dataType: 'json',
-				data: {
-					'id': $('#user_id').val(),
-					'f_name' : $('#f_name').val(),
-					'l_name' : $('#l_name').val(),
-					'b_date' : $('#b_date').val(),
-					'd_date' : $('#d_date').val(),
-					'x1': $('#x1').val()*scale,
-					'y1': $('#y1').val()*scale,
-					'x2': $('#x2').val()*scale,
-					'y2': $('#y2').val()*scale,
-					'w': $('#w').val()*scale,
-					'h': $('#h').val()*scale,
-					'f_id' : $('#f_id').val(),
-					'm_id' : $('#m_id').val(),
-					'ch_ids' : $('#ch_ids').val(),
-					'spouse_id' : $('#spouse_id').val(),
-					'sex' : sex,
-					'photo_url' : $('#photo').attr('src'),
-					'comment' : $('#about').val()
-				},
-				success: function(response){
-					//update photo
-					showPopup('show-popup','green','Saved', 2000);
-				}
-			});
-			/*
-			$.ajax({
-				url: 'server/api/add_node',
-				dataType: 'json',
-				data: {
-					//'user_id': $('#user_id').val(),
-					'f_name' : $('#f_name').val(),
-					'l_name' : $('#l_name').val(),
-					'b_date' : $('#b_date').val(),
-					'd_date' : $('#d_date').val(),
-					'x1': $('#x1').val()*scale,
-					'y1': $('#y1').val()*scale,
-					'x2': $('#x2').val()*scale,
-					'y2': $('#y2').val()*scale,
-					'w': $('#w').val()*scale,
-					'h': $('#h').val()*scale,
-					'f_id' : '1',
-					'm_id' : '1',
-					'ch_ids' : '[]',
-					'spouse_id' : '1',
-					'sex' : 'm',
-					'photo_url' : $('#photo').attr('src'),
-					'comment' : $('#about').val(),
-					'crop' : true
-				},
-				success: function(response){
-					//update photo
-					console.log(response);
-					showPopup('show-popup','green','Saved', 2000);
-				}
-			});
-			*/
-		//},*/
+
 		submitFunc : function(event) {
 			event.preventDefault();
 			var h = $('#dp').height();
@@ -1093,19 +968,6 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 				dataType : 'json',
 				data : data,
 				success : $.proxy(this.addNode, this),
-					/*function(response) {console.log(response);
-					//update photo
-					//data=response.addnode.id
-					if(response.addnode.sex == "m"){
-						this.TempObj.node.info.f_id = response.addnode.id;
-					}
-					if(response.addnode.sex == "f"){
-						this.TempObj.node.info.m_id = response.addnode.id;
-					}
-					//this.saveNode({data: this.TempObj.node.info});
-					showPopup('show-popup', 'green', 'Saved', 2000);
-					
-				}, this),*/
 				error : function(error) {
 					console.log(error.responseText);
 				}
@@ -1127,13 +989,6 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 				dataType : 'json',
 				data : data,
 				success : $.proxy(this.addNode, this),
-					/*function(response) {
-					//update photo
-					this.TempObj.node.info.ch_ids.push(response.addnode.id);
-					this.saveNode({data: this.TempObj.node.info});
-					showPopup('show-popup', 'green', 'Saved', 2000);*/
-					
-				//}, this),
 				error : function(error) {
 					console.log(error.responseText);
 				}
@@ -1159,10 +1014,6 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 			
 		},
 		addNode : function(response) {
-			//this.TempObj.node.info.ch_ids.push(response.addnode.id);
-			//this.saveNode({data: this.TempObj.node.info});
-			//this.redrawTree();
-			console.log(response);
 			showPopup('show-popup', 'green', 'Saved', 2000);
 		},
 		saveNode : function(options) {
