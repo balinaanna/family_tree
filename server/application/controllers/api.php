@@ -224,7 +224,7 @@ public function add_node() {
 					    		"'.$this->session->userdata('user_id').'",
 								"'.$value->f_id.'",
 							    "'.$value->m_id.'",
-								"'.addslashes(json_encode($value->ch_ids)).'",
+								'.addslashes(json_encode($value->ch_ids)).',
 								"'.addslashes(json_encode($value->spouse_id)).'",
 								"'.$value->f_name.'",
 								"'.$value->l_name.'",
@@ -246,14 +246,14 @@ public function add_node() {
 			$ch_ids=$ch_ids->result();
 			$ch_ids=json_decode($ch_ids);
 			$ch_ids[]=$last_id->id;
-			$this->db->query('UPDATE `profile_data` SET `ch_ids`="'.addslashes(json_encode($ch_ids)).'") WHERE id='.$value->f_id);
+			$this->db->query('UPDATE `profile_data` SET `ch_ids`="'.addslashes(json_encode($ch_ids)).'" WHERE id='.$value->f_id);
 		}
 		if($value->m_id!=""){
 			$ch_ids=$this->db->query('SELECT ch_ids FROM `profile_data` WHERE id='.$value->m_id);
 			$ch_ids=$ch_ids->result();
 			$ch_ids=json_decode($ch_ids);
 			$ch_ids[]=$last_id->id;
-			$this->db->query('UPDATE `profile_data` SET `ch_ids`="'.addslashes(json_encode($ch_ids)).'") WHERE id='.$value->m_id);
+			$this->db->query('UPDATE `profile_data` SET `ch_ids`="'.addslashes(json_encode($ch_ids)).'" WHERE id='.$value->m_id);
 		}
 		//if(!isset($value->upload)){$value->upload=0;}
 		if(!isset($value->upload)) { // If UPLOAD ( save_photo() ) return success
