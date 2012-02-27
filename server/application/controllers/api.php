@@ -150,7 +150,7 @@ class Api extends CI_Controller {
 			$json->action = "registration";
 			$json->status = "1";
 			$json->message = "Registration successful";
-			//$this->email_model->send($email, 'Family Tree Registration', 'Thanks for registration');
+			$this->email_model->send($email, 'Family Tree Registration', 'Thanks for registration');
 		} else {
 			$json->action = "registration";
 			$json->status = "0";
@@ -177,6 +177,16 @@ class Api extends CI_Controller {
 	}
 
 	public function save_node() {
+		if(!isset($_REQUEST['ch_ids'])){$_REQUEST['ch_ids']='[]';}
+		if(!isset($_REQUEST['f_id'])){$_REQUEST['f_id']='';}
+		if(!isset($_REQUEST['m_id'])){$_REQUEST['m_id']='';}
+		if(!isset($_REQUEST['spouse_id'])){$_REQUEST['spouse_id']='';}
+		if(!isset($_REQUEST['f_name'])){$_REQUEST['f_name']='';}
+		if(!isset($_REQUEST['l_name'])){$_REQUEST['l_name']='';}
+		if(!isset($_REQUEST['b_date'])){$_REQUEST['b_date']='';}
+		if(!isset($_REQUEST['d_date'])){$_REQUEST['d_date']='';}
+		if(!isset($_REQUEST['sex'])){$_REQUEST['sex']='m';}
+		if(!isset($_REQUEST['comment'])){$_REQUEST['comment']='';}
 	    $value = (object)$_REQUEST;
 		//print_r($value);
 		//print_r($_REQUEST);
@@ -215,9 +225,18 @@ class Api extends CI_Controller {
 	    echo json_encode($json);
 	}
 
-public function add_node() {
-	if(!isset($_REQUEST['ch_ids'])){$_REQUEST['ch_ids']='[]';}
-	$value = (object)$_REQUEST;
+	public function add_node() {
+		if(!isset($_REQUEST['ch_ids'])){$_REQUEST['ch_ids']='[]';}
+		if(!isset($_REQUEST['f_id'])){$_REQUEST['f_id']='';}
+		if(!isset($_REQUEST['m_id'])){$_REQUEST['m_id']='';}
+		if(!isset($_REQUEST['spouse_id'])){$_REQUEST['spouse_id']='';}
+		if(!isset($_REQUEST['f_name'])){$_REQUEST['f_name']='';}
+		if(!isset($_REQUEST['l_name'])){$_REQUEST['l_name']='';}
+		if(!isset($_REQUEST['b_date'])){$_REQUEST['b_date']='';}
+		if(!isset($_REQUEST['d_date'])){$_REQUEST['d_date']='';}
+		if(!isset($_REQUEST['sex'])){$_REQUEST['sex']='m';}
+		if(!isset($_REQUEST['comment'])){$_REQUEST['comment']='';}
+		$value = (object)$_REQUEST;
 	    $photo = (!isset($value->upload)) ? pathinfo($value->photo_url) : array('basename' => 0);
 	    $this->db->query('INSERT INTO `profile_data`(`user_id`, `f_id`, `m_id`, `ch_ids`, `spouse_id`, `f_name`, `l_name`, `b_date`, `d_date`, `sex`, `photo_url`, `comment`)
 				    	    VALUES (
