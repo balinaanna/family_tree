@@ -33,7 +33,7 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 		
 		initialize: function(){
 			//test model
-			this.data2.id = 42; //TODO set user_id=>id fr0m local storage
+			this.data2.id = localStorage.getItem("prof_id"); //TODO set user_id=>id fr0m local storage
 			$.ajaxSetup({cache: false});
 			this.collection = new TreeCollection();	
 			this.collection.fetch({
@@ -97,7 +97,7 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 		},
 		
 		create_node: function (data){
-			var cube = new THREE.Object3D();
+			var cube = new THREE.Object3D();console.log(data);
 			// TODO coords
 			if(data.photo_url == "" || data.photo_url == null){data.photo_url = "no_avatar.jpg"};
 			var photo = this.texture('assets/images/uploaded/avatars/'+data.photo_url, 260, 260);
@@ -627,19 +627,19 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
         					this.createTree();
         				},this)});
         			
-        			this.container.removeChild(this.renderer.domElement);
+        			//this.container.removeChild(this.renderer.domElement);
                     
         			this.scene = new THREE.Scene();
-        			this.camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 10000);
-        			this.camera.position.y = 150;
-        			this.camera.position.z = 3000;
+        			//this.camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 10000);
+        			//this.camera.position.y = 150;
+        			//this.camera.position.z = 3000;
         			this.scene.add(this.camera);
         			
-        			this.projector = new THREE.Projector();
-        			this.onMouseDownPosition = new THREE.Vector2();
-        			this.renderer = new THREE.CanvasRenderer();
-        			this.renderer.setSize(window.innerWidth, window.innerHeight);
-                    this.container.appendChild(this.renderer.domElement);
+        			//this.projector = new THREE.Projector();
+        			//this.onMouseDownPosition = new THREE.Vector2();
+        			//this.renderer = new THREE.CanvasRenderer();
+        			//this.renderer.setSize(window.innerWidth, window.innerHeight);
+                    //this.container.appendChild(this.renderer.domElement);
                     ///////////////////////////////////////////////////////////////////////////////////////////////////
         },
 		onDocumentMouseDown: function(event) {

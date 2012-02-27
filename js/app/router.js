@@ -89,6 +89,7 @@ define(['views/BaseView', 'models/BaseModel'], function(BaseView, BaseModel) {
 					if(resp.status == "1") {
 						$('#formContainer').hide();
 						localStorage.setItem("email", resp.email);
+						localStorage.setItem("prof_id", resp.prof_id);
 						localStorage.setItem("autologin", resp.autologin);
 						$('#home').show();
 						this.canvasLoad();
