@@ -20,22 +20,25 @@
 	<body class="body">
 		<div id="home">
 			<div id="navigator" style="position:absolute; z-index: 100;">
-				<div class="circle arrow-up">
-					<div id="arrowup" class="arrow"></div>
+					<input type="button" id="logout_btn" value="Logout">
+					
+					<div id="zoom_text">Zoom</div>
+					<!--div class="circle arrow-up">
+						<div id="arrowup" class="arrow"></div>
+					</div>
+					<div class="circle arrow-left">
+						<div id="arrowleft" class="arrow"></div>
+					</div>
+					<div class="circle arrow-right">
+						<div id="arrowright" class="arrow"></div>
+					</div>
+					<div class="circle arrow-down">
+						<div id="arrowdown" class="arrow"></div>
+					</div-->
+					<!--div id="plus" class="circle"></div-->
+					<div id="slider"></div>
+					<!--div id="minus" class="circle"></div-->
 				</div>
-				<div class="circle arrow-left">
-					<div id="arrowleft" class="arrow"></div>
-				</div>
-				<div class="circle arrow-right">
-					<div id="arrowright" class="arrow"></div>
-				</div>
-				<div class="circle arrow-down">
-					<div id="arrowdown" class="arrow"></div>
-				</div>
-				<div id="plus" class="circle"></div>
-				<div id="slider"></div>
-				<div id="minus" class="circle"></div>
-			</div>
 			<div id="hint" style="position: absolute; z-index: 100;"></div>
 			<div id="osx-modal-content-edit">
 				<div id="osx-modal-title-edit">
@@ -137,51 +140,60 @@
 			</div>
 			<div id="panel">
 				<div id="loginbox">
-					Login Form
 					<form id="login" method="post" action="./">
-						<p>
-							<label>Email*:</label>
-							<input type="text" name="loginEmail" id="loginEmail" placeholder="Email" />
-						</p>
-						<p>
-							<label>Password*:</label>
-							<input type="password" name="loginPass" id="loginPass" placeholder="Password" />
-							<a href="#" id="flipToRecover" class="flipLink">Forgot?</a>
-						</p>
-						<br/>
-						<input type="submit" id="loginbtn" name="submit" value="Login" />
+						<table style="margin: 50px 0 0 150px;">
+							<tr>
+								<td>Email<span style="color: red;">*</span>:</td>
+								<td><input type="text" name="loginEmail" id="loginEmail" placeholder="Email" /></td>
+							</tr>
+							<tr>
+								<td>Password<span style="color: red;">*</span>:</td>
+								<td><input type="password" name="loginPass" id="loginPass" placeholder="Password" /></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td style="text-align: center;"><input type="submit" id="loginbtn" name="submit" value="Login" style="margin-top: 15px;" /></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td style="text-align: center;"><a href="#" id="flipToRecover" class="flipLink">Can't access your account?</a></td>
+							</tr>
+						</table>
 					</form>
 				</div>
 				<div id="signupbox">
-					Signup Form
 					<form id="register" method="post" action="./">
-						<p>
-							<label>Email*:</label>
-							<input type="text" name="regEmail" id="regEmail" placeholder="Your Email" />
-						</p>
-						<p>
-							<label>Password*:</label>
-							<input type="password" name="password" id="password" placeholder="Password" />
-						</p>
-						<p>
-							<label>First Name:</label>
-							<input type="text" name="first_name" id="first_name" placeholder="Your Name" />
-						</p>
-						<p>
-							<label>Last Name:</label>
-							<input type="text" name="last_name" id="last_name" placeholder="Your Last Name" />
-						</p>
-						<p>
-							<label>Birth date:</label>
-							<input type="date" name="birth_date" id="birth_date" placeholder="Your Birthday" />
-						</p>
-						<p>
-							<label>Sex:</label>
-							<input type="radio" name="s" id="s" value="m" />
-							<input type="radio" name="s" id="s" value="f" />
-						</p>
-						<br/>
-						<input type="submit" id="registrationbtn" name="submit" value="Signup" />
+						<table style="margin: 30px 0 0 150px;">
+							<tr>
+								<td>Email<span style="color: red;">*</span>:</td>
+								<td><input type="text" name="regEmail" id="regEmail" placeholder="Your Email" /></td>
+							</tr>
+							<tr>
+								<td>Password<span style="color: red;">*</span>:</td>
+								<td><input type="password" name="password" id="password" placeholder="Password" /></td>
+							</tr>
+							<tr>
+								<td>First Name:</td>
+								<td><input type="text" name="first_name" id="first_name" placeholder="Your Name" /></td>
+							</tr>
+							<tr>
+								<td>Last Name:</td>
+								<td><input type="text" name="last_name" id="last_name" placeholder="Your Last Name" /></td>
+							</tr>
+							<tr>
+								<td>Birth date:</td>
+								<td><input type="date" name="birth_date" id="birth_date" placeholder="Your Birthday" /></td>
+							</tr>
+							<tr>
+								<td>Sex:</td>
+								<td><input type="radio" name="s" id="s" value="m" checked /> Male   
+								<input type="radio" name="s" id="s" value="f" /> Female</td>
+							</tr>
+							<tr>
+								<td></td>
+								<td style="text-align: center;"><input type="submit" id="registrationbtn" name="submit" value="Signup" style="margin-top: 15px;"/></td>
+							</tr>
+						</table>
 					</form>
 					<div id="reg_result"></div>
 				</div>

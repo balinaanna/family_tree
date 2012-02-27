@@ -1,14 +1,15 @@
 #navigator {
 	position: absolute;
 	width: 100px;
-	height: 410px;
-	/*background-color: #aaaaaa;*/
-	background-color: transparent;
-	opacity: 0.3;
-	border: 1px solid #fff;
-	box-shadow: 0 0 5px 2px #1A3457;
-	-webkit-box-shadow: 0 0 5px 2px #1A3457; /* Safari, Chrome */
-	-moz-box-shadow: 0 0 5px 2px #1A3457; /* Firefox */
+	/*height: 410px;*/
+	top: 0;
+	bottom: 0;
+	background-color: #617c83;
+	opacity: 0.5;
+	border: 0px solid #fff;
+	box-shadow: 0 0 10px 2px #1A3457;
+	-webkit-box-shadow: 0 0 10px 2px #1A3457; /* Safari, Chrome */
+	-moz-box-shadow: 0 0 10px 2px #1A3457; /* Firefox */
 	margin: 0 auto;
 	padding: 3 5 3 5;
 }
@@ -68,22 +69,14 @@
 }
 #slider {
 	position: absolute;
-	left: 42px;
-	top: 160px;
-	height: 200px;
+	left: 47px;
+	top: 40px;
+	height: 120px;
 }
-#arrowup {
-
-}
-#arrowdown {
-
-}
-#arrowleft {
-
-}
-#arrowright {
-
-}
+#arrowup {}
+#arrowdown {}
+#arrowleft {}
+#arrowright {}
 #plus {
 	background-image: url(../pic/slider_btn_zoom_in.png);
 	position: absolute;
@@ -97,7 +90,20 @@
 	top: 370px;
 }
 .body {
-	background-image: url(/trash/back_11111.jpg);
+	/*background-image: url(/trash/back_11111.jpg);*/
+	background-image: linear-gradient(bottom, rgb(97,124,131) 0%, rgb(182,207,212) 48%, rgb(97,124,131) 100%);
+	background-image: -o-linear-gradient(bottom, rgb(97,124,131) 0%, rgb(182,207,212) 48%, rgb(97,124,131) 100%);
+	background-image: -moz-linear-gradient(bottom, rgb(97,124,131) 0%, rgb(182,207,212) 48%, rgb(97,124,131) 100%);
+	background-image: -webkit-linear-gradient(bottom, rgb(97,124,131) 0%, rgb(182,207,212) 48%, rgb(97,124,131) 100%);
+	background-image: -ms-linear-gradient(bottom, rgb(97,124,131) 0%, rgb(182,207,212) 48%, rgb(97,124,131) 100%);
+	background-image: -webkit-gradient(
+		linear,
+		left bottom,
+		left top,
+		color-stop(0, rgb(97,124,131)),
+		color-stop(0.48, rgb(182,207,212)),
+		color-stop(1, rgb(97,124,131))
+	);
 	margin: 0;
 }
 #loginform {
@@ -110,10 +116,10 @@
 	border-radius: 10px;
 }
 
-#loginform input, #osx-modal-content-edit input {
+#loginform input, #osx-modal-content-edit input, #panel input {
 
 	margin: 5px 0px 5px 0px;
-	font-size: 11px; font-family: Tahoma; color: #fff; font-weight: bold; text-transform: uppercase;
+	font-size: 12px; font-family: Tahoma; color: #fff; font-weight: bold; text-transform: uppercase;
 	
 	box-shadow: 0px 1px 3px #000;
 	-o-box-shadow: 0px 1px 3px #000;
@@ -137,14 +143,14 @@
 	color: #333;
 	height: 20px;
 }
-#loginform input:hover, #osx-modal-content-edit input:hover {
+#loginform input:hover, #osx-modal-content-edit input:hover, #panel input {
 	background-color: #ccc;
 	background: -o-linear-gradient(bottom, #ccc, #ddd);
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #ddd), color-stop(1, #ccc));
 	background: -moz-linear-gradient(bottom, #ccc, #ddd);
 	border: 1px solid #ddd;
 }
-#loginform input:active, #osx-modal-content-edit input:active {
+#loginform input:active, #osx-modal-content-edit input:active, #panel input {
 	box-shadow: 0px 0px 3px #000;
 	-o-box-shadow: 0px 0px 3px #000;
 	-moz-box-shadow: 0px 0px 3px #000;
@@ -155,11 +161,10 @@
 }
 #formcontainer {
 	display: none;
-	margin: 10px auto 5px;
+	margin: 10% auto 5px;
 	text-align: center;
 	width: 600px;
 	height: 400px;
-	background: rgba(245,255,250, 0.6);
 	border-radius: 10px;
 }
 #tabbox {
@@ -167,8 +172,20 @@
 
 }
 #panel {
-	background-color: #FFF;
-	height: 300px;
+	height: 300px;	
+	border:4px solid #FF9;
+	border-top:0px;
+    border-radius: 0 0 30px 30px;
+    -webkit-border-radius: 0 0 30px 30px; /* Safari, Chrome */
+    -moz-border-radius: 0 0 30px 30px; /* Firefox */
+    box-shadow: 0 0 30px 8px #1A3457;
+    -webkit-box-shadow: 0 0 30px 8px #1A3457; /* Safari, Chrome */
+    -moz-box-shadow: 0 0 30px 8px #1A3457; /* Firefox */
+    background: #ffffec;
+	background: -webkit-linear-gradient(top, #ffffec, #bbbbee);
+}
+#panel table{
+	font-size: 16px;
 }
 label {
 	width: 40%;
@@ -185,16 +202,26 @@ input[type=text],input[type=password],input[type=date] {
 	position: relative;
 	background: #dedede;
 	display: block;
-	height: 40px;
+	height: 38px;
 	line-height: 40px;
 	text-align: center;
 	width: 290px;
 	float: right;
 	font-weight: bold;
+	font-size: 22px;
 	-webkit-border-top-left-radius: 10px;
 	-webkit-border-top-right-radius: 10px;
 	-moz-border-radius: 10px 10px 0px 0px;
 	border-radius: 10px 10px 0 0;
+	
+	border:3px solid #FF9;
+	border-bottom:0px;
+    border-radius: 15px 15px 0 0;
+    -webkit-border-radius: 15px 15px 0 0; /* Safari, Chrome */
+    -moz-border-radius: 15px 15px 0 0; /* Firefox */
+	background: #dfdfc9;
+	opacity: 0.8;
+
 }
 #registrationtab {
 	float: right;
@@ -212,7 +239,8 @@ p a {
 	margin-left: 8px;
 }
 .select {
-	background-color: #FFF;
+	background-color: #ffffec;
+	opacity: 1;
 }
 #loginbox {
 	min-height: 200px;
@@ -385,3 +413,63 @@ table.pop_up {
 
 #text_image {text-align: center;}
 
+#loginbox td, #register td {
+	min-width: 120px;
+}
+
+#logout_btn {
+	position: absolute;
+	bottom: 0;
+    margin: 5px;
+    width: 90px;
+	height: 35px;
+    display: inline-block;
+    outline: none;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    font: 14px/100% Arial, Helvetica, sans-serif;
+    text-shadow: 0 1px 1px rgba(0,0,0,.3);
+    -webkit-border-radius: .5em;
+    -moz-border-radius: .5em;
+    border-radius: .5em;
+	box-shadow: 0 0 5px 2px #1A3457;
+	-webkit-box-shadow: 0 0 5px 2px #1A3457; /* Safari, Chrome */
+	-moz-box-shadow: 0 0 5px 2px #1A3457; /* Firefox */
+    color: #fef4e9;
+    border: solid 1px #da7c0c;
+	opacity: 0.7;
+	
+	background-image: linear-gradient(bottom, rgb(255,106,0) 0%, rgb(255,0,0) 50%, rgb(255,113,5) 100%);
+	background-image: -o-linear-gradient(bottom, rgb(255,106,0) 0%, rgb(255,0,0) 50%, rgb(255,113,5) 100%);
+	background-image: -moz-linear-gradient(bottom, rgb(255,106,0) 0%, rgb(255,0,0) 50%, rgb(255,113,5) 100%);
+	background-image: -webkit-linear-gradient(bottom, rgb(255,106,0) 0%, rgb(255,0,0) 50%, rgb(255,113,5) 100%);
+	background-image: -ms-linear-gradient(bottom, rgb(255,106,0) 0%, rgb(255,0,0) 50%, rgb(255,113,5) 100%);
+
+	background-image: -webkit-gradient(
+		linear,
+		left bottom,
+		left top,
+		color-stop(0, rgb(255,106,0)),
+		color-stop(0.5, rgb(255,0,0)),
+		color-stop(1, rgb(255,113,5))
+	);
+
+}
+#logout_btn:hover {
+    text-decoration: none;
+	opacity: 1;
+}
+#logout_btn:active {
+    position: relative;
+    top: 1px;
+}
+#zoom_text{
+	padding-top: 5px;
+	width: 100%;
+	text-align: center;
+	font-family: Tahoma 14px;
+	font-size:16pt;
+	text-shadow: 0px 2px 2px #000;
+	color: #fff;
+}

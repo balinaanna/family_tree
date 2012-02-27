@@ -72,8 +72,8 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 				},this)
 			});
 			$('#navigator').on("click", "div", $.proxy(this.navigation, this));
-			$('#navigator').on('mousemove', function(){$('#navigator').css('opacity', '0.7');});
-			$('#navigator').on('mouseout', function(){$('#navigator').css('opacity', '0.3');});
+			$('#navigator').on('mousemove', function(){$('#navigator').css('opacity', '0.8');});
+			$('#navigator').on('mouseout', function(){$('#navigator').css('opacity', '0.5');});
 				
 			this.container = document.createElement('div');
 			//this.el.append($("#navigator"));
@@ -107,16 +107,10 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 			photo.position.set(0, 40, 1);
 			//this.container.style.background = "url('trash/back_11111.jpg')";
 			
-			var elems = {
-                'parent': {
-                    width: this.imgPlusSize, height: this.imgPlusSize, path: 'trash/add.png', trPath: 'trash/add_tr.png', posX: this.mouseX, posY: this.mouseY - Math.floor(this.nodeHeight / 2)+20
-                },
+		var elems = {
                 'child': {
                     width: this.imgPlusSize, height: this.imgPlusSize, path: 'trash/add.png', trPath: 'trash/add_tr.png', posX: this.mouseX, posY: this.mouseY + Math.floor(this.nodeHeight / 2)
                 },
-                //'arrow': {
-                //    width: 30, height: 48, path: 'trash/arrow.png', posX: this.mouseX, posY: this.mouseY - 30 - Math.floor(this.nodeHeight / 2)
-                //},
                 'edit': {
                     width: this.imgPlusSize, height: this.imgPlusSize, path: 'trash/edit.png', trPath: 'trash/edit_tr.png', posX: this.mouseX+this.nodeWidth/4, posY: this.mouseY + Math.floor(this.nodeHeight / 2)
                 },
@@ -124,6 +118,8 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
                     width: this.imgPlusSize, height: this.imgPlusSize, path: 'trash/delete.png', trPath: 'trash/delete_tr.png', posX: this.mouseX-this.nodeWidth/4, posY: this.mouseY + Math.floor(this.nodeHeight / 2)
                 }
             };
+            if (!data.f_id || !data.m_id) elems.parent = {width: this.imgPlusSize, height: this.imgPlusSize, path: 'trash/add.png', trPath: 'trash/add_tr.png', posX: this.mouseX, posY: this.mouseY - Math.floor(this.nodeHeight / 2)+20};
+			
 			
 			cube.add(this.texture('trash/pol1.png', this.nodeWidth, this.nodeHeight));			// children[0]					
 			
@@ -542,15 +538,11 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
             for (var key in this.objects){
                 if (this.objects[key].info.user_id == data2.id) var nodeX = this.objects[key];
             }
-            this.countChildren(data2.id, 1);
+            if(data[data2.id].ch_ids) this.countChildren(data2.id, 1);
             if(data[data2.id].spouse_id){
                 this.create_spouse(nodeX);
             }
-            //console.log(this.chWidth);
-            //console.log(this.chLShift);
-            //console.log(this.chRShift);
-            //console.log(this.chSide);
-            this.createChildren(data2.id, nodeX, 1);
+            if(data[data2.id].ch_ids) this.createChildren(data2.id, nodeX, 1);
             for (var key in this.objects){
                 if (this.objects[key].father) this.lines(0x000000,this.objects[key],this.objects[key].father);
                 if (this.objects[key].mother) this.lines(0x000000,this.objects[key],this.objects[key].mother);
@@ -608,6 +600,7 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
                     this.width_spouse_for_f = 0;
                     this.width_spouse_for_m = 0;
                     this.spouseState = false;
+                    
                     $.ajaxSetup({ cache: false });
         			this.collection = new TreeCollection();
         			this.collection.fetch({
@@ -630,20 +623,9 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
         					this.createTree();
         				},this)});
         			
-        			//this.container.removeChild(this.renderer.domElement);
-                    
         			this.scene = new THREE.Scene();
-        			//this.camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 10000);
-        			//this.camera.position.y = 150;
-        			//this.camera.position.z = 3000;
         			this.scene.add(this.camera);
-        			
-        			//this.projector = new THREE.Projector();
-        			//this.onMouseDownPosition = new THREE.Vector2();
-        			//this.renderer = new THREE.CanvasRenderer();
-        			//this.renderer.setSize(window.innerWidth, window.innerHeight);
-                    //this.container.appendChild(this.renderer.domElement);
-                    ///////////////////////////////////////////////////////////////////////////////////////////////////
+        			///////////////////////////////////////////////////////////////////////////////////////////////////
         },
 		onDocumentMouseDown: function(event) {
 
@@ -653,7 +635,7 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 				var ray = new THREE.Ray(this.camera.position, vector.subSelf(this.camera.position).normalize());
 				var intersects = ray.intersectObjects(this.objects);
 				if(intersects.length > 0) {
-					this.SELECTED = intersects[0].object.parent;
+					//this.SELECTED = intersects[0].object.parent;
 				} else {
 					this.isMouseDown = true;
 					this.container.style.cursor = 'move';
