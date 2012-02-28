@@ -136,7 +136,7 @@ class Api extends CI_Controller {
 					    			"'.$db_result[0]->user_id.'",
 									"",
 							    	"",
-									"[]",
+									"'.json_encode(array()).'",
 									"",
 									"'.$f_name.'",
 									"'.$l_name.'",
@@ -226,7 +226,7 @@ class Api extends CI_Controller {
 	}
 
 	public function add_node() {
-		if(!isset($_REQUEST['ch_ids'])){$_REQUEST['ch_ids']='[]';}
+		if(!isset($_REQUEST['ch_ids'])){$_REQUEST['ch_ids']= array();}
 		if(!isset($_REQUEST['f_id'])){$_REQUEST['f_id']='';}
 		if(!isset($_REQUEST['m_id'])){$_REQUEST['m_id']='';}
 		if(!isset($_REQUEST['spouse_id'])){$_REQUEST['spouse_id']='';}
