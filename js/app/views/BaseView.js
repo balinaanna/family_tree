@@ -349,18 +349,20 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
                 geom.vertices.push(new THREE.Vertex(new THREE.Vector3(child.position.x, child.position.y, -10)));
 				
             if (!spouse){
-                geom.vertices.push(new THREE.Vertex(new THREE.Vector3(child.position.x, child.position.y - 250, -10)));
+                geom.vertices.push(new THREE.Vertex(new THREE.Vector3(child.position.x, child.position.y - 300, -10)));
 				if (child.mother && child.father){
-				    geom.vertices.push(new THREE.Vertex(new THREE.Vector3((child.mother.position.x + child.father.position.x)/2, child.position.y - 250, -10)));
+				    geom.vertices.push(new THREE.Vertex(new THREE.Vector3((child.mother.position.x + child.father.position.x)/2, child.position.y - 300, -10)));
                     geom.vertices.push(new THREE.Vertex(new THREE.Vector3((child.mother.position.x + child.father.position.x)/2, parent.position.y, -10)));
                     geom.vertices.push(new THREE.Vertex(new THREE.Vector3(parent.position.x, parent.position.y, -10)));
 				}
                 if (child.mother && !child.father){
-                    geom.vertices.push(new THREE.Vertex(new THREE.Vector3(child.position.x, child.mother.position.y, -10)));
+                    geom.vertices.push(new THREE.Vertex(new THREE.Vector3(child.position.x, child.mother.position.y + 300, -10)));
+					geom.vertices.push(new THREE.Vertex(new THREE.Vector3(child.mother.position.x, child.mother.position.y + 300, -10)));
                     geom.vertices.push(new THREE.Vertex(new THREE.Vector3(child.mother.position.x, child.mother.position.y, -10)));
                 }
                 if (!child.mother && child.father){
-                    geom.vertices.push(new THREE.Vertex(new THREE.Vector3(child.position.x, child.father.position.y, -10)));
+                    geom.vertices.push(new THREE.Vertex(new THREE.Vector3(child.position.x, child.father.position.y + 300, -10)));
+					geom.vertices.push(new THREE.Vertex(new THREE.Vector3(child.father.position.x, child.father.position.y + 300, -10)));
                     geom.vertices.push(new THREE.Vertex(new THREE.Vector3(child.father.position.x, child.father.position.y, -10)));
                 }
             } else {
