@@ -36,6 +36,9 @@ var OSX = {
 				case 'edit_person':
 					title=$("#osx-modal-title-edit").html("Editing person");
 					break;
+                case 'add_spouse':
+					title=$("#osx-modal-title-edit").html("Adding spouse");
+					break;
 			}
 			title.show();
 

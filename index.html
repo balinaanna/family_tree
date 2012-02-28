@@ -16,6 +16,17 @@
 		<script type="text/javascript" src="js/libs/jquery.imgareaselect.pack.js"></script>
 		<script type="text/javascript" src="js/libs/upclick.js"></script>
 		<script type="text/javascript" src="js/libs/popups.js"></script>
+        
+        <link href="jquery-ui.css" rel="stylesheet" type="text/css"/>
+        <script src="jquery-ui.min.js"></script>
+        <script src="jquery.ui.datepicker-ru.js"></script>
+        <script>
+            $(document).ready(function() {
+                $("#birth_date").datepicker({ changeYear: true, yearRange: '1900:2050', createButton:false, clickInput:true });
+                $("#b_date").datepicker({ changeYear: true, yearRange: '1900:2050', createButton:false, clickInput:true });
+                $("#d_date").datepicker({ changeYear: true, yearRange: '1900:2050', createButton:false, clickInput:true });
+            });
+        </script>
 	</head>
 	<body class="body">
 		<div id="home">
@@ -182,7 +193,7 @@
 							</tr>
 							<tr>
 								<td>Birth date:</td>
-								<td><input type="date" name="birth_date" id="birth_date" placeholder="Your Birthday" /></td>
+								<td><input type="date" name="birth_date" id="birth_date" placeholder="Your Birthday"/></td>
 							</tr>
 							<tr>
 								<td>Sex:</td>

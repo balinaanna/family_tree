@@ -1,8 +1,3 @@
-//(function () {
-
-	//var URL = 'js/app/templates/',
-	//EJS = '.ejs'
-		
 define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeModel1'],function(TreeModel, TreeCollection, TreeModel1){
     BaseView = Backbone.View.extend({
 		objects : [],
@@ -119,6 +114,11 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
                 }
             };
             if (!data.f_id || !data.m_id) elems.parent = {width: this.imgPlusSize, height: this.imgPlusSize, path: 'trash/add.png', trPath: 'trash/add_tr.png', posX: this.mouseX, posY: this.mouseY - Math.floor(this.nodeHeight / 2)+20};
+            if (!data.spouse_id){
+                if(data.sex == "m") var dx = Math.floor(this.nodeWidth / 2)-20;
+                if(data.sex == "f") var dx = -Math.floor(this.nodeWidth / 2)+20;
+                elems.spouse = {width: this.imgPlusSize, height: this.imgPlusSize, path: 'trash/add.png', trPath: 'trash/add_tr.png', posX: this.mouseX + dx, posY: this.mouseY/2};
+            } 
 			
 			
 			cube.add(this.texture('trash/pol1.png', this.nodeWidth, this.nodeHeight));			// children[0]					
@@ -679,7 +679,7 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
                         }
                         //////////////////////////////////////////////////////////////////////////////////////////////////
                         but = true;
-					} else if(intersects[i].object.name == 'edit') {
+					}else if(intersects[i].object.name == 'edit') {
 						//edit persone 
 						nodex = intersects[i].object.parent;
 						this.TempObj = {
@@ -690,6 +690,15 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
                         but = true;
 					}else if(intersects[i].object.name == 'delete') {
 						// delete node
+                        but = true;
+					}else if(intersects[i].object.name == 'spouse') {
+						//edit persone 
+						nodex = intersects[i].object.parent;
+						this.TempObj = {
+							"action" : 'add_spouse',
+							node : nodex
+						};
+						OSX.init_edit({'action': 'add_spouse'}, nodex);
                         but = true;
 					}
 				}
@@ -746,6 +755,13 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 								$('#hint').html('Delete');
 								$('#hint').css('opacity','0.7');
 								break;
+                            case 'spouse':
+								hint = true;
+								$('#hint').css('left',event.clientX);
+								$('#hint').css('top',event.clientY-40);
+								$('#hint').html('Add spouse');
+								$('#hint').css('opacity','0.7');
+								break;
 							default:
 								if(hint == false)
 								{
@@ -773,6 +789,8 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 							}else if(par.children[j].name == 'delete') {
 								//par.children[j].visible = true;
 								par.children[j].children[0].material.map.image.src = 'trash/delete.png';
+							}else if(par.children[j].name == 'spouse') {
+								par.children[j].children[0].material.map.image.src = 'trash/add.png';
 							}
 						}
 					}
@@ -809,6 +827,8 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 								}else if(this.objects[i].children[j].name == 'delete') {
 									//par.children[j].visible = true;
 									this.objects[i].children[j].children[0].material.map.image.src = 'trash/delete_tr.png';
+								}else if(this.objects[i].children[j].name == 'spouse') {
+									this.objects[i].children[j].children[0].material.map.image.src = 'trash/add_tr.png';
 								}
 								else
 								{
@@ -961,9 +981,7 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 			if(this.TempObj.action == "add_parent"){
 				data.action = this.TempObj.action;
 				data.send_node_id = this.TempObj.node.info.id;
-				if(!data.ch_ids){
-					data.ch_ids = [];
-					}
+				if(!data.ch_ids) data.ch_ids = [];
 				data.ch_ids.push(this.TempObj.node.info.id);
 				data.f_id = "";
 				data.m_id = "";
@@ -1004,9 +1022,22 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 				}
 			});
 			};
-			if(this.TempObj.action == "add_partner"){
+			if(this.TempObj.action == "add_spouse"){
 				data.action = this.TempObj.action;
-				//need button
+                data.send_node_id = this.TempObj.node.info.id;
+                if(!data.ch_ids) data.ch_ids = [];
+				data.f_id = "";
+				data.m_id = "";
+                data.spouse_id = this.TempObj.node.info.id;
+                $.ajax({
+    				url : 'server/api/add_node',
+    				dataType : 'json',
+    				data : data,
+    				success : $.proxy(this.addNode, this),
+    				error : function(error) {
+    					console.log(error.responseText);
+    				}
+    			});
 			};
 			if(this.TempObj.action == "edit_person"){
 				data.f_id = this.TempObj.node.info.f_id;
