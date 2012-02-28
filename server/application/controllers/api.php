@@ -188,6 +188,7 @@ class Api extends CI_Controller {
 		if(!isset($_REQUEST['sex'])){$_REQUEST['sex']='m';}
 		if(!isset($_REQUEST['comment'])){$_REQUEST['comment']='';}
 	    $value = (object)$_REQUEST;
+	    $photo = ($value->photo_url) ? pathinfo($value->photo_url) : array('basename' => 'no_avatar.jpg');
 		$this->db->query('UPDATE `profile_data` SET  `f_id`= "'.$value->f_id.'",
 											    `m_id`= "'.$value->m_id.'",
 											    `ch_ids`= "'.addslashes(json_encode($value->ch_ids)).'",
@@ -197,7 +198,7 @@ class Api extends CI_Controller {
 											    `b_date`= "'.$value->b_date.'",
 											    `d_date`= "'.$value->d_date.'",
 											    `sex`= "'.$value->sex.'",
-											    `photo_url`= "'.$value->photo_url.'",
+											    `photo_url`= "'.$photo['basename'].'",
 											    `comment`= "'.addslashes($value->comment).'"
 						    WHERE `id`="'.$value->id.'" AND
 							       `user_id`="'.$this->session->userdata('user_id').'"
@@ -266,15 +267,16 @@ class Api extends CI_Controller {
 					$ch_ids=$ch_ids->result();
 					$ch_ids=json_decode($ch_ids[0]->ch_ids);
 					$ch_ids[]=$last_id->id;
+					$ch_ids = json_encode($ch_ids);
 					if($value->m_id){
-						$this->db->query('UPDATE `profile_data` SET `ch_ids`="'.addslashes(json_encode($ch_ids)).'" WHERE id="'.$value->f_id.'" AND id="'.$value->m_id.'"');
+						$this->db->query('UPDATE `profile_data` SET `ch_ids`="'.addslashes($ch_ids).'" WHERE id IN('.$value->f_id.', '.$value->m_id.')');
 					} else {
 						$this->db->query('INSERT INTO `profile_data`(`user_id`, `f_id`, `m_id`, `ch_ids`, `spouse_id`, `f_name`, `l_name`, `b_date`, `d_date`, `sex`, `photo_url`, `comment`)
 				    	    VALUES (
 					    		"'.$this->session->userdata('user_id').'",
 								"",
 							    "",
-								"'.addslashes(json_encode($value->ch_ids)).'",
+								"'.addslashes($ch_ids).'",
 								"'.$value->f_id.'",
 								"?",
 								"?",
@@ -291,7 +293,7 @@ class Api extends CI_Controller {
 					    		');
 						$last_m_id = $last_mid->result();
 						$last_m_id = $last_m_id[0];
-						$this->db->query('UPDATE `profile_data` SET `spouse_id`="'.$last_m_id->id.'", `ch_ids`="'.addslashes(json_encode($ch_ids)).'" WHERE id="'.$value->f_id.'"');
+						$this->db->query('UPDATE `profile_data` SET `spouse_id`="'.$last_m_id->id.'", `ch_ids`="'.addslashes($ch_ids).'" WHERE id="'.$value->f_id.'"');
 						$this->db->query('UPDATE `profile_data` SET `m_id`="'.$last_m_id->id.'" WHERE id="'.$last_id->id.'"');
 					}
 				}
@@ -300,15 +302,14 @@ class Api extends CI_Controller {
 					$ch_ids=$ch_ids->result();
 					$ch_ids=json_decode($ch_ids[0]->ch_ids);
 					$ch_ids[]=$last_id->id;
-					if($value->f_id){
-						$this->db->query('UPDATE `profile_data` SET `ch_ids`="'.addslashes(json_encode($ch_ids)).'" WHERE id="'.$value->f_id.'" AND id="'.$value->m_id.'"');
-					} else {
+					$ch_ids = json_encode($ch_ids);
+					if(!$value->f_id){
 						$this->db->query('INSERT INTO `profile_data`(`user_id`, `f_id`, `m_id`, `ch_ids`, `spouse_id`, `f_name`, `l_name`, `b_date`, `d_date`, `sex`, `photo_url`, `comment`)
 				    	    VALUES (
 					    		"'.$this->session->userdata('user_id').'",
 								"",
 							    "",
-								"'.addslashes(json_encode($value->ch_ids)).'",
+								"'.addslashes($ch_ids).'",
 								"'.$value->m_id.'",
 								"?",
 								"?",
@@ -325,7 +326,7 @@ class Api extends CI_Controller {
 					    		');
 						$last_f_id = $last_fid->result();
 						$last_f_id = $last_f_id[0];
-						$this->db->query('UPDATE `profile_data` SET `spouse_id`="'.$last_f_id->id.'", `ch_ids`="'.addslashes(json_encode($ch_ids)).'" WHERE id="'.$value->m_id.'"');
+						$this->db->query('UPDATE `profile_data` SET `spouse_id`="'.$last_f_id->id.'", `ch_ids`="'.addslashes($ch_ids).'" WHERE id="'.$value->m_id.'"');
 						$this->db->query('UPDATE `profile_data` SET `f_id`="'.$last_f_id->id.'" WHERE id="'.$last_id->id.'"');
 					}
 				}
