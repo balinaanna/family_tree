@@ -177,7 +177,7 @@ class Api extends CI_Controller {
 	}
 
 	public function save_node() {
-		if(!isset($_REQUEST['ch_ids'])){$_REQUEST['ch_ids']='[]';}
+		if(!isset($_REQUEST['ch_ids'])){$_REQUEST['ch_ids']= array();}
 		if(!isset($_REQUEST['f_id'])){$_REQUEST['f_id']='';}
 		if(!isset($_REQUEST['m_id'])){$_REQUEST['m_id']='';}
 		if(!isset($_REQUEST['spouse_id'])){$_REQUEST['spouse_id']='';}
@@ -188,8 +188,6 @@ class Api extends CI_Controller {
 		if(!isset($_REQUEST['sex'])){$_REQUEST['sex']='m';}
 		if(!isset($_REQUEST['comment'])){$_REQUEST['comment']='';}
 	    $value = (object)$_REQUEST;
-		//print_r($value);
-		//print_r($_REQUEST);
 		$this->db->query('UPDATE `profile_data` SET  `f_id`= "'.$value->f_id.'",
 											    `m_id`= "'.$value->m_id.'",
 											    `ch_ids`= "'.addslashes(json_encode($value->ch_ids)).'",
@@ -237,7 +235,7 @@ class Api extends CI_Controller {
 		if(!isset($_REQUEST['sex'])){$_REQUEST['sex']='m';}
 		if(!isset($_REQUEST['comment'])){$_REQUEST['comment']='';}
 		$value = (object)$_REQUEST;
-	    $photo = (!isset($value->upload)) ? pathinfo($value->photo_url) : array('basename' => 0);
+	    $photo = (isset($value->upload)) ? pathinfo($value->photo_url) : array('basename' => 'no_avatar.jpg');
 	    $this->db->query('INSERT INTO `profile_data`(`user_id`, `f_id`, `m_id`, `ch_ids`, `spouse_id`, `f_name`, `l_name`, `b_date`, `d_date`, `sex`, `photo_url`, `comment`)
 				    	    VALUES (
 					    		"'.$this->session->userdata('user_id').'",
@@ -255,50 +253,140 @@ class Api extends CI_Controller {
 							);
 						');
 		$lastid = $this->db->query('SELECT * FROM `profile_data` 
-								WHERE `user_id` = "'.$this->session->userdata('user_id').'"
-								ORDER BY `id` DESC LIMIT 1;
-					    ');
+									WHERE `user_id` = "'.$this->session->userdata('user_id').'"
+									ORDER BY `id` DESC LIMIT 1;
+					    		');
 		$last_id = $lastid->result();
 		$last_id = $last_id[0];
-		if($_REQUEST['action'] == 'add_child'){
-			if($value->f_id!=""){
-				$ch_ids=$this->db->query('SELECT ch_ids FROM `profile_data` WHERE id='.$value->f_id);
-				$ch_ids=$ch_ids->result();
-				print_r($ch_ids);
-				$ch_ids=json_decode($ch_ids[0]->ch_ids);
-				$ch_ids[]=$last_id->id;
-				$this->db->query('UPDATE `profile_data` SET `ch_ids`="'.addslashes(json_encode($ch_ids)).'" WHERE id='.$value->f_id);
-			}
-			if($value->m_id!=""){
-				$ch_ids=$this->db->query('SELECT ch_ids FROM `profile_data` WHERE id='.$value->m_id);
-				$ch_ids=$ch_ids->result();
-				print_r($ch_ids);
-				$ch_ids=json_decode($ch_ids[0]->ch_ids);
-				$ch_ids[]=$last_id->id;
-				$this->db->query('UPDATE `profile_data` SET `ch_ids`="'.addslashes(json_encode($ch_ids)).'" WHERE id='.$value->m_id);
-			}
+		// Street Magic
+		switch($value->action) {
+			case 'add_child':
+				if($value->f_id){
+					$ch_ids=$this->db->query('SELECT ch_ids FROM `profile_data` WHERE id='.$value->f_id);
+					$ch_ids=$ch_ids->result();
+					$ch_ids=json_decode($ch_ids[0]->ch_ids);
+					$ch_ids[]=$last_id->id;
+					if($value->m_id){
+						$this->db->query('UPDATE `profile_data` SET `ch_ids`="'.addslashes(json_encode($ch_ids)).'" WHERE id="'.$value->f_id'." AND id="'.$value->m_id'."');
+					} else {
+						$this->db->query('INSERT INTO `profile_data`(`user_id`, `f_id`, `m_id`, `ch_ids`, `spouse_id`, `f_name`, `l_name`, `b_date`, `d_date`, `sex`, `photo_url`, `comment`)
+				    	    VALUES (
+					    		"'.$this->session->userdata('user_id').'",
+								"",
+							    "",
+								"'.addslashes(json_encode($value->ch_ids)).'",
+								"'.$value->f_id.'",
+								"?",
+								"?",
+								"?",
+								"?",
+								"f",
+								"no_avatar.jpg",
+								""
+							);
+						');
+						$last_mid = $this->db->query('SELECT * FROM `profile_data` 
+									WHERE `user_id` = "'.$this->session->userdata('user_id').'"
+									ORDER BY `id` DESC LIMIT 1;
+					    		');
+						$last_m_id = $last_mid->result();
+						$last_m_id = $last_m_id[0];
+						$this->db->query('UPDATE `profile_data` SET `spouse_id`="'.$last_m_id->id.'", `ch_ids`="'.addslashes(json_encode($ch_ids)).'" WHERE id="'.$value->f_id'."');
+						$this->db->query('UPDATE `profile_data` SET `m_id`="'.$last_m_id->id.'" WHERE id="'.$last_id->id'."');
+					}
+				}
+				if($value->m_id){
+					$ch_ids=$this->db->query('SELECT ch_ids FROM `profile_data` WHERE id='.$value->m_id);
+					$ch_ids=$ch_ids->result();
+					$ch_ids=json_decode($ch_ids[0]->ch_ids);
+					$ch_ids[]=$last_id->id;
+					if($value->f_id){
+						$this->db->query('UPDATE `profile_data` SET `ch_ids`="'.addslashes(json_encode($ch_ids)).'" WHERE id="'.$value->f_id'." AND id="'.$value->m_id'."');
+					} else {
+						$this->db->query('INSERT INTO `profile_data`(`user_id`, `f_id`, `m_id`, `ch_ids`, `spouse_id`, `f_name`, `l_name`, `b_date`, `d_date`, `sex`, `photo_url`, `comment`)
+				    	    VALUES (
+					    		"'.$this->session->userdata('user_id').'",
+								"",
+							    "",
+								"'.addslashes(json_encode($value->ch_ids)).'",
+								"'.$value->m_id.'",
+								"?",
+								"?",
+								"?",
+								"?",
+								"m",
+								"no_avatar.jpg",
+								""
+							);
+						');
+						$last_fid = $this->db->query('SELECT * FROM `profile_data` 
+									WHERE `user_id` = "'.$this->session->userdata('user_id').'"
+									ORDER BY `id` DESC LIMIT 1;
+					    		');
+						$last_f_id = $last_fid->result();
+						$last_f_id = $last_f_id[0];
+						$this->db->query('UPDATE `profile_data` SET `spouse_id`="'.$last_f_id->id.'", `ch_ids`="'.addslashes(json_encode($ch_ids)).'" WHERE id="'.$value->m_id'."');
+						$this->db->query('UPDATE `profile_data` SET `f_id`="'.$last_f_id->id.'" WHERE id="'.$last_id->id'."');
+					}
+				}
+			break;
+
+			case 'add_parent':
+				if($value->sex =="m"){
+					$this->db->query('INSERT INTO `profile_data`(`user_id`, `f_id`, `m_id`, `ch_ids`, `spouse_id`, `f_name`, `l_name`, `b_date`, `d_date`, `sex`, `photo_url`, `comment`)
+				    	    VALUES (
+					    		"'.$this->session->userdata('user_id').'",
+								"",
+							    "",
+								"'.addslashes(json_encode($value->ch_ids)).'",
+								"'.$last_id->id.'",
+								"?",
+								"?",
+								"?",
+								"?",
+								"f",
+								"no_avatar.jpg",
+								""
+							);
+						');
+					$last_sid = $this->db->query('SELECT * FROM `profile_data` WHERE `user_id` = "'.$this->session->userdata('user_id').'" ORDER BY `id` DESC LIMIT 1');
+					$last_s_id = $last_sid->result();
+					$last_s_id = $last_s_id[0];
+					$this->db->query('UPDATE `profile_data` SET `spouse_id`="'.$last_s_id->id.'" WHERE id='.$last_id->id);
+					$this->db->query('UPDATE `profile_data` SET `f_id`="'.$last_id->id.'", `m_id`="'.$last_s_id->id.'" WHERE id='.$value->send_node_id);
+				}
+				if($value->sex =="f"){
+					$this->db->query('INSERT INTO `profile_data`(`user_id`, `f_id`, `m_id`, `ch_ids`, `spouse_id`, `f_name`, `l_name`, `b_date`, `d_date`, `sex`, `photo_url`, `comment`)
+				    	    VALUES (
+					    		"'.$this->session->userdata('user_id').'",
+								"",
+							    "",
+								"'.addslashes(json_encode($value->ch_ids)).'",
+								"'.$last_id->id.'",
+								"?",
+								"?",
+								"?",
+								"?",
+								"m",
+								"no_avatar.jpg",
+								""
+							);
+						');
+					$last_sid = $this->db->query('SELECT * FROM `profile_data` WHERE `user_id` = "'.$this->session->userdata('user_id').'" ORDER BY `id` DESC LIMIT 1');
+					$last_s_id = $last_sid->result();
+					$last_s_id = $last_s_id[0];
+					$this->db->query('UPDATE `profile_data` SET `spouse_id`="'.$last_s_id->id.'" WHERE id='.$last_id->id);
+					$this->db->query('UPDATE `profile_data` SET `m_id`="'.$last_id->id.'", `f_id`="'.$last_s_id->id.'" WHERE id='.$value->send_node_id);
+				}
+			break;
+
+			case 'add_spouse':
+				$this->db->query('UPDATE `profile_data` SET `spouse_id`="'.$last_id->id.'" WHERE id='.$last_id->spouse_id);
+			break;
 		}
-		if($_REQUEST['action'] == 'add_parent'){
-			if($value->sex =="m"){
-				if($_REQUEST['spouse_id']!=''){
-					$this->db->query('UPDATE `profile_data` SET `spouse_id`="'.$last_id->id.'" WHERE id='.$_REQUEST['spouse_id']);
-				};
-				$this->db->query('UPDATE `profile_data` SET `f_id`="'.$last_id->id.'" WHERE id='.$_REQUEST['send_node_id']);
-			}
-			if($value->sex =="f"){
-				if($_REQUEST['spouse_id']!=''){
-					$this->db->query('UPDATE `profile_data` SET `spouse_id`="'.$last_id->id.'" WHERE id='.$_REQUEST['spouse_id']);
-				};
-				$this->db->query('UPDATE `profile_data` SET `m_id`="'.$last_id->id.'" WHERE id='.$_REQUEST['send_node_id']);
-			}
-			print_r($_REQUEST['spouse_id']);
-		}
-		if($_REQUEST['action'] == 'add_spouse'){
-			
-		}
-		//if(!isset($value->upload)){$value->upload=0;}
+		if(!isset($value->upload)){$value->upload=0;}
 		if(!isset($value->upload)) { // If UPLOAD ( save_photo() ) return success
-			//print_r();
+
 			rename(BASEPATH."../..".$value->photo_url, BASEPATH."../../assets/images/uploaded/avatars/".$last_id->id.".".$photo['extension']);
 			$value->photo_url = "../assets/images/uploaded/avatars/".$last_id->id.".".$photo['extension'];
 			$this->db->query('UPDATE `profile_data`
@@ -307,7 +395,6 @@ class Api extends CI_Controller {
 							       	  `user_id`="'.$this->session->userdata('user_id').'"
 					    	');
 			// CUSTOM WIDTH && HEIGHT !!!!
-
 			$image = $this->image_model;
 			$image->source_file = BASEPATH."../".$value->photo_url;
 			$image->returnType = 'array';
