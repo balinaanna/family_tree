@@ -420,38 +420,38 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
                         if (data[id].ch_ids.length > 1){
                             if (data[id].sex == "m"){
                                 if (key == 0){
-                                    if (this.chSide[data[id].ch_ids[key]] == "l") sumWidth += w;
-                                    if (this.chSide[data[id].ch_ids[key]] != "l") sumWidth += this.chWidth[data[id].ch_ids[key]] + w;
-                                    if (!this.chSide[data[id].ch_ids[key]]) sumWidth -= w;
-                                    if (this.chRShift[data[id].ch_ids[key]]) sumWidth += this.chRShift[data[id].ch_ids[key]];
+                                    if (this.chSide[ch_id] == "l") sumWidth += w;
+                                    if (this.chSide[ch_id] != "l") sumWidth += this.chWidth[data[id].ch_ids[key]] + w;
+                                    if (!this.chSide[ch_id]) sumWidth -= w;
+                                    if (this.chRShift[ch_id]) sumWidth += this.chRShift[data[id].ch_ids[key]];
                                 }
                                 if (key>0 && key < data[id].ch_ids.length-1){
-                                    if (this.chLShift[data[id].ch_ids[key]]) sumWidth += this.chLShift[data[id].ch_ids[key]];
-                                    sumWidth += this.chWidth[data[id].ch_ids[key]] + w;
-                                    if (!this.chSide[data[id].ch_ids[key]]) sumWidth -= w;
-                                    if (this.chRShift[data[id].ch_ids[key]]) sumWidth += this.chRShift[data[id].ch_ids[key]];
+                                    if (this.chLShift[ch_id]) sumWidth += this.chLShift[data[id].ch_ids[key]];
+                                    sumWidth += this.chWidth[ch_id] + w;
+                                    if (!this.chSide[ch_id]) sumWidth -= w;
+                                    if (this.chRShift[ch_id]) sumWidth += this.chRShift[data[id].ch_ids[key]];
                                 }
                                 if (key == data[id].ch_ids.length-1){
-                                    if (this.chSide[data[id].ch_ids[key]] == "l") sumWidth += this.chWidth[data[id].ch_ids[key]];
-                                    if (this.chLShift[data[id].ch_ids[key]]) sumWidth += this.chLShift[data[id].ch_ids[key]];
+                                    if (this.chSide[ch_id] == "l") sumWidth += this.chWidth[data[id].ch_ids[key]];
+                                    if (this.chLShift[ch_id]) sumWidth += this.chLShift[data[id].ch_ids[key]];
                                 }
                             }
                             if (data[id].sex == "f"){
                                 if (key == 0){
-                                    if (this.chSide[data[id].ch_ids[key]] == "r") sumWidth += w;
-                                    if (this.chSide[data[id].ch_ids[key]] != "r") sumWidth += this.chWidth[data[id].ch_ids[key]] + w;
-                                    if (!this.chSide[data[id].ch_ids[key]]) sumWidth -= w;
-                                    if (this.chLShift[data[id].ch_ids[key]]) sumWidth += this.chLShift[data[id].ch_ids[key]];
+                                    if (this.chSide[ch_id] == "r") sumWidth += w;
+                                    if (this.chSide[ch_id] != "r") sumWidth += this.chWidth[data[id].ch_ids[key]] + w;
+                                    if (!this.chSide[ch_id]) sumWidth -= w;
+                                    if (this.chLShift[ch_id]) sumWidth += this.chLShift[data[id].ch_ids[key]];
                                 }
                                 if (key>0 && key < data[id].ch_ids.length-1){
-                                    if (this.chLShift[data[id].ch_ids[key]]) sumWidth += this.chLShift[data[id].ch_ids[key]];
-                                    sumWidth += this.chWidth[data[id].ch_ids[key]] + w;
-                                    if (!this.chSide[data[id].ch_ids[key]]) sumWidth -= w;
-                                    if (this.chRShift[data[id].ch_ids[key]]) sumWidth += this.chRShift[data[id].ch_ids[key]];
+                                    if (this.chLShift[ch_id]) sumWidth += this.chLShift[data[id].ch_ids[key]];
+                                    sumWidth += this.chWidth[ch_id] + w;
+                                    if (!this.chSide[ch_id]) sumWidth -= w;
+                                    if (this.chRShift[ch_id]) sumWidth += this.chRShift[data[id].ch_ids[key]];
                                 }
                                 if (key == data[id].ch_ids.length-1){
-                                    if (this.chSide[data[id].ch_ids[key]] == "r") sumWidth += this.chWidth[data[id].ch_ids[key]];
-                                    if (this.chRShift[data[id].ch_ids[key]]) sumWidth += this.chRShift[data[id].ch_ids[key]];
+                                    if (this.chSide[ch_id] == "r") sumWidth += this.chWidth[data[id].ch_ids[key]];
+                                    if (this.chRShift[ch_id]) sumWidth += this.chRShift[data[id].ch_ids[key]];
                                 }
                             }
                         }
@@ -471,6 +471,7 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
             if (data[id].ch_ids && i<4){
                 for (var key in data[id].ch_ids){
                     var ch_id = data[id].ch_ids[key];
+					var preChId = data[id].ch_ids[key-1];
                     var chNode = this.create_node(data[ch_id]);
                     
                     for (var k in this.objects){
@@ -483,11 +484,11 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
                                 chNode.position.set(nodex.position.x, nodex.position.y + 200 + this.nodeHeight, 0);
                             }else{
                                 if (this.spouseState && i == 1) dx += this.spouseState/(data[id].ch_ids.length - 1);
-                                if (this.chRShift[data[id].ch_ids[key-1]]) dx += this.chRShift[data[id].ch_ids[key-1]];
+                                if (this.chRShift[preChId]) dx += this.chRShift[preChId];
                                 if (this.chLShift[ch_id]) dx += this.chLShift[ch_id];
                                 if (this.chSide[ch_id] == "l") dx += this.chWidth[ch_id];
-                                if (this.chSide[data[id].ch_ids[key-1]] == "r" || !this.chSide[data[id].ch_ids[key-1]]) dx += this.chWidth[data[id].ch_ids[key-1]];
-                                if (this.chSide[data[id].ch_ids[key-1]]) dx += this.nodeWidth + 150;
+                                if (this.chSide[preChId] == "r" || !this.chSide[preChId]) dx += this.chWidth[preChId];
+                                if (this.chSide[preChId]) dx += this.nodeWidth + 150;
                                 chNode.position.set(nodex.position.x + dx, nodex.position.y + 200 + this.nodeHeight, 0);
                             }
                         } else if (data[nodex.info.user_id].sex == "f"){
@@ -495,11 +496,11 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
                                 chNode.position.set(nodex.position.x, nodex.position.y + 200 + this.nodeHeight, 0);
                             }else{
                                 if (this.spouseState && i == 1) dx += this.spouseState/(data[id].ch_ids.length - 1);
-                                if (this.chLShift[data[id].ch_ids[key-1]]) dx += this.chLShift[data[id].ch_ids[key-1]];
+                                if (this.chLShift[preChId]) dx += this.chLShift[preChId];
                                 if (this.chRShift[ch_id]) dx += this.chRShift[ch_id];
                                 if (this.chSide[ch_id] == "r") dx += this.chWidth[ch_id];
-                                if (this.chSide[data[id].ch_ids[key-1]] == "l" || !this.chSide[data[id].ch_ids[key-1]]) dx += this.chWidth[data[id].ch_ids[key-1]];
-                                if (this.chSide[data[id].ch_ids[key-1]]) dx += this.nodeWidth + 150;
+                                if (this.chSide[preChId] == "l" || !this.chSide[preChId]) dx += this.chWidth[preChId];
+                                if (this.chSide[preChId]) dx += this.nodeWidth + 150;
                                 chNode.position.set(nodex.position.x - dx, nodex.position.y + 200 + this.nodeHeight, 0);
                             }
                         }
@@ -1020,7 +1021,7 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 		},
 		saveNode : function(options) {
 			
-			$.ajax({
+			$.ajax({a
 				url : 'server/api/save_node',
 				dataType : 'json',
 				data : options.data,
