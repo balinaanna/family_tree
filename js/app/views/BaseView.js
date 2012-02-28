@@ -27,7 +27,8 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 			"mousemove canvas" : "onDocumentMouseMove", 
 			"mousewheel canvas" : "onDocumentMouseWheel",
 			"click canvas": "onClick",
-			"click #submit_person": "submitFunc"		
+			"click #submit_person": "submitFunc",
+			"click #logout_btn": "logout"		
 		},
 		
 		initialize: function(){
@@ -910,6 +911,12 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 			
 		},
 
+		logout: function(){
+			localStorage.clear();
+			document.cookie = 'ci_session' + '=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+			window.location = window.location.href;
+		},
+
 		submitFunc : function(event) {
 			event.preventDefault();
 			var h = $('#dp').height();
@@ -1021,7 +1028,7 @@ define(['models/TreeNodeModel', 'collections/TreeCollection', 'models/TreeNodeMo
 		},
 		saveNode : function(options) {
 			
-			$.ajax({a
+			$.ajax({
 				url : 'server/api/save_node',
 				dataType : 'json',
 				data : options.data,
