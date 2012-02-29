@@ -1,0 +1,113 @@
+<div id="navigator" style="position:absolute; z-index: 100;">
+		<input type="button" id="logout_btn" value="Logout">
+		
+		<div id="zoom_text">Zoom</div>
+		<!--div class="circle arrow-up">
+			<div id="arrowup" class="arrow"></div>
+		</div>
+		<div class="circle arrow-left">
+			<div id="arrowleft" class="arrow"></div>
+		</div>
+		<div class="circle arrow-right">
+			<div id="arrowright" class="arrow"></div>
+		</div>
+		<div class="circle arrow-down">
+			<div id="arrowdown" class="arrow"></div>
+		</div-->
+		<!--div id="plus" class="circle"></div-->
+		<div id="slider"></div>
+		<!--div id="minus" class="circle"></div-->
+	</div>
+<div id="hint" style="position: absolute; z-index: 100;"></div>
+<div id="osx-modal-content-edit">
+	<div id="osx-modal-title-edit">
+		OSX Style Modal Dialog
+	</div>
+	<div class="close">
+		<a href="#" class="simplemodal-close">x</a>
+	</div>
+	<div id="osx-modal-data-edit">
+		<table id="data_table">
+			<tr>
+				<td style="width: 320px;" class="div_form">
+				<div id="photo_upload">
+					<input type="button" id="upload_input" value="Upload photo">
+					(*.jpg, *.jpeg, *.png, *.gif)
+				</div>
+				<div id="photo_crop">
+					<div id="text_image">
+						<span style="text-align: center;">Select photo fragment to display</span>
+					</div>
+					<div id="photo_div" style="width: 100%; min-height: 300px;">
+						<img id="photo" alt="" title="" style="max-height: 300px; max-width: 300px; margin: 10px;" />
+						<div id="dp" style="display: none;"><img id="photo_native_size"/>
+						</div>
+					</div>
+					<div style="position: relative; float: left; overflow: hidden; width: 100px; height: 100px; margin: 10px;">
+						<img id="photo_preview" src="" style="position: relative;" />
+					</div>
+					<input type="hidden" id="x1" name="x1" value="" />
+					<input type="hidden" id="y1" name="y1" value="" />
+					<input type="hidden" id="x2" name="x2" value="" />
+					<input type="hidden" id="y2" name="y2" value="" />
+					<input type="hidden" id="w" name="w" value="" />
+					<input type="hidden" id="h" name="h" value="" />
+				</div></td>
+				<td>
+				<table id="user_info_div" class="div_form" style="margin-left: 10px;">
+					<tr>
+						<td class="data-edit-field"> First name </td>
+						<td class="data-edit-data">
+						<input type="hidden" id="user_id" name="user_id"/>
+						<input type="hidden" id="f_id" name="f_id"/>
+						<input type="hidden" id="m_id" name="m_id"/>
+						<input type="hidden" id="ch_ids" name="ch_ids"/>
+						<input type="hidden" id="spouse_id" name="spouse_id"/>
+						<input id="f_name" name="f_name"/>
+						</td>
+					</tr>
+					<tr>
+						<td class="data-edit-field"> Last name </td>
+						<td class="data-edit-data">
+						<input id="l_name" name="l_name"/>
+						</td>
+					</tr>
+					<tr>
+						<td class="data-edit-field"> Birth date </td>
+						<td class="data-edit-data">
+						<input id="b_date" name="b_date"/>
+						</td>
+					</tr>
+					<tr>
+						<td class="data-edit-field"> Death date </td>
+						<td class="data-edit-data">
+						<input id="d_date" name="d_date"/>
+						</td>
+					</tr>
+					<tr>
+						<td class="data-edit-field"> Gender</td>
+						<td>
+						<input type="radio" id="m_radio" name="gender" value="m" checked />
+						Male
+						<input type="radio" id="f_radio" name="gender" value="f" />
+						Female </td>
+					</tr>
+					<tr>
+						<td class="data-edit-field"> About </td>
+						<td class="data-edit-data">									
+							<textarea id="about" name="about" class="mceEditor"></textarea>
+						</td>
+					</tr>
+				</table>
+				<table>
+					<div id="osx-modal-content-buttons" class="div_form" style="margin-top: 10px; margin-left: 10px; height: 100px; text-align: right;">
+						<input type="submit" id="submit_person" value="Save" />
+						<input type="button" class="simplemodal-close" value="Close">
+						<span>(or press ESC or click the overlay)</span>
+						<div id="show-popup"></div>
+					</div>
+				</table></td>
+			</tr>
+		</table>
+	</div>
+</div>

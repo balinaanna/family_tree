@@ -1,0 +1,63 @@
+<div id="formContainer">
+	<div id="tabbox">
+		<a id="registertab" class="tab signup">Register</a>
+		<a id="logintab" class="tab select">Login</a>
+	</div>
+	<div id="panel">
+		<div id="loginbox">
+			<table style="margin: 50px 0 0 150px;">
+				<tr>
+					<td>Email<span style="color: red;">*</span>:</td>
+					<td><input type="text" name="loginEmail" id="loginEmail" placeholder="Email" /></td>
+				</tr>
+				<tr>
+					<td>Password<span style="color: red;">*</span>:</td>
+					<td><input type="password" name="loginPass" id="loginPass" placeholder="Password" /></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td style="text-align: center;"><input type="button" id="loginbtn" name="submit" value="Login" style="margin-top: 15px;" /></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td style="text-align: center;"><a href="#" id="flipToRecover" class="flipLink">Can't access your account?</a></td>
+				</tr>
+			</table>
+			<div id="infmessage"></div>
+		</div>
+		<div id="signupbox">
+			<table style="margin: 30px 0 0 150px;">
+				<tr>
+					<td>Email<span style="color: red;">*</span>:</td>
+					<td><input type="text" name="regEmail" id="regEmail" placeholder="Your Email" /></td>
+				</tr>
+				<tr>
+					<td>Password<span style="color: red;">*</span>:</td>
+					<td><input type="password" name="password" id="password" placeholder="Password" /></td>
+				</tr>
+				<tr>
+					<td>First Name:</td>
+					<td><input type="text" name="first_name" id="first_name" placeholder="Your Name" /></td>
+				</tr>
+				<tr>
+					<td>Last Name:</td>
+					<td><input type="text" name="last_name" id="last_name" placeholder="Your Last Name" /></td>
+				</tr>
+				<tr>
+					<td>Birth date:</td>
+					<td><input type="date" name="birth_date" id="birth_date" placeholder="Your Birthday"/></td>
+				</tr>
+				<tr>
+					<td>Sex:</td>
+					<td><input type="radio" name="s" id="s" value="m" checked /> Male   
+					<input type="radio" name="s" id="s" value="f" /> Female</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td style="text-align: center;"><input type="button" id="registrationbtn" name="submit" value="Signup" style="margin-top: 15px;"/></td>
+				</tr>
+			</table>
+			<div id="reg_result"></div>
+		</div>
+	</div>
+</div>

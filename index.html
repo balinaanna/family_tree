@@ -1,16 +1,22 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE html>
 <html>
 	<head>
 		<title>BASE FAMILY TREE WEB APPLICATION</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<link href="data:image/x-icon;base64,AAABAAEAEBAAAAAAAABoBQAAFgAAACgAAAAQAAAAIAAAAAEACAAAAAAAAAEAAAAAAAAAAAAAAAEAAAAAAAAAAAAAEkYuABNKMQAfk2gAITwrABlJLgAVeVEA2fPoABp8UQAaelQA+P38ABRdPQAno2sA/v7/AP/+/wAVjWAAIoVaACWGXQA2oW4AH41gAB+RYwARSS8AF3NJABhzSQAWd0wAE1E1AGKrggAtZEkAF39SABAwGwAhd0wAFVs4ABxTOwAdg1UAK3NSAC6ebwBBiWYAKadvAFGngAAlhl4AEHNKAEO8iQARSTAAEkkwABdJMAAZRzMAKY5kACqOZAAhbUoAMVpHABJUNgDh7+cAHKd5ADKVZwAbhFkA5vTtADVxVgAjilkAMUs/AEKScAAac0sAGXROABlHNAAgc0sA9/v5APr++QAdTT0AF1s6ABaHWgAqTDoANpVxAB+PYAAVQykAGz8mACOIZgAVcEwAsO/YAChhQwAmYkYAI5dmABRQNQA4iF0ADjMeACFKNQAJjmcADjchABpYOwAqn2wAEGU+AD2JaQAUPCcAH4pbABdqRABYo4AAY5Z9ACmJYQAXRy0AGEswABdNNgAml2cAFlU8ABdXOQAgpnAAIXtTABBlPwDO49kAEGg/AB2DWQAaiVkAGVpCABtcPwAkqXkAGWBCAB5cPwAiWDwAFZZlABJDKwBLq5AA1OvfABduSABil4EAEUouACuDYgAUeEsAOKl5AB9vSwD1/fkAM4dlABCIYAD9/vwAI3pRAP///wAeglcAFy8mAByHXQASa0AAFmNDABqOYABFi2gAMKlxABlqRgAvr3oAHHJMAB5zTwAfSDIAG3pSABl+VQASXTsAF1c7AB2AUgAcg1sAHIlbAC0kDwAVOCcAFz0kACFfQQC+3coAG2pHABhwRwAlEQQAFU0wAA0qGQALMRwAGnxQAPj9+wAcUDkACzwiAP3+/gDM6NAA/v7+AA5rQgAlUDkA5/fzABJBKAAXZkUANZ9wACCMXACJmYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIODg4ODg4OYg4ODg4ODg4ODg6mBfqepn6RpNwqDg4ODqXReU5A4EUsiZ2VxGwVMg3grbj4EOjEclg8hL6piVDN2Mh1tRZmiQoWIE5Iph291hosnAXkCUK2aFUctlz1YgH8IC2tVEGiJZmOdkWByrnpdhHCeaqUuSKE/r09fQ5M7QDCmd0QgFFeVKKtkjY59JKk0ik5hIxlalCo5CTw2EqyDB4xJo1KgUXtcj7AGViaDg4OoFx4fGCxNsZsWNQOpg4ODg4NGggwlbFtzfEGDg4ODg4ODDakaSlmcqQ6Dg4ODAAAAAAAAAAAAAAAAAAAAAP//AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP//AAA=" rel="icon" type="image/x-icon">
-		<link rel="stylesheet" type="text/css" href="assets/css/style.css">
-		<link type='text/css' href='assets/css/osx.css' rel='stylesheet' media='screen'>
-		<link rel="stylesheet" type="text/css" href="assets/css/ui-lightness/jquery-ui-1.8.17.custom.css" />
-		<script data-main="js/app/main" src="/js/libs/jquery-1.7.1.min.js"></script>
-		<script data-main="js/app/main" src="/js/libs/underscore-min.js"></script>
+		<link rel="stylesheet" type="text/css" href="assets/stylesheets/style.css">
+		<link type='text/css' href='assets/stylesheets/osx.css' rel='stylesheet' media='screen'>
+		<link rel="stylesheet" type="text/css" href="assets/stylesheets/ui-lightness/jquery-ui-1.8.17.custom.css" />
+		
+		<script src="assets/javascripts/libs/jquery-1.7.1.min.js"></script>
+		<script src="assets/javascripts/libs/underscore-min.js"></script>
+		<script src="assets/javascripts/libs/backbone-min.js"></script>
+		<script data-main="assets/javascripts/app/main" src="assets/javascripts/libs/require.js"></script>
+		
+		<!--<script data-main="js/app/main" src="/js/libs/jquery-1.7.1.min.js"></script>
+		
 		<script data-main="js/app/main" src="/js/libs/backbone-min.js"></script>
 		<script data-main="js/app/main" src="js/libs/require.js"></script>
+		
 		<script data-main="js/app/main" src="js/libs/Three.js"></script>
 		<link rel="stylesheet" type="text/css" href="assets/css/imgareaselect-default.css" />
 		<script type="text/javascript" src="js/libs/jquery.imgareaselect.pack.js"></script>
@@ -20,195 +26,17 @@
         <link href="jquery-ui.css" rel="stylesheet" type="text/css"/>
         <script src="jquery-ui.min.js"></script>
         <script src="jquery.ui.datepicker-ru.js"></script>
-        <script>
+        
+		
+		<script>
             $(document).ready(function() {
                 $("#birth_date").datepicker({ changeYear: true, yearRange: '1900:2050', createButton:false, clickInput:true });
                 $("#b_date").datepicker({ changeYear: true, yearRange: '1900:2050', createButton:false, clickInput:true });
                 $("#d_date").datepicker({ changeYear: true, yearRange: '1900:2050', createButton:false, clickInput:true });
             });
-        </script>
+        </script>-->
 	</head>
 	<body class="body">
-		<div id="home">
-			<div id="navigator" style="position:absolute; z-index: 100;">
-					<input type="button" id="logout_btn" value="Logout">
-					
-					<div id="zoom_text">Zoom</div>
-					<!--div class="circle arrow-up">
-						<div id="arrowup" class="arrow"></div>
-					</div>
-					<div class="circle arrow-left">
-						<div id="arrowleft" class="arrow"></div>
-					</div>
-					<div class="circle arrow-right">
-						<div id="arrowright" class="arrow"></div>
-					</div>
-					<div class="circle arrow-down">
-						<div id="arrowdown" class="arrow"></div>
-					</div-->
-					<!--div id="plus" class="circle"></div-->
-					<div id="slider"></div>
-					<!--div id="minus" class="circle"></div-->
-				</div>
-			<div id="hint" style="position: absolute; z-index: 100;"></div>
-			<div id="osx-modal-content-edit">
-				<div id="osx-modal-title-edit">
-					OSX Style Modal Dialog
-				</div>
-				<div class="close">
-					<a href="#" class="simplemodal-close">x</a>
-				</div>
-				<div id="osx-modal-data-edit">
-					<table id="data_table">
-						<tr>
-							<td style="width: 320px;" class="div_form">
-							<div id="photo_upload">
-								<input type="button" id="upload_input" value="Upload photo">
-								(*.jpg, *.jpeg, *.png, *.gif)
-							</div>
-							<div id="photo_crop">
-								<div id="text_image">
-									<span style="text-align: center;">Select photo fragment to display</span>
-								</div>
-								<div id="photo_div" style="width: 100%; min-height: 300px;">
-									<img id="photo" alt="" title="" style="max-height: 300px; max-width: 300px; margin: 10px;" />
-									<div id="dp" style="display: none;"><img id="photo_native_size"/>
-									</div>
-								</div>
-								<div style="position: relative; float: left; overflow: hidden; width: 100px; height: 100px; margin: 10px;">
-									<img id="photo_preview" src="" style="position: relative;" />
-								</div>
-								<input type="hidden" id="x1" name="x1" value="" />
-								<input type="hidden" id="y1" name="y1" value="" />
-								<input type="hidden" id="x2" name="x2" value="" />
-								<input type="hidden" id="y2" name="y2" value="" />
-								<input type="hidden" id="w" name="w" value="" />
-								<input type="hidden" id="h" name="h" value="" />
-							</div></td>
-							<td>
-							<table id="user_info_div" class="div_form" style="margin-left: 10px;">
-								<tr>
-									<td class="data-edit-field"> First name </td>
-									<td class="data-edit-data">
-									<input type="hidden" id="user_id" name="user_id"/>
-									<input type="hidden" id="f_id" name="f_id"/>
-									<input type="hidden" id="m_id" name="m_id"/>
-									<input type="hidden" id="ch_ids" name="ch_ids"/>
-									<input type="hidden" id="spouse_id" name="spouse_id"/>
-									<input id="f_name" name="f_name"/>
-									</td>
-								</tr>
-								<tr>
-									<td class="data-edit-field"> Last name </td>
-									<td class="data-edit-data">
-									<input id="l_name" name="l_name"/>
-									</td>
-								</tr>
-								<tr>
-									<td class="data-edit-field"> Birth date </td>
-									<td class="data-edit-data">
-									<input id="b_date" name="b_date"/>
-									</td>
-								</tr>
-								<tr>
-									<td class="data-edit-field"> Death date </td>
-									<td class="data-edit-data">
-									<input id="d_date" name="d_date"/>
-									</td>
-								</tr>
-								<tr>
-									<td class="data-edit-field"> Gender</td>
-									<td>
-									<input type="radio" id="m_radio" name="gender" value="m" checked />
-									Male
-									<input type="radio" id="f_radio" name="gender" value="f" />
-									Female </td>
-								</tr>
-								<tr>
-									<td class="data-edit-field"> About </td>
-									<td class="data-edit-data">									
-										<textarea id="about" name="about" class="mceEditor"></textarea>
-									</td>
-								</tr>
-							</table>
-							<table>
-								<div id="osx-modal-content-buttons" class="div_form" style="margin-top: 10px; margin-left: 10px; height: 100px; text-align: right;">
-									<input type="submit" id="submit_person" value="Save" />
-									<input type="button" class="simplemodal-close" value="Close">
-									<span>(or press ESC or click the overlay)</span>
-									<div id="show-popup"></div>
-								</div>
-							</table></td>
-						</tr>
-					</table>
-				</div>
-			</div>
-		</div>
-		<div id="formContainer">
-			<div id="tabbox">
-				<a href="#" id="registertab" class="tab signup">Register</a>
-				<a href="#" id="logintab" class="tab select">Login</a>
-			</div>
-			<div id="panel">
-				<div id="loginbox">
-					<form id="login" method="post" action="./">
-						<table style="margin: 50px 0 0 150px;">
-							<tr>
-								<td>Email<span style="color: red;">*</span>:</td>
-								<td><input type="text" name="loginEmail" id="loginEmail" placeholder="Email" /></td>
-							</tr>
-							<tr>
-								<td>Password<span style="color: red;">*</span>:</td>
-								<td><input type="password" name="loginPass" id="loginPass" placeholder="Password" /></td>
-							</tr>
-							<tr>
-								<td></td>
-								<td style="text-align: center;"><input type="submit" id="loginbtn" name="submit" value="Login" style="margin-top: 15px;" /></td>
-							</tr>
-							<tr>
-								<td></td>
-								<td style="text-align: center;"><a href="#" id="flipToRecover" class="flipLink">Can't access your account?</a></td>
-							</tr>
-						</table>
-					</form>
-				</div>
-				<div id="signupbox">
-					<form id="register" method="post" action="./">
-						<table style="margin: 30px 0 0 150px;">
-							<tr>
-								<td>Email<span style="color: red;">*</span>:</td>
-								<td><input type="text" name="regEmail" id="regEmail" placeholder="Your Email" /></td>
-							</tr>
-							<tr>
-								<td>Password<span style="color: red;">*</span>:</td>
-								<td><input type="password" name="password" id="password" placeholder="Password" /></td>
-							</tr>
-							<tr>
-								<td>First Name:</td>
-								<td><input type="text" name="first_name" id="first_name" placeholder="Your Name" /></td>
-							</tr>
-							<tr>
-								<td>Last Name:</td>
-								<td><input type="text" name="last_name" id="last_name" placeholder="Your Last Name" /></td>
-							</tr>
-							<tr>
-								<td>Birth date:</td>
-								<td><input type="date" name="birth_date" id="birth_date" placeholder="Your Birthday"/></td>
-							</tr>
-							<tr>
-								<td>Sex:</td>
-								<td><input type="radio" name="s" id="s" value="m" checked /> Male   
-								<input type="radio" name="s" id="s" value="f" /> Female</td>
-							</tr>
-							<tr>
-								<td></td>
-								<td style="text-align: center;"><input type="submit" id="registrationbtn" name="submit" value="Signup" style="margin-top: 15px;"/></td>
-							</tr>
-						</table>
-					</form>
-					<div id="reg_result"></div>
-				</div>
-			</div>
-		</div>
+		<div id="wr"></div>
 	</body>
 </html>
