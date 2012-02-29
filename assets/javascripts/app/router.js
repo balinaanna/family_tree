@@ -26,7 +26,7 @@ define(['controllers/login_controller', 'controllers/BaseController'], function(
 		tree : function () {
 			//TODO: will be DONE soon
 			this._runController(BaseController);
-			console.log('load tree view');debugger
+			console.log('load tree view');
 		}
 		
 	});
