@@ -1,4 +1,4 @@
-define(['controllers/login_controller'], function(loginController) {
+define(['controllers/login_controller', 'controllers/BaseController'], function(loginController, BaseController) {
 	return Backbone.Router.extend({
 
 		initialize : function () {
@@ -25,6 +25,8 @@ define(['controllers/login_controller'], function(loginController) {
 		
 		tree : function () {
 			//TODO: will be DONE soon
+			this._runController(BaseController);
+			console.log('load tree view');debugger
 		}
 		
 	});

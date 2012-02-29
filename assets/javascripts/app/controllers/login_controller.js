@@ -64,7 +64,7 @@ define(['models/login_model'], function (LoginModel) {
 		login : function () {
 			var data = {
 				email 	: $("#loginEmail").val(),
-				password: $("#loginPass").val()
+				pass	: $("#loginPass").val()
 			};
 			this.model.login(data);
 		}, 

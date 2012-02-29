@@ -22,12 +22,12 @@ define(function () {
 		
 		successLogin : function (resp) {
 			resp = JSON.parse(resp);
-			if (resp.status == "1") {
+			if (resp.status == "1") {debugger
 				//localStorage.setItem("email", resp.email);
 				//localStorage.setItem("prof_id", resp.prof_id);
 				//localStorage.setItem("autologin", resp.autologin);
 				//TODO: add info to attr
-				
+				window.location.href = "#tree";
 			} else {
 				this.set({login_error : resp.message})
 			}
