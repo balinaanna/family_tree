@@ -6,8 +6,7 @@ class Api extends CI_Controller {
 		parent::__construct();
 		$this->load->database();
 		$this->load->library('session');
-		//$this->load->model('api');
-		$this->load->model('email_model');
+		$this->load->helper('email');
 		$this->load->model('pass_recover_model');
 		$this->load->model('image_model');
 	}
@@ -103,7 +102,7 @@ class Api extends CI_Controller {
 
 	public function reg() {
 		$email=addslashes($_REQUEST['email']);
-		if( $this->email_model->is_valid_email($email) == false ) {
+		if( valid_email($email) == false ) {
 		    $json->action = "registration";
 		    $json->status = "0";
 		    $json->message = "invalid email";
@@ -150,7 +149,7 @@ class Api extends CI_Controller {
 			$json->action = "registration";
 			$json->status = "1";
 			$json->message = "Registration successful";
-			$this->email_model->send($email, 'Family Tree Registration', 'Thanks for registration');
+			mail($email, 'Family Tree Registration', 'Thanks for registration');
 		} else {
 			$json->action = "registration";
 			$json->status = "0";
@@ -168,7 +167,7 @@ class Api extends CI_Controller {
 			$json->message = "User not found";
 		} else {
 			$pass = $this->pass_recover_model->random_password();
-			$this->email_model->send($email, 'Family Tree Password Recover', 'Your new password is '.$pass);
+			mail($email, 'Family Tree Password Recover', 'Your new password is '.$pass);
 			$this->db->query('UPDATE `users` SET `pass`= "'.md5(md5($pass)).'" WHERE email="'.$email.'"');
 			$json->action = "recover";
 			$json->status = "1";
