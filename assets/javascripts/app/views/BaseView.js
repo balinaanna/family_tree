@@ -28,7 +28,7 @@ define(['collections/TreeCollection', 'models/TreeNodeModel1'],function(TreeColl
 		
 		initialize: function(){
 			
-			this.data2.id = 43;
+			this.data2.id = localStorage.getItem("prof_id");
 			$.ajaxSetup({cache: false});
 			this.collection = new TreeCollection();	
 			this.model.bind("change:send_status", $.proxy(this.redrawTree, this));
