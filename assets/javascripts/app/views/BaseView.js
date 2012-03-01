@@ -1,5 +1,5 @@
-define(['collections/TreeCollection', 'models/TreeNodeModel1'],function(TreeCollection, TreeModel1){
-    BaseView = Backbone.View.extend({
+define(['collections/TreeCollection'],function(TreeCollection){
+   return BaseView = Backbone.View.extend({
 		objects : [],
         
 		mouseX : 0,
@@ -37,10 +37,10 @@ define(['collections/TreeCollection', 'models/TreeNodeModel1'],function(TreeColl
 			$("#slider").slider({
 				orientation : "vertical",
 				value : 8599,
-				min : 100,
-				max : 9999,
+				min : 500,
+				max : 8999,
 				slide : $.proxy(function(event, ui) {
-					this.camera.position.z = 10099 - ui.value;
+					this.camera.position.z = 9099 - ui.value;
 				},this)
 			});
 			
@@ -1011,5 +1011,4 @@ define(['collections/TreeCollection', 'models/TreeNodeModel1'],function(TreeColl
 
 		}
 	});
-	return BaseView;
 });

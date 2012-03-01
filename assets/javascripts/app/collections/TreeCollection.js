@@ -1,4 +1,4 @@
-define(['models/TreeNodeModel1'],function(TreeNodeModel){	
+define(['models/TreeNodeModel'],function(TreeNodeModel){	
 	return Backbone.Collection.extend({
 		unique: true,
 		model: TreeNodeModel,

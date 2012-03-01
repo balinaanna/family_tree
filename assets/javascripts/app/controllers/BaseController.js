@@ -34,7 +34,6 @@ define(['views/BaseView','models/BaseModel'], function(BaseView, BaseModel){
 		
 		start: function(){
 			this._view.animate();
-			//$('#home').append(this._model.get('items'));
 		}
 	});
 });
