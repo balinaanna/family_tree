@@ -6,7 +6,7 @@ var OSX = {
 		data = info;
 		user_data = user_info;
 		$("#osx-modal-content-edit").modal({
-			appendTo : "#home",
+			appendTo : "#wr",
 			overlayId: 'osx-overlay',
 			containerId: 'osx-container',
 			closeHTML: null,

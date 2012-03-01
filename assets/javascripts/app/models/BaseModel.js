@@ -8,18 +8,24 @@ define([],function(){
 		
 		defaults : {
 			url : "/assets/javascripts/app/templates/tree.ejs",
-			login_error : null,
-			reg_error : null
+			send_status: null
 		},
 		
-		getLocal: function(key){
-			console.log('getlocal');
-			//return JSON.parse(localStorage.getItem(key));
-			return localStorage.getItem(key);
+		sendData: function(opt){
+			$.ajax({
+    				url : opt.url,
+    				type : "POST",
+    				dataType : 'json',
+    				data : opt.data,
+    				success : $.proxy(this.sendDataSuccess, this),
+    				error : function(error) {
+    					console.log(error.responseText);
+    				}
+    			});
 		},
-		setLocal: function(key, value){
-			localStorage.setItem(key, value);
-			//localStorage.setItem(key, JSON.stringify(value));
+		
+		sendDataSuccess: function(){		
+			this.trigger("change:send_status");
 		}
 	});
 });	

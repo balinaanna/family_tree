@@ -10,7 +10,15 @@
 	
 	/**load router*/
 	require.config({baseUrl : 'assets/javascripts/app'});
-	require(['router'], function (Router) {
+	require(['router',
+	'order!../libs/jquery-ui-1.8.17.custom.min',
+	'order!../libs/tinymce/jscripts/tiny_mce/tiny_mce',
+	'order!../libs/jquery.simplemodal',
+	'order!../libs/jquery.imgareaselect.pack',
+	'order!../libs/upclick',
+	'order!../libs/popups',
+	'order!../libs/osx'
+	], function (Router) {
 		$(document).ready(function(){
 			var router = new Router();
 			Backbone.history.start();		

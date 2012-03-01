@@ -10,7 +10,8 @@ define(['views/BaseView','models/BaseModel'], function(BaseView, BaseModel){
 			this.getView(this.model.get("url"));
 			
 			//this._model   = new BaseModel();
-			this._view    = new BaseView({el: this.el});
+			this._view    = new BaseView({el : this.el, model : this.model});
+			this.start();
 			//console.log(this._model);
 		},
 		destroy : function () {
@@ -28,7 +29,7 @@ define(['views/BaseView','models/BaseModel'], function(BaseView, BaseModel){
 		
 		renderView : function (template) {
 			this.el.append(template);
-			this.delegateEvents();
+			//this.delegateEvents();
 		},
 		
 		start: function(){
