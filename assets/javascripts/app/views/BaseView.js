@@ -162,7 +162,7 @@ define(['collections/TreeCollection', 'models/TreeNodeModel1'],function(TreeColl
 		width_spouse_for_m: 0,
         width_spouse_for_f: 0,
         
-		create_tree: function(id, i, nodex) {
+		createRoot: function(id, i, nodex) {
 			var data2 = this.data2;
             var data = data2.tree;
 			if(i == 1) {//TODO f_name
@@ -184,7 +184,7 @@ define(['collections/TreeCollection', 'models/TreeNodeModel1'],function(TreeColl
                             if (this.objects[k].info.user_id == data[f_id].ch_ids[k2]) this.objects[k].father = f_node;
                         }
                     }
-                    if (f_node) this.create_relation(nodex,f_node,"father","parent",f_id,i);
+                    if (f_node) this.createRelation(nodex,f_node,"father","parent",f_id,i);
                     if (data[f_id].ch_ids.length == 1 || i > 2) {
             			f_node.position.set(nodex.position.x - (Math.pow((4 - i), 1.25)) * this.nodeWidth, (i - 1) * (-this.nodeHeight - 200), 0);
             			if (this.width_spouse_for_f < Math.abs(f_node.position.x) + 300) this.width_spouse_for_f = Math.abs(f_node.position.x) + 300;
@@ -207,7 +207,7 @@ define(['collections/TreeCollection', 'models/TreeNodeModel1'],function(TreeColl
                             }
                         }                                
                     }
-					this.create_tree(f_id, a, f_node);
+					this.createRoot(f_id, a, f_node);
 				}
 				if(data[id].m_id) {
 					var m_id = data[id].m_id;
@@ -217,7 +217,7 @@ define(['collections/TreeCollection', 'models/TreeNodeModel1'],function(TreeColl
                             if (this.objects[k].info.user_id == data[m_id].ch_ids[k2]) this.objects[k].mother = m_node;
                         }
                     }
-					if (m_node) this.create_relation(nodex,m_node,"mother","parent",m_id,i);
+					if (m_node) this.createRelation(nodex,m_node,"mother","parent",m_id,i);
                     if (data[m_id].ch_ids.length == 1 || i > 2){
 						m_node.position.set(nodex.position.x + (Math.pow((4 - i), 1.25)) * this.nodeWidth, (i - 1) * (-this.nodeHeight - 200), 0);
 						if (this.width_spouse_for_m < Math.abs(m_node.position.x) + 300) this.width_spouse_for_m = Math.abs(m_node.position.x) + 300;
@@ -240,7 +240,7 @@ define(['collections/TreeCollection', 'models/TreeNodeModel1'],function(TreeColl
                             }
                         }
                     }
-					this.create_tree(m_id, a, m_node);
+					this.createRoot(m_id, a, m_node);
 				}
                 var n = 1;
                 if (f_id){
@@ -273,7 +273,7 @@ define(['collections/TreeCollection', 'models/TreeNodeModel1'],function(TreeColl
    			}
 		},
         spouseState: null,
-        create_spouse: function(nodex){
+        createSpouse: function(nodex){
             var data2 = this.data2;
             var data = data2.tree;
             var id = data[data2.id].spouse_id;
@@ -295,16 +295,16 @@ define(['collections/TreeCollection', 'models/TreeNodeModel1'],function(TreeColl
 				var f_id = data[id].f_id;
 				var f_node = this.create_node(data[f_id]);
 				f_node.position.set(node.position.x - 300, nodex.position.y - this.nodeHeight - 200, 0);
-				if (f_node) this.create_relation(node,f_node,"father","parent",f_id,2);
+				if (f_node) this.createRelation(node,f_node,"father","parent",f_id,2);
 			};
 			if(data[id].m_id) {
 				var m_id = data[id].m_id;
 				var m_node = this.create_node(data[m_id]);
 				m_node.position.set(node.position.x + 300, nodex.position.y - this.nodeHeight - 200, 0);
-				if (m_node) this.create_relation(node,m_node,"mother","parent",m_id,2);
+				if (m_node) this.createRelation(node,m_node,"mother","parent",m_id,2);
 			};
         },
-		create_relation: function(child,parent,relation,adding,id,generation) {
+		createRelation: function(child,parent,relation,adding,id,generation) {
 
     				if(adding == "parent"){
     				    parent.info.user_id = id;
@@ -510,14 +510,14 @@ define(['collections/TreeCollection', 'models/TreeNodeModel1'],function(TreeColl
                         } else {
                             chSpNode.position.set(chNode.position.x + this.chWidth[ch_id], chNode.position.y, 0); 
                         }
-                        this.create_relation(chSpNode,chNode,"","spouse",chSpId,1);
+                        this.createRelation(chSpNode,chNode,"","spouse",chSpId,1);
                     }
                     if (data[nodex.info.user_id].sex == "m"){
-                        this.create_relation(chNode,nodex,"father","child",ch_id,1);
-                        if (spNodex) this.create_relation(chNode,spNodex,"mother","",ch_id,1);
+                        this.createRelation(chNode,nodex,"father","child",ch_id,1);
+                        if (spNodex) this.createRelation(chNode,spNodex,"mother","",ch_id,1);
                     }else if (data[nodex.info.user_id].sex == "f"){
-                        this.create_relation(chNode,nodex,"mother","child",ch_id,1);
-                        if (spNodex) this.create_relation(chNode,spNodex,"father","",ch_id,1);
+                        this.createRelation(chNode,nodex,"mother","child",ch_id,1);
+                        if (spNodex) this.createRelation(chNode,spNodex,"father","",ch_id,1);
                     }
                     this.createChildren(ch_id, chNode, i+1);
                 }
@@ -527,14 +527,14 @@ define(['collections/TreeCollection', 'models/TreeNodeModel1'],function(TreeColl
 			var data2 = this.data2;
             var data = data2.tree;
             //data2.id=26;
-            this.create_tree(data2.id, 1);
+            this.createRoot(data2.id, 1);
             
             for (var key in this.objects){
                 if (this.objects[key].info.user_id == data2.id) var nodeX = this.objects[key];
             }
             if(data[data2.id].ch_ids) this.countChildren(data2.id, 1);
             if(data[data2.id].spouse_id){
-                this.create_spouse(nodeX);
+                this.createSpouse(nodeX);
             }
             if(data[data2.id].ch_ids) this.createChildren(data2.id, nodeX, 1);
             for (var key in this.objects){
