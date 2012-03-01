@@ -43,7 +43,7 @@ define(['collections/TreeCollection', 'models/TreeNodeModel1'],function(TreeColl
 					this.camera.position.z = 10099 - ui.value;
 				},this)
 			});
-			$('#navigator').on("click", "div", $.proxy(this.navigation, this));
+			
 			$('#navigator').on('mousemove', function(){$('#navigator').css('opacity', '0.8');});
 			$('#navigator').on('mouseout', function(){$('#navigator').css('opacity', '0.5');});
 				
@@ -66,7 +66,7 @@ define(['collections/TreeCollection', 'models/TreeNodeModel1'],function(TreeColl
 			this.collection.fetch({
                 //url: '/data2.json',
 				success: $.proxy(function(collection) {
-					var arr = collection.toJSON();console.log(arr);
+					var arr = collection.toJSON();
 					for(key in arr){       							
 						this.data1[arr[key].id] = arr[key];
 						if(this.data1[arr[key].id].f_id == "0") {
@@ -83,7 +83,6 @@ define(['collections/TreeCollection', 'models/TreeNodeModel1'],function(TreeColl
 						}
 					}
 					this.data2.tree = this.data1;
-					console.log(this.data2.tree);
 					this.createTree();
 				},this)});
 		},
@@ -905,31 +904,6 @@ define(['collections/TreeCollection', 'models/TreeNodeModel1'],function(TreeColl
 				this.camera.updateMatrix();
 		},
 
-		navigation: function(event) {
-				event.preventDefault();
-				switch (event.target.id) {
-					case "arrowdown":
-						this.camera.position.y -= 10;
-						break;
-					case "arrowup":
-						this.camera.position.y += 10;
-						break;
-					case "arrowright":
-						this.camera.position.x += 10;
-						break;
-					case "arrowleft":
-						this.camera.position.x -= 10;
-						break;
-					case "plus":
-						if(this.camera.position.z > 100)
-							this.camera.position.z -= 10;
-						break;
-					case "minus":
-						if(this.camera.position.z < 8999)
-							this.camera.position.z += 10;
-						break;
-				};						
-		},
 		animate: function() {
 				requestAnimationFrame($.proxy(this.animate, this));
 				this.render();
