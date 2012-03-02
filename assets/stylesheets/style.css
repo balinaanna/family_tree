@@ -287,8 +287,11 @@ p a {
 #text_image {
 	text-align: center;
 }
-#loginbox td, #register td {
+#loginbox td, #register td, #recoverbox td {
 	min-width: 120px;
+}
+.button:disabled {
+	color: red;
 }
 #logout_btn {
 	position: absolute;
@@ -346,4 +349,7 @@ p a {
 	font-size:16pt;
 	text-shadow: 0px 2px 2px #000;
 	color: #fff;
+}
+#recoverbox {
+	display: none;
 }

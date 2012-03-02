@@ -161,6 +161,7 @@ class Api extends CI_Controller {
 	public function pass_recover() {
 		$email = addslashes($_REQUEST['email']);
 		$res = $this->db->query('SELECT * FROM users WHERE email="'.$email.'"');
+		$res = $res->result();
 		if(!$res){
 			$json->action = "pass_recover";
 			$json->status = "0";

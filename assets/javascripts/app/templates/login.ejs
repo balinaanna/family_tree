@@ -16,7 +16,9 @@
 				</tr>
 				<tr>
 					<td></td>
-					<td style="text-align: center;"><input type="button" id="loginbtn" name="submit" value="Login" style="margin-top: 15px;" /></td>
+					<td style="text-align: center;">
+					<input type="button" id="loginbtn" name="submit" value="Login" class="button" style="margin-top: 15px;" />
+					</td>
 				</tr>
 				<tr>
 					<td></td>
@@ -24,6 +26,25 @@
 				</tr>
 			</table>
 			<div id="infmessage"></div>
+		</div>
+		<div id="recoverbox">
+			<table style="margin: 50px 0 0 150px;">
+				<tr>
+					<td>Email<span style="color: red;">*</span>:</td>
+					<td><input type="text" name="recoverEmail" id="recoverEmail" placeholder="Email" /></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td style="text-align: center;">
+					<input type="button" id="recoverbtn" name="submit" value="Recover" class="button" style="margin-top: 15px;" />
+					</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td style="text-align: center;"><a href="#" id="flipToLogin" class="flipLink">Back to login</a></td>
+				</tr>
+			</table>
+			<div id="recovermessage"></div>
 		</div>
 		<div id="signupbox">
 			<table style="margin: 30px 0 0 150px;">
@@ -54,7 +75,7 @@
 				</tr>
 				<tr>
 					<td></td>
-					<td style="text-align: center;"><input type="button" id="registrationbtn" name="submit" value="Signup" style="margin-top: 15px;"/></td>
+					<td style="text-align: center;"><input type="button" id="registrationbtn" name="submit" value="Signup" class="button" style="margin-top: 15px;"/></td>
 				</tr>
 			</table>
 			<div id="reg_result"></div>
