@@ -291,7 +291,7 @@ p a {
 	min-width: 120px;
 }
 .button:disabled {
-	color: red;
+	color: gray !important;
 }
 #logout_btn {
 	position: absolute;

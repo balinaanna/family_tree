@@ -13,6 +13,7 @@ define(['models/login_model'], function (LoginModel) {
 		initialize : function (options) {
 			this.el = options.el;
 			this.model = new LoginModel();
+			//this.model.checkLogin();
 			this.getView(this.model.get("url"));
 			$('#loginbtn').attr('disabled','disabled');
 			$('#registrationbtn').attr('disabled','disabled');
@@ -106,7 +107,6 @@ define(['models/login_model'], function (LoginModel) {
 		
 		checkInputText: function(){
 			if($('#loginEmail').val() != '' && $('#loginPass').val() != ''){
-				console.log("id");
          		$('#loginbtn').removeAttr('disabled');
          		$('#registrationbtn').removeAttr('disabled');
          		

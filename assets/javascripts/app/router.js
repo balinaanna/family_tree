@@ -1,9 +1,11 @@
-define(['controllers/login_controller', 'controllers/BaseController'], function(loginController, BaseController) {
+define(['controllers/login_controller', 'controllers/BaseController', 'models/login_model'], function(loginController, BaseController, LoginModel) {
 	return Backbone.Router.extend({
 
 		initialize : function () {
 			this._container = $('#wr');
 			this._currentController = null;
+			this.model = new LoginModel();
+			this.model.checkLogin();
 		},
 		
 		routes : {

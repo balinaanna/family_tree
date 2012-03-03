@@ -76,6 +76,32 @@ define(function () {
 			if (resp.status == "0") {
 				this.set({recover_status : data.email + " does not exists"});
 			}
+		},
+		
+		checkLogin: function(){
+			$.ajax({
+				url : "/server/api/",
+				type : "GET",
+				success : $.proxy(this.successCheckLogin, this)
+			});
+		},
+		
+		successCheckLogin: function(resp){
+			var answ = JSON.parse(resp);
+			if(answ.status == "1") {
+				Backbone.history.navigate('tree', true);	
+			}
+			if(answ.status == "0") {
+				if(localStorage.getItem("autologin")){
+					data = {
+						"email" : localStorage.getItem("email"),
+						"autologin" : localStorage.getItem("autologin")
+					};
+					this.login(data);
+				}else{
+					Backbone.history.navigate('', true);
+				}	
+			}
 		}
 	});
 });
