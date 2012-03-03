@@ -102,6 +102,12 @@ define(function () {
 					Backbone.history.navigate('', true);
 				}	
 			}
-		}
+		},
+		
+		logout: function(){
+			localStorage.clear();
+			document.cookie = 'ci_session' + '=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+			Backbone.history.navigate('', true);
+		},
 	});
 });

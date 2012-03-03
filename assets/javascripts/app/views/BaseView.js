@@ -1,4 +1,4 @@
-define(['collections/TreeCollection'],function(TreeCollection){
+define(['collections/TreeCollection', 'models/login_model'],function(TreeCollection, LoginModel){
    return BaseView = Backbone.View.extend({
 		objects : [],
         
@@ -32,7 +32,7 @@ define(['collections/TreeCollection'],function(TreeCollection){
 			$.ajaxSetup({cache: false});
 			this.collection = new TreeCollection();	
 			this.model.bind("change:send_status", $.proxy(this.redrawTree, this));
-			
+			this.loginModel = new LoginModel();
 			//navigation
 			$("#slider").slider({
 				orientation : "vertical",
@@ -916,9 +916,7 @@ define(['collections/TreeCollection'],function(TreeCollection){
 		},
 
 		logout: function(){
-			localStorage.clear();
-			document.cookie = 'ci_session' + '=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
-			window.location = window.location.href;
+			this.loginModel.logout();
 		},
 
 		submitFunc : function(event) {
