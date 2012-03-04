@@ -1,5 +1,7 @@
-a {	text-decoration: none; color: #525285;	}
-a:visited {	color: #525285; }
+a {	text-decoration: none; color: #303030; }
+a:visited {	text-decoration: none; color: #303030; }
+
+/* navigator */
 #navigator {
 	position: absolute;
 	width: 100px;
@@ -35,20 +37,16 @@ a:visited {	color: #525285; }
 		color-stop(0, rgb(97,124,131)),
 		color-stop(0.48, rgb(182,207,212)),
 		color-stop(1, rgb(97,124,131))
-	);
+		);
 	margin: 0;
+	-moz-user-select: -moz-none;
+	-o-user-select: none;
+	-khtml-user-select: none;
+	-webkit-user-select: none;
+	user-select: none;
 	overflow: hidden;
 }
-#loginform {
-	display: none;
-	margin: 10px auto 5px;
-	text-align: center;
-	width: 600px;
-	height: 400px;
-	background: rgba(245,255,250, 0.6);
-	border-radius: 10px;
-}
-#loginform input, #osx-modal-content-edit input, #panel input {
+#osx-modal-content-edit input, #panel input {
 
 	margin: 5px 0px 5px 0px;
 	font-size: 12px; font-family: Tahoma; color: #fff; font-weight: bold;
@@ -75,14 +73,14 @@ a:visited {	color: #525285; }
 	color: #333;
 	height: 20px;
 }
-#loginform input:hover, #osx-modal-content-edit input:hover, #panel input:hover {
+#osx-modal-content-edit input:hover, #panel input:hover {
 	background-color: #fff;
 	background: -o-linear-gradient(bottom, #fff, #eee);
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #eee), color-stop(1, #fff));
 	background: -moz-linear-gradient(bottom, #fff, #eee);
 	cursor: pointer;
 }
-#loginform input:active, #osx-modal-content-edit input:active, #panel input:active {
+#osx-modal-content-edit input:active, #panel input:active {
 	box-shadow: 0px 0px 3px #000;
 	-o-box-shadow: 0px 0px 3px #000;
 	-moz-box-shadow: 0px 0px 3px #000;
@@ -91,7 +89,7 @@ a:visited {	color: #525285; }
 #wr {
 	
 }
-#formContainer {
+#formcontainer {
 	margin: 10% auto 5px;
 	text-align: center;
 	width: 600px;
@@ -103,7 +101,7 @@ a:visited {	color: #525285; }
 
 }
 #panel {
-	height: 350px;
+	height: 300px;
 	border:3px solid #FF9;
     border-radius: 0 0 30px 30px;
     -webkit-border-radius: 0 0 30px 30px; /* Safari, Chrome */
@@ -287,8 +285,15 @@ p a {
 #text_image {
 	text-align: center;
 }
-#loginbox td, #register td, #recoverbox td {
+#loginbox td, #signupbox td, #recoverbox td {
 	min-width: 120px;
+}
+#loginbox table, #signupbox table, #recoverbox table {
+	margin: auto;
+	text-align: left;
+}
+#loginbox table{
+	margin-top: 50px;
 }
 .button:disabled {
 	color: gray !important;

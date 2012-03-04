@@ -17,6 +17,8 @@ var OSX = {
 			onOpen: OSX.open_edit,
 			onClose: OSX.close
 		});
+        $("#b_date").datepicker({ changeYear: true, yearRange: '1900:2050', createButton:false, clickInput:true });
+        $("#d_date").datepicker({ changeYear: true, yearRange: '1900:2050', createButton:false, clickInput:true });
 	},
 	open_edit: function (d) {
 		//edit or add new person
@@ -36,7 +38,7 @@ var OSX = {
 				case 'edit_person':
 					title=$("#osx-modal-title-edit").html("Editing person");
 					break;
-                case 'add_spouse':
+				case 'add_spouse':
 					title=$("#osx-modal-title-edit").html("Adding spouse");
 					break;
 			}
@@ -46,7 +48,7 @@ var OSX = {
 				setTimeout(function () {
 					var h = $("#osx-modal-data-edit", self.container).height()
 					+ title.height()
-					+ 85; // padding
+					+ 0; // padding
 					d.container.animate(
 					{
 						height: h
@@ -55,6 +57,8 @@ var OSX = {
 					function () {
 						$("div.close-edit", self.container).show();
 						$("#osx-modal-data-edit", self.container).show();
+						$('#cropped').val('');
+						$('#uploaded').val('');
 						if(data.action == 'edit_person')
 						{
 							$('#user_id').val(user_data.info.user_id);
@@ -65,18 +69,28 @@ var OSX = {
 							$('#f_name').val(user_data.info.f_name);
 							$('#l_name').val(user_data.info.l_name);
 							$('#b_date').val(user_data.info.b_date);
-							$('#d_date').val(user_data.info.b_date);
+							$('#d_date').val(user_data.info.d_date);
 							$('#about').html(user_data.info.comment);
-							
-							if(user_data.info.sex == 'm') 
+							if(user_data.info.photo_url != 'no_avatar.jpg')
+							{
+								$('#photo_preview').attr('src', 'assets/images/uploaded/avatars/thumbs/'+user_data.info.photo_url);
+								$('#photo_preview').css('max-width', '100px');
+								$('#photo_preview').css('max-height', '100px');
+							}
+							else
+							{
+								$('#photo_preview').css('display','none');
+							}
+
+							if(user_data.info.sex == 'm')
 							{
 								$('#m_radio').attr('checked', true);
 							}
-							else if(user_data.info.sex == 'f') 
+							else if(user_data.info.sex == 'f')
 							{
 								$('#f_radio').attr('checked', true);
 							}
-							
+
 							if(user_data.info.photo_url != '')
 							{
 								$('#photo').attr('src','assets/images/uploaded/avatars/'+user_data.info.photo_url);
@@ -94,6 +108,7 @@ var OSX = {
 						}
 						else
 						{
+							$('#m_radio').attr('checked', true);
 							$('#text_image').attr('style','display: none');
 							$('#data_table').attr('style','height: 495px;');
 							$('#photo').attr('src','assets/images/uploaded/avatars/no_avatar.jpg');
@@ -102,36 +117,41 @@ var OSX = {
 						upclick({
 							element: upload_input,
 							action: 'server/api/save_photo',
-							action_params: {'user_id': $('#user_id').val(), 'login_name': 'new'},/* change login !!! */
+							action_params: {
+								'user_id': $('#user_id').val(), 
+								'login_name': 'new'
+							},/* change login !!! */
 							onstart:
-								function(filename)
-								{
-									//alert('Start upload: '+filename);
-								},
+							function(filename)
+							{
+							//alert('Start upload: '+filename);
+							},
 							oncomplete:
-								function(response) 
+							function(response)
+							{
+								resp = JSON.parse(response);
+								if(resp.status == "1")
 								{
-									resp = JSON.parse(response);
-									if(resp.status)
-									{
-										$('#photo').attr('src','/assets/images/uploaded/avatars/'+resp.response);
-										$('#photo_native_size').attr('src','/assets/images/uploaded/avatars/'+resp.response);
-										$('#text_image').attr('style','display: block');
-										$('.imgareaselect-outer').attr('style','display:none;');
-										$('.body div').each(function(index){
-											if(this.style['z-index'] == 1004)
-											{
-												this.style.height = 0;
-												this.style.width = 0;
-											}				
-										});										
-										initImgCrop('/assets/images/uploaded/avatars/'+resp.response);
-									}
-									else
-									{
-										alert('Wrong image format!');
-									}
+									$('#photo_preview').css('display','none');
+									$('#uploaded').val('1');
+									$('#photo').attr('src','/assets/images/uploaded/avatars/'+resp.response);
+									$('#photo_native_size').attr('src','/assets/images/uploaded/avatars/'+resp.response);
+									$('#text_image').attr('style','display: block');
+									$('.imgareaselect-outer').attr('style','display:none;');
+									$('.body div').each(function(index){
+										if(this.style['z-index'] == 1004)
+										{
+											this.style.height = 0;
+											this.style.width = 0;
+										}
+									});
+									initImgCrop('/assets/images/uploaded/avatars/'+resp.response);
 								}
+								else
+								{
+									alert('Wrong image format!');
+								}
+							}
 						});
 						initMCE();
 					}
@@ -154,9 +174,9 @@ var OSX = {
 				if(this.style['z-index'] == 1004)
 				{
 					this.style.display = 'none';
-				}				
+				}
 			});
-			
+
 			self.close(); // or $.modal.close();
 		}
 		);
@@ -208,15 +228,20 @@ function preview(img, selection) {
 		marginLeft: '-' + Math.round(scaleX * selection.x1) + 'px',
 		marginTop: '-' + Math.round(scaleY * selection.y1) + 'px'
 	});
+	$('#photo_preview').css('display','block');
+	$('#photo_preview').attr('src', $('#photo').attr('src'));
+	$('#photo_preview').css('max-width', '');
+	$('#photo_preview').css('max-height', '');
 }
 
 function initImgCrop(imgName){
-$('#photo_preview').attr('src', imgName);
+	
 	$('#photo').imgAreaSelect({
 		aspectRatio: '1:1',
 		handles: true,
 		onSelectChange: preview,
 		onSelectEnd: function ( image, selection ) {
+			$('#cropped').val('1');
 			$('input[name=x1]').val(selection.x1);
 			$('input[name=y1]').val(selection.y1);
 			$('input[name=x2]').val(selection.x2);

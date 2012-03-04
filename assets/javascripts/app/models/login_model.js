@@ -23,7 +23,7 @@ define(function () {
 		
 		successLogin : function (resp) {
 			resp = JSON.parse(resp);
-			if (resp.status == "1") {debugger
+			if (resp.status == "1") {
 				localStorage.setItem("email", resp.email);
 				localStorage.setItem("prof_id", resp.prof_id);
 				localStorage.setItem("autologin", resp.autologin);
@@ -69,7 +69,6 @@ define(function () {
 		successRecover: function(resp){
 			resp = JSON.parse(resp);
 			var data = this.get('reg_data');
-			console.log(data);
 			if(resp.status == "1") {
 				this.set({recover_status : "Password send to " + data.email});
 			}

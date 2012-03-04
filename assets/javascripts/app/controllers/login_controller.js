@@ -17,6 +17,7 @@ define(['models/login_model'], function (LoginModel) {
 			this.getView(this.model.get("url"));
 			$('#loginbtn').attr('disabled','disabled');
 			$('#registrationbtn').attr('disabled','disabled');
+			$("#birth_date").datepicker({ changeYear: true, yearRange: '1900:2050', createButton:false, clickInput:true });
 			this.model.bind("change:login_error", $.proxy(this.showLoginError, this));
 			this.model.bind("change:reg_error", $.proxy(this.showRegError, this));
 			this.model.bind("change:recover_status", $.proxy(this.showRecoverError, this));
@@ -81,6 +82,10 @@ define(['models/login_model'], function (LoginModel) {
 			$('#infmessage').html(this.model.get("login_error"));
 		},
 		
+		showRegError : function () {
+			$('#reg_result').html(this.model.get("reg_error"));
+		},
+		
 		showRecoverError: function(){
 			$('#recovermessage').html(this.model.get("recover_status"));
 		},
@@ -105,11 +110,16 @@ define(['models/login_model'], function (LoginModel) {
 			this.model.passwordRecover(data);
 		},
 		
-		checkInputText: function(){
+		checkInputText: function(e){
 			if($('#loginEmail').val() != '' && $('#loginPass').val() != ''){
-         		$('#loginbtn').removeAttr('disabled');
-         		$('#registrationbtn').removeAttr('disabled');
-         		
+         		$('#loginbtn').removeAttr('disabled');    		
+        	}else{
+        		$('#loginbtn').attr('disabled','disabled');
+        	}
+        	if($('#regEmail').val() != '' && $('#password').val() != ''){
+         		$('#registrationbtn').removeAttr('disabled');      		
+        	}else{
+				$('#registrationbtn').attr('disabled','disabled');
         	}
 		}
 	})

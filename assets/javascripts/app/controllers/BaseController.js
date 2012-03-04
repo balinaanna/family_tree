@@ -8,7 +8,7 @@ define(['views/BaseView','models/BaseModel'], function(BaseView, BaseModel){
 			this.el = options.el;
 			this.model = new BaseModel();
 			this.getView(this.model.get("url"));
-			
+			$("#birth_date").datepicker({ changeYear: true, yearRange: '1900:2050', createButton:false, clickInput:true });
 			//this._model   = new BaseModel();
 			this._view    = new BaseView({el : this.el, model : this.model});
 			this.start();

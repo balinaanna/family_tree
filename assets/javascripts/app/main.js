@@ -11,7 +11,7 @@
 	/**load router*/
 	require.config({baseUrl : 'assets/javascripts/app'});
 	require(['router',
-	'order!../libs/jquery-ui-1.8.17.custom.min',
+	'order!../libs/jquery-ui.min',
 	'order!../libs/tinymce/jscripts/tiny_mce/tiny_mce',
 	'order!../libs/jquery.simplemodal',
 	'order!../libs/jquery.imgareaselect.pack',

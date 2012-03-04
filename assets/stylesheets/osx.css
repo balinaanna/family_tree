@@ -30,7 +30,13 @@
 .data-edit-field {min-width: 100px; background-color: #d0d0d0;padding-left: 10px;}
 .data-edit-data {min-width: 300px;}
 #osx-container table {border: 0px solid #000;}
-.mceEditor{width: 100%;}
+.mceEditor{width: 100%; height: 300px;}
 #user_info_div {
 	border: 1px solid #fff;
+}
+#osx-modal-content-buttons {
+	margin-top: 20px; 
+	margin-left: 10px; 
+	height: 100px; 
+	text-align: right;
 }
