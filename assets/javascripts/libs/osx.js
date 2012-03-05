@@ -89,8 +89,10 @@ var OSX = {
 							else if(user_data.info.sex == 'f')
 							{
 								$('#f_radio').attr('checked', true);
-														}
-
+							}
+							if(user_data.info.spouse_id != ''){
+								$('#user_info_div input:radio').attr('disabled',true);
+							}
 							if(user_data.info.photo_url != '')
 							{
 								$('#photo').attr('src','assets/images/uploaded/avatars/'+user_data.info.photo_url);
@@ -110,11 +112,13 @@ var OSX = {
 							$('#photo').attr('src','assets/images/uploaded/avatars/no_avatar.jpg');
 							$('#photo_native_size').attr('src','assets/images/uploaded/avatars/no_avatar.jpg');
 							if(data.action == 'add_spouse'){
-								if(user_data.info.sex == 'f'){
-									$('#m_radio').attr('checked', true);
-								}
-								else if(user_data.info.sex == 'm'){
-									$('#f_radio').attr('checked', true);
+								switch (user_data.info.sex)	{
+									case "m":
+										$('#f_radio').attr('checked', true);
+										break;
+									case "f":
+										$('#m_radio').attr('checked', true);
+										break;
 								}
 								$('input:radio[name="gender"]').attr('disabled','disabled');
 							}
