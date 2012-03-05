@@ -114,6 +114,17 @@ var OSX = {
 							$('#photo').attr('src','assets/images/uploaded/avatars/no_avatar.jpg');
 							$('#photo_native_size').attr('src','assets/images/uploaded/avatars/no_avatar.jpg');
 						}
+						if(data.action == 'add_spouse'){
+							if(user_data.info.sex == 'f')
+							{
+								$('#m_radio').attr('checked', true);
+							}
+							else if(user_data.info.sex == 'm')
+							{
+								$('#f_radio').attr('checked', true);
+							}
+							$('input:radio[name="gender"]').attr('disabled','disabled');
+						}
 						upclick({
 							element: upload_input,
 							action: 'server/api/save_photo',
