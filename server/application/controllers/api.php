@@ -462,11 +462,20 @@ class Api extends CI_Controller {
 	}
 
 	public function delete_node() {
+		$value = (object)$_REQUEST;
 		$value -> id = $_REQUEST['id'];
 		$this -> db -> query('DELETE FROM `profile_data`
 							WHERE `id` = "' . $value -> id . '" AND
 							   	`user_id` = "' . $this -> session -> userdata('user_id') . '"
 					    ');
+		$ch_ids = $this -> db -> query('SELECT ch_ids FROM `profile_data` WHERE id=' . $value -> f_id);
+		$ch_ids = $ch_ids -> result();
+		$ch_ids = json_decode($ch_ids[0] -> ch_ids);
+		$ch_ids = array_merge(array_diff($ch_ids, array($value -> id)));
+		$ch_ids = json_encode($ch_ids);
+		$this -> db -> query('UPDATE `profile_data` SET `ch_ids`="' . addslashes($ch_ids) . '" WHERE id IN(' . $value -> f_id . ', ' . $value -> m_id . ')');
+						
+		
 		$json -> action = "delete_node";
 		$json -> status = "1";
 		echo json_encode($json);

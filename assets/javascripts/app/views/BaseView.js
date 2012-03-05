@@ -861,6 +861,16 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 						but = true;
 					} else if(intersects[i].object.name == 'delete') {
 						// delete node
+						nodex = intersects[i].object.parent;
+						data = nodex.info;
+						data.id = nodex.info.user_id;
+						if(data.ch_ids.length == 0 && data.spouse_id == 0){
+							console.log("delete");
+							this.model.sendData({
+								url : 'server/api/delete_node',
+								data : data
+							});
+						}
 						but = true;
 					} else if(intersects[i].object.name == 'spouse') {
 						//edit persone
