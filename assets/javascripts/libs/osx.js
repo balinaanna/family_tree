@@ -89,7 +89,7 @@ var OSX = {
 							else if(user_data.info.sex == 'f')
 							{
 								$('#f_radio').attr('checked', true);
-							}
+														}
 
 							if(user_data.info.photo_url != '')
 							{
@@ -101,29 +101,26 @@ var OSX = {
 									initImgCrop('assets/images/uploaded/avatars/'+user_data.info.photo_url);
 								}
 							}
-							else
-							{
-								$('#text_image').attr('style','display: none');
+							else{		$('#text_image').attr('style','display: none');
 							}
 						}
-						else
-						{
-							$('#m_radio').attr('checked', true);
+						else{
 							$('#text_image').attr('style','display: none');
 							$('#data_table').attr('style','height: 495px;');
 							$('#photo').attr('src','assets/images/uploaded/avatars/no_avatar.jpg');
 							$('#photo_native_size').attr('src','assets/images/uploaded/avatars/no_avatar.jpg');
-						}
-						if(data.action == 'add_spouse'){
-							if(user_data.info.sex == 'f')
-							{
+							if(data.action == 'add_spouse'){
+								if(user_data.info.sex == 'f'){
+									$('#m_radio').attr('checked', true);
+								}
+								else if(user_data.info.sex == 'm'){
+									$('#f_radio').attr('checked', true);
+								}
+								$('input:radio[name="gender"]').attr('disabled','disabled');
+							}
+							else{
 								$('#m_radio').attr('checked', true);
 							}
-							else if(user_data.info.sex == 'm')
-							{
-								$('#f_radio').attr('checked', true);
-							}
-							$('input:radio[name="gender"]').attr('disabled','disabled');
 						}
 						upclick({
 							element: upload_input,

@@ -1176,7 +1176,6 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 					data.ch_ids = [];
 				data.f_id = "";
 				data.m_id = "";
-				this.TempObj.node.info.sex == "m" ? data.sex = "f" : data.sex = "m";
 				data.spouse_id = this.TempObj.node.info.id;
 				this.model.sendData({
 					url : 'server/api/add_node',
