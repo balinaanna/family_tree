@@ -75,6 +75,7 @@ class Image_model extends CI_Model {
 		$str = stripslashes($str);
 		$str = str_replace(' ','_',$str);
 		$str = str_replace('.JPG','.jpg',$str);
+		$str = str_replace('.JPEG','.jpeg',$str);
 		$str = str_replace('.PNG','.png',$str);
 		$str = str_replace('.GIF','.gif',$str);
 		$str = preg_replace("/[^A-Za-z0-9_\-\.]/i", "",$str);
@@ -84,16 +85,24 @@ class Image_model extends CI_Model {
 	public function upload($ar) {
 		// ERROR CAPTURE
 		if(!isset($ar['name'])) { $this->doDie($this->errors['upl-no-array']); exit; } 
+		
+		if ( !in_array( strtolower(end(explode(".", $ar['name']))), array('jpg', 'jpeg', 'png', 'gif') ) )
+		{
+			$resp['error'] = 'Wrong format of file';
+			return $resp;
+		}
 		if($ar['error']!=0) { 
 			switch($ar['error']) {
-				case 1: $this->doDie($this->errors['upl-ini-max']); 	exit; break;
-				case 2: $this->doDie($this->errors['upl-maxsize']); 	exit; break;
-				case 3: $this->doDie($this->errors['upl-partial']); 	exit; break;
-				case 4: $this->doDie($this->errors['upl-no-file']); 	exit; break;
-				case 6: $this->doDie($this->errors['upl-no-tmpDir']); 	exit; break;
-				case 7: $this->doDie($this->errors['upl-cant-write']); 	exit; break;
-				case 8: $this->doDie($this->errors['upl-ext']); 		exit; break;
+				case 1: $msg = $this->doDie($this->errors['upl-ini-max']); 	break;
+				case 2: $msg = $this->doDie($this->errors['upl-maxsize']); 	break;
+				case 3: $msg = $this->doDie($this->errors['upl-partial']); 	break;
+				case 4: $msg = $this->doDie($this->errors['upl-no-file']); 	break;
+				case 6: $msg = $this->doDie($this->errors['upl-no-tmpDir']); break;
+				case 7: $msg = $this->doDie($this->errors['upl-cant-write']); break;
+				case 8: $msg = $this->doDie($this->errors['upl-ext']); break;
 			}
+			$resp['error'] = $msg;
+			return $resp;
 		}
 		if($ar['size']==0) { $this->doDie($this->errors['upl-no-size']); exit; } 
 
@@ -186,6 +195,44 @@ class Image_model extends CI_Model {
 		}
 	}
 	
+	public function crop_img($source_file, $w, $h, $x1, $y1, $x2, $y2, $user_id)
+	{
+		$this->source_file = $source_file;
+		$sImage = (($this->source_file!='')&&(file_exists($this->source_file))) ? $this->source_file : $this->doDie($this->errors['no-image']);
+		$srcPath = (strstr($sImage,'/')) ? substr($sImage,0,strrpos($sImage,'/')+1) : '';
+		$srcName = str_replace($srcPath,'',$sImage);
+		//copy($image->uploadTo.$srcName, $image->newPath.'/'.$srcName);
+		$photo_url = $this->uploadTo.$srcName;
+
+		/*if($srcName == 'no_avatar.jpg')
+		{
+			$new_filename = $image->newPath.'/'.$srcName;
+		}
+		else
+		{*/
+			$new_filename = $this->newPath.'/'.$srcName;
+			list($current_width, $current_height) = getimagesize($photo_url);
+			$crop_width = 100;
+			$crop_height = 100;
+			$new = imagecreatetruecolor($crop_width, $crop_height);
+			switch(strtolower(end(explode(".", $photo_url)))){
+				case 'jpg':
+					$current_image = imagecreatefromjpeg($photo_url);
+					break;
+				case 'jpeg':
+					$current_image = imagecreatefromjpeg($photo_url);
+					break;
+				case 'png':
+					$current_image = imagecreatefrompng($photo_url);
+					break;
+				case 'gif':
+					$current_image = imagecreatefromgif($photo_url);
+					break;
+			}
+			imagecopyresampled($new, $current_image, 0, 0, $x1, $y1, $crop_width, $crop_height, $w, $h);
+			imagejpeg($new, $new_filename, 95);
+		//}
+	}
 	public function crop($w=false,$h=false,$x=false,$y=false) {
 		// ERROR CAPTURE
 		if(!$w) { 	$this->doDie($this->errors['no-crop-width']); exit; }
@@ -629,12 +676,12 @@ class Image_model extends CI_Model {
 	
 	public function doDie($msg,$file="",$line="") { 					// doDie - calls a die function with custom error
 		if (($file!='')&&($line!='')) {
-		die(	'<h4>Error:</h4>'.$msg.'<br/><br/>'.
+		return(	'<h4>Error:</h4>'.$msg.'<br/><br/>'.
 		 		'<strong>File:</strong> '.$file.
 				' - <strong>on line:</strong> '.$line.
 				'</body></html>');
 		} else {
-		die(	$msg);
+		return(	$msg);
 		}
 	}
 } 
