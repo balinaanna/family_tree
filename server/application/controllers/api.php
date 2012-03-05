@@ -11,6 +11,7 @@ class Api extends CI_Controller {
 		$this -> load -> helper('email');
 		$this -> load -> model('pass_recover_model');
 		$this -> load -> model('image_model');
+		$this -> load -> model('api_model');
 	}
 
 	public function index() {
@@ -40,7 +41,6 @@ class Api extends CI_Controller {
 		$session_data = array('prof_id' => $db_result[0] -> user_id);
 		$this -> session -> set_userdata($session_data);
 
-		//echo json_encode($db_result);
 		$tree1 = array();
 		foreach ($db_result as $key => $value) {
 			$tree[$key] -> id = $value -> id;
@@ -55,26 +55,17 @@ class Api extends CI_Controller {
 			$tree[$key] -> sex = $value -> sex;
 			$tree[$key] -> photo_url = $value -> photo_url;
 			$tree[$key] -> comment = stripslashes($value -> comment);
-			//$tree1[] = $tree;
 		}
-		//print_r($tree);
 		echo json_encode($tree);
 	}
 
 	public function login() {
 		$email = addslashes($_REQUEST['email']);
-		if (isset($_REQUEST['pass'])) {$pass = md5(md5(addslashes($_REQUEST['pass'])));
-		} elseif (isset($_REQUEST['autologin'])) {$pass = addslashes($_REQUEST['autologin']);
-		} else {$pass = "";
-		}
-		/*
-		 $result = $this->db->query('SELECT b.*, a.pass, a.id as user_id FROM users a, profile_data b
-		 WHERE a.prof_id=b.id AND a.email="'.$email.'" AND a.pass="'.$pass.'"
-		 UNION
-		 SELECT  b.*, a.pass, a.id as user_id FROM users a, profile_data b
-		 WHERE b.user_id=a.id AND a.email="'.$email.'" AND a.pass="'.$pass.'"
-		 ');
-		 */
+		if (isset($_REQUEST['pass'])) {
+			$pass = md5(md5(addslashes($_REQUEST['pass'])));
+		} elseif (isset($_REQUEST['autologin'])) {
+			$pass = addslashes($_REQUEST['autologin']);
+		} else { $pass = ""; }
 		$result = $this -> db -> query('SELECT a.pass, a.id as user_id, a.prof_id FROM users a
 										WHERE a.email="' . $email . '" AND a.pass="' . $pass . '"
 										LIMIT 1
