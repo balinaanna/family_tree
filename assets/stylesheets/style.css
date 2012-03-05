@@ -188,7 +188,7 @@ p a {
 	-webkit-user-select: none;
 	user-select: none;
 }
-#signupbox {
+#signupbox, #recoverbox {
 	min-height: 200px;
 	padding: 10px;
 	display: none;
@@ -292,7 +292,7 @@ p a {
 	margin: auto;
 	text-align: left;
 }
-#loginbox table{
+#loginbox table, #recoverbox table{
 	margin-top: 50px;
 }
 .button:disabled {
@@ -357,4 +357,15 @@ p a {
 }
 #recoverbox {
 	display: none;
+}
+.infmessage {
+	
+	padding: 5px;
+	border-radius: 5px;
+}
+.errormsg{
+	background-color: red;
+}
+.successmsg{
+	background-color: green;
 }
