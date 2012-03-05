@@ -85,7 +85,7 @@ class Api extends CI_Controller {
 		} else {
 			$json -> action = "login";
 			$json -> status = "0";
-			$json -> message = "login error";
+			$json -> message = "invalid email or password";
 		}
 		echo json_encode($json);
 	}

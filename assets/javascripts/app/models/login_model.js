@@ -56,8 +56,6 @@ define(function () {
 		},
 		
 		passwordRecover: function(data){
-			this.set({reg_data: data});
-			console.log(data);
 			$.ajax({
 				url : "/server/api/pass_recover",
 				type : "POST",
@@ -68,13 +66,7 @@ define(function () {
 		
 		successRecover: function(resp){
 			resp = JSON.parse(resp);
-			var data = this.get('reg_data');
-			if(resp.status == "1") {
-				this.set({recover_status : "Password send to " + data.email});
-			}
-			if (resp.status == "0") {
-				this.set({recover_status : data.email + " does not exists"});
-			}
+			this.set({recover_status : resp.status});
 		},
 		
 		checkLogin: function(){

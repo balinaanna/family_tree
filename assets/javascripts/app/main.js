@@ -11,6 +11,7 @@
 	/**load router*/
 	require.config({baseUrl : 'assets/javascripts/app'});
 	require(['router',
+	'order!../libs/requestAnimationFrame',
 	'order!../libs/jquery-ui.min',
 	'order!../libs/tinymce/jscripts/tiny_mce/tiny_mce',
 	'order!../libs/jquery.simplemodal',

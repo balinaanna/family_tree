@@ -1087,41 +1087,53 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			var h = $('#dp').height();
 			var w = $('#dp').width();
 			var scale = 1;
-			if(h > 300 || w > 300) {
-				scale = h / 300;
+			var crop = 0;
+			var upload = 0;
+			if(h > $('#photo').height() || w > $('#photo').width()) 
+			{
+				scale = h / $('#photo').height();
 			}
-			if(w > h) {
-				scale = w / 300;
+			if(w > h)
+			{
+				scale = w / $('#photo').width();
+			}
+			if ($('#cropped').val() == '1')
+			{
+				crop = 1;
+			}
+			if ($('#uploaded').val() == '1')
+			{
+				upload = 1;
 			}
 
 			console.log(this.TempObj);
 			var data = {
-				'id' : $('#user_id').val(),
+				'id': $('#user_id').val(),
 				'f_name' : $('#f_name').val(),
 				'l_name' : $('#l_name').val(),
 				'b_date' : $('#b_date').val(),
 				'd_date' : $('#d_date').val(),
-				'x1' : $('#x1').val() * scale,
-				'y1' : $('#y1').val() * scale,
-				'x2' : $('#x2').val() * scale,
-				'y2' : $('#y2').val() * scale,
-				'w' : $('#w').val() * scale,
-				'h' : $('#h').val() * scale,
+				'x1': $('#x1').val()*scale,
+				'y1': $('#y1').val()*scale,
+				'x2': $('#x2').val()*scale,
+				'y2': $('#y2').val()*scale,
+				'w': $('#w').val()*scale,
+				'h': $('#h').val()*scale,
 				'f_id' : $('#f_id').val(),
 				'm_id' : $('#m_id').val(),
 				'ch_ids' : $('#ch_ids').val(),
 				'spouse_id' : $('#spouse_id').val(),
 				'sex' : $('input:radio[name="gender"]:checked').val(),
 				'photo_url' : $('#photo').attr('src'),
-				'comment' : $('#about').val()
-
+				'comment' : $('#about').val(),
+				'crop' : crop,
+				'upload' : upload
 			};
 			this.TempObj.node.info.id = this.TempObj.node.info.user_id;
-			if(!this.TempObj.node.info.ch_ids)
-				this.TempObj.node.info.ch_ids = [];
-			if(!data.ch_ids) {
-				data.ch_ids = [];
-			};
+			if(!this.TempObj.node.info.ch_ids)this.TempObj.node.info.ch_ids = [];
+			if(!data.ch_ids){
+					data.ch_ids = [];
+					}
 			if(this.TempObj.action == "add_parent") {
 				data.action = this.TempObj.action;
 				data.send_node_id = this.TempObj.node.info.id;

@@ -66,7 +66,7 @@ define(['models/login_model'], function (LoginModel) {
 				l_name 	: $("#last_name").val(),
 				b_date 	: $("#birth_date").val(),
 				sex 	: $("input[@name='s']:checked").val()
-			};debugger
+			};
 			this.model.registration(data);
 		},
 		
@@ -80,14 +80,27 @@ define(['models/login_model'], function (LoginModel) {
 		
 		showLoginError : function () {
 			$('#infmessage').html(this.model.get("login_error"));
+			$('#infmessage').addClass("infmessage");
+			$('#infmessage').addClass("errormsg");
 		},
 		
 		showRegError : function () {
 			$('#reg_result').html(this.model.get("reg_error"));
+			$('#reg_result').addClass("infmessage");
+			$('#reg_result').addClass("errormsg");
 		},
 		
 		showRecoverError: function(){
-			$('#recovermessage').html(this.model.get("recover_status"));
+			if(this.model.get("recover_status") == "1"){
+				$('#recovermessage').html("Password send to " + $("#recoverEmail").val());
+				$('#recovermessage').addClass("infmessage");
+				$('#recovermessage').addClass("successmsg");
+			}
+			if(this.model.get("recover_status") == "0"){
+				$('#recovermessage').html($("#recoverEmail").val() + " does not exists");
+				$('#recovermessage').addClass("infmessage");
+				$('#recovermessage').addClass("errormsg");
+			}
 		},
 		
 		flipShow: function(e){
