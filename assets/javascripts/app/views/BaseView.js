@@ -1193,6 +1193,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			if(this.TempObj.action == "add_spouse") {
 				data.action = this.TempObj.action;
 				data.send_node_id = this.TempObj.node.info.id;
+				data.ch_ids = this.TempObj.node.info.ch_ids;
 				if(!data.ch_ids)
 					data.ch_ids = [];
 				data.f_id = "";
