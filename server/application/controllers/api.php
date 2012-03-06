@@ -406,6 +406,14 @@ class Api extends CI_Controller {
 
 			case 'add_spouse' :
 				$this -> db -> query('UPDATE `profile_data` SET `spouse_id`="' . $last_id -> id . '" WHERE id=' . $last_id -> spouse_id);
+				if($value->ch_ids != NULL){
+					if ($value -> sex == "f") {
+						$this -> db -> query('UPDATE `profile_data` SET `m_id`="' . $last_id -> id . '" WHERE id=' . $value->ch_ids[0]);
+					}
+					if ($value -> sex == "m") {
+						$this -> db -> query('UPDATE `profile_data` SET `f_id`="' . $last_id -> id . '" WHERE id=' . $value->ch_ids[0]);
+					}
+				}
 				break;
 		}
 

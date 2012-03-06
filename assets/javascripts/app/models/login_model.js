@@ -30,7 +30,8 @@ define(function () {
 				//TODO: add info to attr
 				Backbone.history.navigate('tree', true);
 			} else {
-				this.set({login_error : resp.message})
+				this.set({login_error : resp.message});
+				this.trigger("change:login_error");
 			}
 		},
 		
@@ -51,7 +52,8 @@ define(function () {
 			}
 			if (resp.status == "0") {
 				this.unset('reg_data');
-				this.set({reg_error : resp.message})
+				this.set({reg_error : resp.message});
+				this.trigger("change:reg_error");
 			}
 		},
 		
@@ -67,6 +69,7 @@ define(function () {
 		successRecover: function(resp){
 			resp = JSON.parse(resp);
 			this.set({recover_status : resp.status});
+			this.trigger("change:recover_status");
 		},
 		
 		checkLogin: function(){

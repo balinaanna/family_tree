@@ -101,7 +101,7 @@ a:visited {	text-decoration: none; color: #303030; }
 
 }
 #panel {
-	height: 300px;
+	min-height: 300px;
 	border:3px solid #FF9;
     border-radius: 0 0 30px 30px;
     -webkit-border-radius: 0 0 30px 30px; /* Safari, Chrome */
@@ -181,7 +181,7 @@ p a {
 	border-bottom:0px;
 }
 #loginbox {
-	min-height: 200px;
+	min-height: 250px;
 	padding: 10px;
 	-moz-user-select: -moz-none;
 	-o-user-select: none;
@@ -190,7 +190,7 @@ p a {
 	user-select: none;
 }
 #signupbox, #recoverbox {
-	min-height: 200px;
+	min-height: 250px;
 	padding: 10px;
 	display: none;
 	-moz-user-select: -moz-none;
@@ -386,9 +386,9 @@ p a {
 	display: none;
 }
 .infmessage {
-	
+	height: 20px;
 	padding: 5px;
-	border-radius: 5px;
+	border-radius: 0 0 30px 30px;
 }
 .errormsg{
 	background-color: red;

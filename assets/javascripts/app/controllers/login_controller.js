@@ -50,12 +50,14 @@ define(['models/login_model'], function (LoginModel) {
 				$("#registertab").addClass("select");
 				$("#loginbox").hide();
 				$("#signupbox").show();
+				$('#infmessage').hide();
 			} else {
 				$('#recoverbox').hide();
 				$("#registertab").removeClass("select");
 				$("#logintab").addClass("select");
 				$("#signupbox").hide();
 				$("#loginbox").show();
+				$('#infmessage').hide();
 			}
 		},
 		
@@ -83,25 +85,28 @@ define(['models/login_model'], function (LoginModel) {
 			$('#infmessage').html(this.model.get("login_error"));
 			$('#infmessage').addClass("infmessage");
 			$('#infmessage').addClass("errormsg");
+			$('#infmessage').show();
 		},
 		
 		showRegError : function () {
-			$('#reg_result').html(this.model.get("reg_error"));
-			$('#reg_result').addClass("infmessage");
-			$('#reg_result').addClass("errormsg");
+			$('#infmessage').html(this.model.get("reg_error"));
+			$('#infmessage').addClass("infmessage");
+			$('#infmessage').addClass("errormsg");
+			$('#infmessage').show();
 		},
 		
 		showRecoverError: function(){
 			if(this.model.get("recover_status") == "1"){
-				$('#recovermessage').html("Password send to " + $("#recoverEmail").val());
-				$('#recovermessage').addClass("infmessage");
-				$('#recovermessage').addClass("successmsg");
+				$('#infmessage').html("Password send to " + $("#recoverEmail").val());
+				$('#infmessage').addClass("infmessage");
+				$('#infmessage').addClass("successmsg");
 			}
 			if(this.model.get("recover_status") == "0"){
-				$('#recovermessage').html($("#recoverEmail").val() + " does not exists");
-				$('#recovermessage').addClass("infmessage");
-				$('#recovermessage').addClass("errormsg");
+				$('#infmessage').html($("#recoverEmail").val() + " does not exists");
+				$('#infmessage').addClass("infmessage");
+				$('#infmessage').addClass("errormsg");
 			}
+			$('#infmessage').show();
 		},
 		
 		flipShow: function(e){
@@ -110,10 +115,12 @@ define(['models/login_model'], function (LoginModel) {
 			if(id == "flipToRecover"){
 				$('#loginbox').hide();
 				$('#recoverbox').show();
+				$('#infmessage').hide();
 			}
 			if(id == "flipToLogin"){
 				$('#recoverbox').hide();
 				$('#loginbox').show();
+				$('#infmessage').hide();
 			}	
 		},
 		
