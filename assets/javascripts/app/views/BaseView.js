@@ -52,18 +52,12 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				},this)
 			});
 
-			$('#navigator').on('mousemove', function() {
-				$('#navigator').css('opacity', '0.8');
-			});
-			$('#navigator').on('mouseout', function() {
-				$('#navigator').css('opacity', '0.5');
-			});
 			this.navWidth = $('#navigator').css("width");
-            this.navWidth = this.navWidth.slice(0,-2);
-            this.navWidth = this.navWidth*1;
-            this.navWidth -= 5;
-            this.navWidth -=1;
-            var t = setTimeout("$('#navigator').animate({left:'-="+this.navWidth+"px'},function(){$('#navigator').css('background-color', '#1A3457');});",2000);
+		            this.navWidth = this.navWidth.slice(0,-2);
+		            this.navWidth = this.navWidth*1;
+		            this.navWidth -= 5;
+		            this.navWidth -=1;
+		            var t = setTimeout("$('#navigator').animate({left:'-="+this.navWidth+"px'},function(){$('#navigator').css('background-color', '#1A3457');});",2000);
             
 			this.container = document.createElement('div');
 			//this.el.append($("#navigator"));
@@ -111,19 +105,18 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				$('#navigator').animate({
 					left : '+='+this.navWidth+'px'	
 				});
-				//$('#navigator').animate({left:'+=105px'});
-			}
 			this.showedNav = true;
+            		}			
 		},
 		navHide : function() {
 			if(this.showedNav) {
-				$('#navigator').animate({
+                $('#navigator').animate({
 					left : '-='+this.navWidth+'px'
 				}, function() {
 					$('#navigator').css("background-color", "#1A3457");
 				});
-			}
 			this.showedNav = false;
+            		}			
 		},
 		reverseTree : function() {
 			this.reverse = this.reverse*(-1);
@@ -757,8 +750,15 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			context.fillStyle = "black";
 			context.font = 'italic 30px Arial Black';
 			//TODO text align
-			context.fillText(data.f_name + ' ' + data.l_name, this.nodeWidth * 0.15, this.nodeHeight * 0.78);
-			context.fillText(data.b_date + ' - ' + data.d_date, this.nodeWidth * 0.15, this.nodeHeight * 0.85);
+			var fNameL = data.f_name + ' ' + data.l_name;
+		            if (fNameL.length >= 15){
+		                fNameL = data.f_name.substring(0,1) + '. ' + data.l_name;
+		            }
+		            var nameTab = (this.nodeWidth - 20*fNameL.length)/2;
+		            var dates = data.b_date + ' - ' + data.d_date;
+		            var datesTab = (this.nodeWidth - 20*dates.length)/2;
+					context.fillText( fNameL, nameTab, this.nodeHeight * 0.78);
+					context.fillText( dates , datesTab, this.nodeHeight * 0.85););
 			var tex = new THREE.Texture(canvas);
 			tex.needsUpdate = true;
 			var mat = new THREE.MeshBasicMaterial({
