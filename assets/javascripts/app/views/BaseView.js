@@ -155,18 +155,24 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
                     posX: this.mouseX+this.nodeWidth/4,
                     posY: this.mouseY + Math.floor(this.nodeHeight / 2) - 20,
                     posZ: 10
-                },
-                'delete': {
-                    width: this.imgPlusSize,
-                    height: this.imgPlusSize,
-                    path: 'trash/delete.png',
-                    trPath: 'trash/delete_tr.png',
-                    posX: this.mouseX-this.nodeWidth/4,
-                    posY: this.mouseY + Math.floor(this.nodeHeight / 2) - 20,
-                    posZ: 10
                 }
             };
-            if(!data.f_id || !data.m_id) elems.parent = {width: this.imgPlusSize, height: this.imgPlusSize, path: 'trash/add.png', trPath: 'trash/add_tr.png', posX: this.mouseX, posY: this.mouseY - (this.reverse)*(Math.floor(this.nodeHeight / 2) - 20), posZ: 10};
+            if(!data.f_id || !data.m_id){
+            	elems.parent = {width: this.imgPlusSize, height: this.imgPlusSize, path: 'trash/add.png', trPath: 'trash/add_tr.png', posX: this.mouseX, posY: this.mouseY - (this.reverse)*(Math.floor(this.nodeHeight / 2) - 20), posZ: 10};
+			}
+			if(data.id != localStorage.getItem("prof_id")){
+				if((!data.f_id && !data.m_id && data.ch_ids.length < 2) || (data.ch_ids.length == 0 && data.spouse_id == 0)){
+					elems['delete'] =  {
+		        	    width: this.imgPlusSize,
+		                height: this.imgPlusSize,
+		                path: 'trash/delete.png',
+		                trPath: 'trash/delete_tr.png',
+		                posX: this.mouseX-this.nodeWidth/4,
+		                posY: this.mouseY + Math.floor(this.nodeHeight / 2) - 20,
+		                posZ: 10
+		            }
+	           }
+            }	
 			if(!data.spouse_id) {
 				if(data.sex == "m")
 					var dx = Math.floor(this.nodeWidth / 2) - 40;
@@ -864,8 +870,15 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 						nodex = intersects[i].object.parent;
 						data = nodex.info;
 						data.id = nodex.info.user_id;
+						if(data.id == localStorage.getItem("prof_id"))return;
 						if(data.ch_ids.length == 0 && data.spouse_id == 0){
-							console.log("delete");
+							console.log("delete child");
+							this.model.sendData({
+								url : 'server/api/delete_node',
+								data : data
+							});
+						}else if(data.f_id == 0 && data.m_id == 0 && data.ch_ids.length < 2){
+							console.log("delete parent");
 							this.model.sendData({
 								url : 'server/api/delete_node',
 								data : data
