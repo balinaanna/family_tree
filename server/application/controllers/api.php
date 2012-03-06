@@ -462,19 +462,41 @@ class Api extends CI_Controller {
 	}
 
 	public function delete_node() {
+		if (!isset($_REQUEST['ch_ids'])) {$_REQUEST['ch_ids'] = array();
+		}
 		$value = (object)$_REQUEST;
-		$value -> id = $_REQUEST['id'];
-		$this -> db -> query('DELETE FROM `profile_data`
+		if($value->ch_ids == NULL && $value->spouse_id == 0){
+			$this -> db -> query('DELETE FROM `profile_data`
+								WHERE `id` = "' . $value -> id . '" AND
+								   	`user_id` = "' . $this -> session -> userdata('user_id') . '"
+						    ');
+			$ch_ids = $this -> db -> query('SELECT ch_ids FROM `profile_data` WHERE id=' . $value -> f_id);
+			$ch_ids = $ch_ids -> result();
+			$ch_ids = json_decode($ch_ids[0] -> ch_ids);
+			$ch_ids = array_merge(array_diff($ch_ids, array($value -> id)));
+			$ch_ids = json_encode($ch_ids);
+			if($value -> f_id != 0)
+			$this -> db -> query('UPDATE `profile_data` SET `ch_ids`="' . addslashes($ch_ids) . '" WHERE id=' . $value -> f_id);
+			if($value -> m_id != 0)
+			$this -> db -> query('UPDATE `profile_data` SET `ch_ids`="' . addslashes($ch_ids) . '" WHERE id=' . $value -> m_id);
+		};
+		if($value->f_id == 0 && $value->m_id == 0){
+			$this -> db -> query('DELETE FROM `profile_data`
 							WHERE `id` = "' . $value -> id . '" AND
 							   	`user_id` = "' . $this -> session -> userdata('user_id') . '"
 					    ');
-		$ch_ids = $this -> db -> query('SELECT ch_ids FROM `profile_data` WHERE id=' . $value -> f_id);
-		$ch_ids = $ch_ids -> result();
-		$ch_ids = json_decode($ch_ids[0] -> ch_ids);
-		$ch_ids = array_merge(array_diff($ch_ids, array($value -> id)));
-		$ch_ids = json_encode($ch_ids);
-		$this -> db -> query('UPDATE `profile_data` SET `ch_ids`="' . addslashes($ch_ids) . '" WHERE id IN(' . $value -> f_id . ', ' . $value -> m_id . ')');
-						
+			if($value -> spouse_id != 0){
+				$this -> db -> query('UPDATE `profile_data` SET `spouse_id`="0" WHERE id =' . $value -> spouse_id);
+			}
+			if($value->ch_ids != NULL){
+				if($value->sex == "m"){
+					$this -> db -> query('UPDATE `profile_data` SET `f_id`="0" WHERE id =' . $value -> ch_ids[0]);
+				}
+				if($value->sex == "f"){
+					$this -> db -> query('UPDATE `profile_data` SET `m_id`="0" WHERE id =' . $value -> ch_ids[0]);
+				}
+			}	
+		}				
 		
 		$json -> action = "delete_node";
 		$json -> status = "1";

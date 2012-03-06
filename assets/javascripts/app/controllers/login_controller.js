@@ -29,6 +29,7 @@ define(['models/login_model'], function (LoginModel) {
 		},
 		
 		getView : function (url) {
+			$.ajaxSetup({cache : false});
 			$.ajaxSetup({async : false});
 			$.ajax({
 				url : url,

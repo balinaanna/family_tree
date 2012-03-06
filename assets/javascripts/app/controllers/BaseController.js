@@ -20,6 +20,7 @@ define(['views/BaseView','models/BaseModel'], function(BaseView, BaseModel){
 		},
 		
 		getView : function (url) {
+			$.ajaxSetup({cache : false});
 			$.ajaxSetup({async : false});
 			$.ajax({
 				url : url,
