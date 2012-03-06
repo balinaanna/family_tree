@@ -28,6 +28,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			"click #submit_person": "submitFunc",
 			"click #logout_btn" : "logout",
 			"click #revers" : "reverseTree",
+			"click #save_image" : "saveImage",
             "mousemove #roll" : "navShow"
 		},
 
@@ -51,18 +52,12 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				},this)
 			});
 
-			$('#navigator').on('mousemove', function() {
-				$('#navigator').css('opacity', '0.8');
-			});
-			$('#navigator').on('mouseout', function() {
-				$('#navigator').css('opacity', '0.5');
-			});
 			this.navWidth = $('#navigator').css("width");
-            this.navWidth = this.navWidth.slice(0,-2);
-            this.navWidth = this.navWidth*1;
-            this.navWidth -= 5;
-            this.navWidth -=1;
-            var t = setTimeout("$('#navigator').animate({left:'-="+this.navWidth+"px'},function(){$('#navigator').css('background-color', '#1A3457');});",2000);
+		            this.navWidth = this.navWidth.slice(0,-2);
+		            this.navWidth = this.navWidth*1;
+		            this.navWidth -= 5;
+		            this.navWidth -=1;
+		            var t = setTimeout("$('#navigator').animate({left:'-="+this.navWidth+"px'},function(){$('#navigator').css('background-color', '#1A3457');});",2000);
             
 			this.container = document.createElement('div');
 			//this.el.append($("#navigator"));
@@ -110,23 +105,29 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				$('#navigator').animate({
 					left : '+='+this.navWidth+'px'	
 				});
-				//$('#navigator').animate({left:'+=105px'});
-			}
 			this.showedNav = true;
+            		}			
 		},
 		navHide : function() {
 			if(this.showedNav) {
-				$('#navigator').animate({
+                $('#navigator').animate({
 					left : '-='+this.navWidth+'px'
 				}, function() {
 					$('#navigator').css("background-color", "#1A3457");
 				});
-			}
 			this.showedNav = false;
+            		}			
 		},
 		reverseTree : function() {
 			this.reverse = this.reverse*(-1);
 			this.redrawTree(this.data2.id);
+		},
+		saveImage : function() {
+			var canvas = document.getElementsByTagName('canvas')[0];
+			var context = canvas.getContext("2d");
+			var dataURL = canvas.toDataURL("image/jpeg");
+			document.getElementById("canvasImg").src = dataURL;
+			Canvas2Image.saveAsJPEG(canvas);
 		},
 		create_node : function(data) {
 			var node = new THREE.Object3D();
@@ -755,8 +756,15 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			context.fillStyle = "black";
 			context.font = 'italic 30px Arial Black';
 			//TODO text align
-			context.fillText(data.f_name + ' ' + data.l_name, this.nodeWidth * 0.15, this.nodeHeight * 0.78);
-			context.fillText(data.b_date + ' - ' + data.d_date, this.nodeWidth * 0.15, this.nodeHeight * 0.85);
+			var fNameL = data.f_name + ' ' + data.l_name;
+		            if (fNameL.length >= 15){
+		                fNameL = data.f_name.substring(0,1) + '. ' + data.l_name;
+		            }
+		            var nameTab = (this.nodeWidth - 18*fNameL.length)/2;
+		            var dates = data.b_date + ' - ' + data.d_date;
+		            var datesTab = (this.nodeWidth - 18*dates.length)/2;
+					context.fillText( fNameL, nameTab, this.nodeHeight * 0.78);
+					context.fillText( dates , datesTab, this.nodeHeight * 0.85);
 			var tex = new THREE.Texture(canvas);
 			tex.needsUpdate = true;
 			var mat = new THREE.MeshBasicMaterial({
@@ -1002,7 +1010,9 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 						} else if(par.children[j].name == 'edit') {
 							par.children[j].children[0].material.map.image.src = 'trash/edit.png';
 						} else if(par.children[j].name == 'delete') {
-							par.children[j].children[0].material.map.image.src = 'trash/delete.png';
+							if(par.info.ch_ids.length == 0 && par.info.spouse_id == 0){
+								par.children[j].children[0].material.map.image.src = 'trash/delete.png';
+							}
 						} else if(par.children[j].name == 'spouse') {
 							par.children[j].children[0].material.map.image.src = 'trash/add.png';
 						}
@@ -1170,10 +1180,10 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				data.action = this.TempObj.action;
 				data.send_node_id = this.TempObj.node.info.id;
 				if(this.TempObj.node.info.sex == "m") {
-					data.f_id = this.TempObj.node.info.id; this.TempObj.node.info.spouse_id != "" ? data.m_id = this.TempObj.node.info.spouse_id : data.m_id = "";
+					data.f_id = this.TempObj.node.info.id;this.TempObj.node.info.spouse_id != "" ? data.m_id = this.TempObj.node.info.spouse_id : data.m_id = "";
 				}
 				if(this.TempObj.node.info.sex == "f") {
-					data.m_id = this.TempObj.node.info.id; this.TempObj.node.info.spouse_id != "" ? data.f_id = this.TempObj.node.info.spouse_id : data.f_id = "";
+					data.m_id = this.TempObj.node.info.id;this.TempObj.node.info.spouse_id != "" ? data.f_id = this.TempObj.node.info.spouse_id : data.f_id = "";
 				}
 				this.model.sendData({
 					url : 'server/api/add_node',
