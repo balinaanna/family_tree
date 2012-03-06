@@ -28,6 +28,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			"click #submit_person": "submitFunc",
 			"click #logout_btn" : "logout",
 			"click #revers" : "reverseTree",
+			"click #save_image" : "saveImage",
             "mousemove #roll" : "navShow"
 		},
 
@@ -127,6 +128,13 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 		reverseTree : function() {
 			this.reverse = this.reverse*(-1);
 			this.redrawTree(this.data2.id);
+		},
+		saveImage : function() {
+			var canvas = document.getElementsByTagName('canvas')[0];
+			var context = canvas.getContext("2d");
+			var dataURL = canvas.toDataURL("image/jpeg");
+			document.getElementById("canvasImg").src = dataURL;
+			Canvas2Image.saveAsJPEG(canvas);
 		},
 		create_node : function(data) {
 			var node = new THREE.Object3D();
@@ -1157,10 +1165,10 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				data.action = this.TempObj.action;
 				data.send_node_id = this.TempObj.node.info.id;
 				if(this.TempObj.node.info.sex == "m") {
-					data.f_id = this.TempObj.node.info.id; this.TempObj.node.info.spouse_id != "" ? data.m_id = this.TempObj.node.info.spouse_id : data.m_id = "";
+					data.f_id = this.TempObj.node.info.id;this.TempObj.node.info.spouse_id != "" ? data.m_id = this.TempObj.node.info.spouse_id : data.m_id = "";
 				}
 				if(this.TempObj.node.info.sex == "f") {
-					data.m_id = this.TempObj.node.info.id; this.TempObj.node.info.spouse_id != "" ? data.f_id = this.TempObj.node.info.spouse_id : data.f_id = "";
+					data.m_id = this.TempObj.node.info.id;this.TempObj.node.info.spouse_id != "" ? data.f_id = this.TempObj.node.info.spouse_id : data.f_id = "";
 				}
 				this.model.sendData({
 					url : 'server/api/add_node',

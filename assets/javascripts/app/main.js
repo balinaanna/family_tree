@@ -18,7 +18,9 @@
 	'order!../libs/jquery.imgareaselect.pack',
 	'order!../libs/upclick',
 	'order!../libs/popups',
-	'order!../libs/osx'
+	'order!../libs/osx',
+	'order!../libs/canvas2image',
+	'order!../libs/base64'
 	], function (Router) {
 		$(document).ready(function(){
 			var router = new Router();
