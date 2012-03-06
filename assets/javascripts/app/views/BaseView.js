@@ -754,9 +754,9 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 		            if (fNameL.length >= 15){
 		                fNameL = data.f_name.substring(0,1) + '. ' + data.l_name;
 		            }
-		            var nameTab = (this.nodeWidth - 20*fNameL.length)/2;
+		            var nameTab = (this.nodeWidth - 18*fNameL.length)/2;
 		            var dates = data.b_date + ' - ' + data.d_date;
-		            var datesTab = (this.nodeWidth - 20*dates.length)/2;
+		            var datesTab = (this.nodeWidth - 18*dates.length)/2;
 					context.fillText( fNameL, nameTab, this.nodeHeight * 0.78);
 					context.fillText( dates , datesTab, this.nodeHeight * 0.85););
 			var tex = new THREE.Texture(canvas);
