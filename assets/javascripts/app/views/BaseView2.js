@@ -8,6 +8,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 		stepY : 300,
 		lineTurne : 375,
         renderer : new THREE.WebGLRenderer({antialias: true}),
+        dist : 150,
 		
 		isMouseDown : false,
 		onMouseDownPosition: null,
@@ -65,9 +66,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
             
             this.container = document.createElement('div');
 			$(this.el).append(this.container);
-            //this.renderer = new THREE.WebGLRenderer({antialias: true});
             this.renderer.setSize(window.innerWidth, window.innerHeight);
-            //document.body.appendChild(this.renderer.domElement);
             this.renderer.setClearColorHex(0xEEEEEE, 1.0);
             this.renderer.clear();
             this.container.appendChild(this.renderer.domElement);
@@ -88,7 +87,6 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
             
             var json='[{"id":"50","l_name":"Derevenets","f_name":"Bogdan","f_id":"115","m_id":"116","ch_ids":["120","123","124","125"],"spouse_id":"121","b_date":"1989","d_date":"0","sex":"m","photo_url":"","comment":""},{"id":"115","l_name":"","f_name":"Father","f_id":"0","m_id":"0","ch_ids":["50","117"],"spouse_id":"116","b_date":"0","d_date":"0","sex":"m","photo_url":"no_avatar.jpg","comment":""},{"id":"116","l_name":"?","f_name":"Mother","f_id":"0","m_id":"0","ch_ids":["50","117"],"spouse_id":"115","b_date":"0","d_date":"0","sex":"f","photo_url":"no_avatar.jpg","comment":""},{"id":"117","l_name":"","f_name":"Brother","f_id":"115","m_id":"116","ch_ids":[],"spouse_id":"0","b_date":"0","d_date":"0","sex":"m","photo_url":"no_avatar.jpg","comment":""},{"id":"120","l_name":"","f_name":"kim","f_id":"50","m_id":"121","ch_ids":["127"],"spouse_id":"126","b_date":"0","d_date":"0","sex":"f","photo_url":"no_avatar.jpg","comment":""},{"id":"121","l_name":"?","f_name":"?","f_id":"0","m_id":"0","ch_ids":["120","123","124","125"],"spouse_id":"50","b_date":"0","d_date":"0","sex":"f","photo_url":"no_avatar.jpg","comment":""},{"id":"123","l_name":"12","f_name":"12","f_id":"50","m_id":"121","ch_ids":[],"spouse_id":"0","b_date":"12","d_date":"0","sex":"m","photo_url":"no_avatar.jpg","comment":""},{"id":"124","l_name":"123","f_name":"123","f_id":"50","m_id":"121","ch_ids":[],"spouse_id":"0","b_date":"12","d_date":"0","sex":"m","photo_url":"no_avatar.jpg","comment":""},{"id":"125","l_name":"222","f_name":"112","f_id":"50","m_id":"121","ch_ids":[],"spouse_id":"0","b_date":"2222","d_date":"0","sex":"f","photo_url":"no_avatar.jpg","comment":""},{"id":"126","l_name":"21312","f_name":"2321","f_id":"0","m_id":"0","ch_ids":["127"],"spouse_id":"120","b_date":"1221","d_date":"0","sex":"m","photo_url":"no_avatar.jpg","comment":""},{"id":"127","l_name":"ewrw","f_name":"324","f_id":"126","m_id":"120","ch_ids":[],"spouse_id":"0","b_date":"0","d_date":"0","sex":"m","photo_url":"no_avatar.jpg","comment":""}]';
             var jsonObject = JSON.parse(json);
-            //console.log(jsonObject);
             var prof_id=50;
             var tree=[];
             var arr = jsonObject;
@@ -108,12 +106,9 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
                 }
             }
             this.tree = tree;
-            //console.log(this.tree);
-            //console.log(tree);
             this.createTree(50, {'x':0,'y':0,'z':0}, 0);
-            //console.log(this.objects);
             
-            //this.line.type = THREE.Lines;
+            this.line.type = THREE.Lines;
             //this.coordScene.add(this.line);
             
             this.renderer.render(this.scene, this.camera);
@@ -252,22 +247,23 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
             var dx = ev.clientX - this.sx;
             var dy = ev.clientY - this.sy;
           this.rotation += dx/100;
-          this.camera.position.x = Math.cos(this.rotation)*150;
-          this.camera.position.z = Math.sin(this.rotation)*150;
+          this.camera.position.x = Math.cos(this.rotation)*this.dist;
+          this.camera.position.z = Math.sin(this.rotation)*this.dist;
           this.camera.position.y += dy;
           this.sx += dx;
           this.sy += dy;
         }
       },
       onmousewheel : function(ev){
-        this.camera.position.z -= ev.originalEvent.wheelDeltaY;
+        this.camera.position.z -= ev.originalEvent.wheelDeltaY/5;
+        this.dist = this.camera.position.z; 
       },
       animate : function (t) {
         requestAnimationFrame($.proxy(this.animate, this));
         if (!this.paused) {
           this.last = t;
           var gl = this.renderer.getContext();
-          this.renderer.clear();
+          //this.renderer.clear();
           this.camera.lookAt( this.scene.position );
           this.renderer.render(this.scene, this.camera);
           this.renderer.render(this.coordScene, this.camera);
