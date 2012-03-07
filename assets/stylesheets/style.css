@@ -9,7 +9,7 @@ a:visited {	text-decoration: none; color: #303030; }
 	top: 0;
 	bottom: 0;
 	background-color: #617c83;
-	opacity: 0.7;
+	opacity: 0.9;
 	border: 0px solid #fff;
 	box-shadow: 0 0 10px 2px #1A3457;
 	-webkit-box-shadow: 0 0 10px 2px #1A3457; /* Safari, Chrome */
@@ -23,7 +23,11 @@ a:visited {	text-decoration: none; color: #303030; }
 	top: 40px;
 	height: 120px;
 }
-.body {
+html{
+	height: 100%;
+	overflow: hidden;
+}
+body {
 	/*background-image: url(/trash/back_11111.jpg);*/
 	background-image: linear-gradient(bottom, rgb(97,124,131) 0%, rgb(182,207,212) 48%, rgb(97,124,131) 100%);
 	background-image: -o-linear-gradient(bottom, rgb(97,124,131) 0%, rgb(182,207,212) 48%, rgb(97,124,131) 100%);
@@ -44,7 +48,6 @@ a:visited {	text-decoration: none; color: #303030; }
 	-khtml-user-select: none;
 	-webkit-user-select: none;
 	user-select: none;
-	overflow: hidden;
 }
 #osx-modal-content-edit input, #panel input {
 
@@ -87,7 +90,8 @@ a:visited {	text-decoration: none; color: #303030; }
 	-webkit-box-shadow: 0px 0px 3px #000;
 }
 #wr {
-	
+	margin: 0;
+	padding: 0;
 }
 #formcontainer {
 	margin: 10% auto 5px;
@@ -101,7 +105,7 @@ a:visited {	text-decoration: none; color: #303030; }
 
 }
 #panel {
-	min-height: 300px;
+	min-height: 320px;
 	border:3px solid #FF9;
     border-radius: 0 0 30px 30px;
     -webkit-border-radius: 0 0 30px 30px; /* Safari, Chrome */
@@ -181,7 +185,7 @@ p a {
 	border-bottom:0px;
 }
 #loginbox {
-	min-height: 250px;
+	min-height: 260px;
 	padding: 10px;
 	-moz-user-select: -moz-none;
 	-o-user-select: none;
@@ -190,7 +194,7 @@ p a {
 	user-select: none;
 }
 #signupbox, #recoverbox {
-	min-height: 250px;
+	min-height: 260px;
 	padding: 10px;
 	display: none;
 	-moz-user-select: -moz-none;
@@ -294,7 +298,7 @@ p a {
 	text-align: left;
 }
 #loginbox table, #recoverbox table{
-	margin-top: 50px;
+	margin-top: 60px;
 }
 .button:disabled {
 	color: gray !important;
@@ -386,12 +390,10 @@ p a {
 	display: none;
 }
 .infmessage {
-	height: 20px;
-	padding: 5px;
-	border-radius: 0 0 30px 30px;
+		
 }
 .errormsg{
-	background-color: red;
+	color: red;
 }
 .successmsg{
 	background-color: green;
