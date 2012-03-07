@@ -763,14 +763,19 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			context.font = 'italic 30px Arial Black';
 			//TODO text align
 			var fNameL = data.f_name + ' ' + data.l_name;
-		            if (fNameL.length >= 15){
-		                fNameL = data.f_name.substring(0,1) + '. ' + data.l_name;
-		            }
-		            var nameTab = (this.nodeWidth - 18*fNameL.length)/2;
-		            var dates = data.b_date + ' - ' + data.d_date;
-		            var datesTab = (this.nodeWidth - 18*dates.length)/2;
-					context.fillText( fNameL, nameTab, this.nodeHeight * 0.78);
-					context.fillText( dates , datesTab, this.nodeHeight * 0.85);
+            if (fNameL.length >= 15){
+                fNameL = data.f_name.substring(0,1) + '. ' + data.l_name;
+            }
+            var nameTab = (this.nodeWidth - 18*fNameL.length)/2;
+            if (!data.d_date || data.d_date == "?"){
+                var dates = data.b_date; 
+            } else {
+                var dates = data.b_date.substr(-4) + ' - ' + data.d_date.substr(-4);
+            }
+            //var dates = data.b_date + ' - ' + data.d_date;
+            var datesTab = (this.nodeWidth - 18*dates.length)/2;
+			context.fillText( fNameL, nameTab, this.nodeHeight * 0.78);
+			context.fillText( dates , datesTab, this.nodeHeight * 0.85);
 			var tex = new THREE.Texture(canvas);
 			tex.needsUpdate = true;
 			var mat = new THREE.MeshBasicMaterial({
