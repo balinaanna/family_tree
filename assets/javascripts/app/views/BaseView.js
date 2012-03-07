@@ -99,22 +99,28 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				}, this)
 			});
 		},
+		animating: false,
 		navShow : function() {
-			if(!this.showedNav) {
+			if(!this.showedNav && !this.animating) {
+				this.animating = true;
 				$('#navigator').css("background-color", "#617c83");
 				$('#navigator').animate({
-					left : '+='+this.navWidth+'px'	
-				});
+					left : '+='+this.navWidth+'px'
+				},$.proxy(function(){this.animating = false;},this));
 			this.showedNav = true;
+			$('#roll').css("z-index", "10");
             		}			
 		},
 		navHide : function() {
-			if(this.showedNav) {
+			if(this.showedNav && !this.animating) {
+				this.animating = true;
                 $('#navigator').animate({
 					left : '-='+this.navWidth+'px'
-				}, function() {
+				}, $.proxy(function() {
 					$('#navigator').css("background-color", "#1A3457");
-				});
+					this.animating = false;
+					$('#roll').css("z-index", "110");
+				},this));
 			this.showedNav = false;
             		}			
 		},
