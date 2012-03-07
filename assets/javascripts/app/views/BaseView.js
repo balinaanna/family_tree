@@ -167,7 +167,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
             if(!data.f_id || !data.m_id){
             	elems.parent = {width: this.imgPlusSize, height: this.imgPlusSize, path: 'trash/add.png', trPath: 'trash/add_tr.png', posX: this.mouseX, posY: this.mouseY - (this.reverse)*(Math.floor(this.nodeHeight / 2) - 20), posZ: 10};
 			}
-			if(data.id != localStorage.getItem("prof_id")){
+			if(data.id != localStorage.getItem("prof_id") && data.id != this.data2.id ){
 				if((!data.f_id && !data.m_id && data.ch_ids.length < 2) || (data.ch_ids.length == 0 && data.spouse_id == 0)){
 					elems['delete'] =  {
 		        	    width: this.imgPlusSize,
