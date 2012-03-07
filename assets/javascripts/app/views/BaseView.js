@@ -772,7 +772,6 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
             } else {
                 var dates = data.b_date.substr(-4) + ' - ' + data.d_date.substr(-4);
             }
-            //var dates = data.b_date + ' - ' + data.d_date;
             var datesTab = (this.nodeWidth - 18*dates.length)/2;
 			context.fillText( fNameL, nameTab, this.nodeHeight * 0.78);
 			context.fillText( dates , datesTab, this.nodeHeight * 0.85);
