@@ -1,6 +1,26 @@
 <?php
 class Api_model extends CI_Model {
 
+	public function __construct() {
+		if (!defined('PHP_EOL')) {
+    		switch (strtoupper(substr(PHP_OS, 0, 3))) {
+       			 // Windows
+        		case 'WIN':
+            		define('PHP_EOL', "\r\n");
+            	break;
+
+		        // Mac
+        		case 'DAR':
+            		define('PHP_EOL', "\r");
+            		break;
+
+        		// Unix
+        		default:
+            		define('PHP_EOL', "\n");
+    		}
+		}
+	}
+
 	public function ged_parse($file_path) {
 		//# init all needed variables
 		$anfang   = 0;
@@ -368,6 +388,88 @@ class Api_model extends CI_Model {
 		$profile_data = json_decode($json);
 		$profile_data=(array)$profile_data;
 		return $profile_data;
+	}
+
+
+	function ged_export($array){
+		$head="0 HEAD".PHP_EOL."
+				1 SOUR SoftServeFT".PHP_EOL."
+				2 NAME SoftServeFT".PHP_EOL."
+				2 VERS 0.7.2".PHP_EOL."
+				2 CORP Soft Serve".PHP_EOL."
+				1 _HME @".$array[0]->id."@".PHP_EOL."
+				1 DEST ANSTFILE".PHP_EOL."
+				1 DATE ".strtoupper(date('d M Y'))."".PHP_EOL."
+				2 TIME ".date('H:i:s')."".PHP_EOL."
+				1 FILE family_tree.ged".PHP_EOL."
+				1 GEDC".PHP_EOL."
+				2 VERS 5.5".PHP_EOL."
+				2 FORM LINEAGE-LINKED".PHP_EOL."
+				1 LANG English".PHP_EOL."
+				1 CHAR UTF-8".PHP_EOL."";
+		$foot="0 TRLR";
+		$family_list="";
+		$indi_list="";
+		foreach ($array as $key => $value) {
+			if($value->spouse_id && $value->sex=="m"){
+				$family_list=$family_list.$this->fam($value);
+			}
+			if(!$value->spouse_id && $value->ch_ids!="[]") {
+				$family_list=$family_list.$this->fam($value);
+			}
+			$indi_list=$indi_list.$this->indi($value);
+		}
+		$string = $head.$family_list.$indi_list.$foot;
+		return $string;
+	}
+
+	private function date_conv($string){
+		if(!$string){return "UNKNOWN";}
+		$dt=trim($string);//$dob1='dd.mm.yyyy' format
+		list($d, $m, $y) = explode('.', $dt);
+		$mk=mktime(0, 0, 0, $m, $d, $y);
+		$dt_conv=strtoupper(strftime('%d %M %Y',$mk));
+		return $dt_conv;
+	}
+	
+
+	private function indi($object){
+		$string = "0 @I".$object->id."@ INDI".PHP_EOL."
+					1 GIVN ".$object->f_name."".PHP_EOL."
+					1 SURN ".$object->l_name."".PHP_EOL."
+					1 BIRT".PHP_EOL."
+					2 DATE ".$this->date_conv($object->b_date).PHP_EOL."
+					1 DEAT".PHP_EOL."
+					2 DATE ".$this->date_conv($object->d_date).PHP_EOL;
+		if($object->f_id){
+			$string = $string."1 FAMC @FAM".$object->f_id."@".PHP_EOL;
+		}
+		if(!$object->f_id && $object->m_id){
+			$string = $string."1 FAMC @FAM".$object->m_id."@".PHP_EOL;
+		}
+		if($object->spouse_id && $object->sex=="m"){
+			$string = $string."1 FAMS @FAM".$object->id."@".PHP_EOL;
+		}
+		if(!$object->spouse_id && $object->ch_ids!="[]"){
+			$string = $string."1 FAMS @FAM".$object->id."@".PHP_EOL;
+		}
+		return $string; 	
+	}
+
+	private function fam($object){
+		$fam_id = ""; $fam_hu = ""; $fam_wi = ""; $fam_ch = "";
+		$fam_id = "0 @FAM".$object->id."@ FAM".PHP_EOL;
+		$fam_hu	= ($object->sex=='m') ? "1 HUSB @I".$object->id."@".PHP_EOL : "";
+		if($object->sex=='f') { $fam_wi	= "1 WIFE @I".$object->id."@".PHP_EOL; }
+		if($object->sex=='m' && $object->spouse_id) { $fam_wi	= "1 WIFE @I".$object->spouse_id."@".PHP_EOL; }
+		if($object->ch_ids!="[]"){
+			$ch_ids = json_decode($object->ch_ids);
+			foreach ($ch_ids as $value) {
+				$fam_ch = $fam_ch."1 CHIL @I".$value."@".PHP_EOL;
+			}
+		}
+		$fam = $fam_id.$fam_hu.$fam_wi.$fam_ch;
+		return $fam;
 	}
 
 	function replaceSpecialChars($statement) {
