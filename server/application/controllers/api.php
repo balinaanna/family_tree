@@ -316,8 +316,17 @@ class Api extends CI_Controller {
 					    		');
 						$last_m_id = $last_mid -> result();
 						$last_m_id = $last_m_id[0];
+						$sql_ch_ids="";
+						$ch_array=json_decode($ch_ids);
+						foreach ($ch_array as $ch_index => $child) {
+							if($ch_index==(count($ch_array)-1)){
+								$sql_ch_ids=$sql_ch_ids.$child;
+							} else {
+								$sql_ch_ids=$sql_ch_ids.$child.", ";
+							}
+						}
 						$this -> db -> query('UPDATE `profile_data` SET `spouse_id`="' . $last_m_id -> id . '", `ch_ids`="' . addslashes($ch_ids) . '" WHERE id="' . $value -> f_id . '"');
-						$this -> db -> query('UPDATE `profile_data` SET `m_id`="' . $last_m_id -> id . '" WHERE id="' . $last_id -> id . '"');
+						$this -> db -> query('UPDATE `profile_data` SET `m_id`="' . $last_m_id -> id . '" WHERE id IN (' . $sql_ch_ids . ')');
 					}
 				}
 				if ($value -> m_id) {
@@ -349,8 +358,17 @@ class Api extends CI_Controller {
 					    		');
 						$last_f_id = $last_fid -> result();
 						$last_f_id = $last_f_id[0];
+						$sql_ch_ids="";
+						$ch_array=json_decode($ch_ids);
+						foreach ($ch_array as $ch_index => $child) {
+							if($ch_index==(count($ch_array)-1)){
+								$sql_ch_ids=$sql_ch_ids.$child;
+							} else {
+								$sql_ch_ids=$sql_ch_ids.$child.", ";
+							}
+						}
 						$this -> db -> query('UPDATE `profile_data` SET `spouse_id`="' . $last_f_id -> id . '", `ch_ids`="' . addslashes($ch_ids) . '" WHERE id="' . $value -> m_id . '"');
-						$this -> db -> query('UPDATE `profile_data` SET `f_id`="' . $last_f_id -> id . '" WHERE id="' . $last_id -> id . '"');
+						$this -> db -> query('UPDATE `profile_data` SET `f_id`="' . $last_f_id -> id . '" WHERE id IN (' . $sql_ch_ids . ')');
 					}
 				}
 				break;
