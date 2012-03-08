@@ -66,6 +66,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
             
             this.container = document.createElement('div');
 			$(this.el).append(this.container);
+            this.projector = new THREE.Projector();
             this.renderer.setSize(window.innerWidth, window.innerHeight);
             this.renderer.setClearColorHex(0xEEEEEE, 1.0);
             this.renderer.clear();
@@ -113,6 +114,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
             this.coordScene.add(this.line);
             
             this.renderer.render(this.scene, this.camera);
+            this.renderer.render(this.coordScene, this.camera);
             this.camera.position.x = Math.cos(this.rotation)*150;
             this.camera.position.z = Math.sin(this.rotation)*150;
             this.scene.add(this.camera);
@@ -242,16 +244,33 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
       },
       onmouseup : function(){ this.down = false; },
       onmousemove : function(ev) {
-        this.navHide();
+        event.preventDefault();
+		this.navHide();
+    	this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+		this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+		var vector = new THREE.Vector3(this.mouse.x, this.mouse.y, 0.5);
+		this.projector.unprojectVector(vector, this.camera);
+		var ray = new THREE.Ray(this.camera.position, vector.subSelf(this.camera.position).normalize());
+		var intersects = ray.intersectObjects(this.objects);
+        
         if (this.down) {
             var dx = ev.clientX - this.sx;
             var dy = ev.clientY - this.sy;
-          this.rotation += dx/100;
-          this.camera.position.x = Math.cos(this.rotation)*this.dist;
-          this.camera.position.z = Math.sin(this.rotation)*this.dist;
-          this.camera.position.y += dy;
-          this.sx += dx;
-          this.sy += dy;
+            this.rotation += dx/100;
+            this.camera.position.x = Math.cos(this.rotation)*this.dist;
+            this.camera.position.z = Math.sin(this.rotation)*this.dist;
+            this.camera.position.y += dy;
+            this.sx += dx;
+            this.sy += dy;
+        } else if(intersects.length > 0) {
+            this.container.style.cursor = 'pointer';
+            if (this.selectedObj != intersects[0].object && this.selectedObj != null) this.selectedObj.material = new THREE.MeshPhongMaterial({color: 0xFFFFFF});
+            this.selectedObj = intersects[0].object;
+            this.selectedObj.material = new THREE.MeshPhongMaterial({color: 0x462424});
+        } else if(intersects.length == 0) {
+            this.container.style.cursor = 'default';
+            this.selectedObj.material = new THREE.MeshPhongMaterial({color: 0xFFFFFF});
         }
       },
       onmousewheel : function(ev){
@@ -263,7 +282,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
         if (!this.paused) {
           this.last = t;
           var gl = this.renderer.getContext();
-          this.renderer.clear();
+          //this.renderer.clear();
           this.camera.lookAt( this.scene.position );
           this.renderer.render(this.scene, this.camera);
           this.renderer.render(this.coordScene, this.camera);
