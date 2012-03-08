@@ -287,12 +287,12 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
             this.sy += dy;
         } else if(intersects.length > 0) {
             this.container.style.cursor = 'pointer';
-            //if (this.selectedObj != intersects[0].object && this.selectedObj != null) this.selectedObj.material = new THREE.MeshPhongMaterial({color: 0xFFFFFF});
-            //this.selectedObj = intersects[0].object;
-            //this.selectedObj.material = new THREE.MeshPhongMaterial({color: 0x462424});
+            if (this.selectedObj != intersects[0].object.parent.children[2] && this.selectedObj != null) this.selectedObj.material = new THREE.MeshPhongMaterial({color: 0xFFFFFF});
+            this.selectedObj = intersects[0].object.parent.children[2];
+            this.selectedObj.material = new THREE.MeshPhongMaterial({color: 0x462424});
         } else if(intersects.length == 0) {
             this.container.style.cursor = 'default';
-            //this.selectedObj.material = new THREE.MeshPhongMaterial({color: 0xFFFFFF});
+            this.selectedObj.material = new THREE.MeshPhongMaterial({color: 0xFFFFFF});
         }
       },
       onmousewheel : function(ev){
