@@ -8,6 +8,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 		stepY : 300,
 		lineTurne : 375,
         renderer : new THREE.WebGLRenderer({antialias: true}),
+        dist : 150,
 		
 		isMouseDown : false,
 		onMouseDownPosition: null,
@@ -23,8 +24,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
         lineGeo : new THREE.Geometry(),
         lineMat : new THREE.LineBasicMaterial({color: 0x888888, lineWidth: 1}),
         line : new THREE.Line(this.lineGeo, this.lineMat),
-        coordScene : new THREE.Scene(),
-        
+                
         light : new THREE.PointLight(0xFFCC99),
         ambient : new THREE.PointLight(0x333366),
 		
@@ -66,9 +66,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
             
             this.container = document.createElement('div');
 			$(this.el).append(this.container);
-            //this.renderer = new THREE.WebGLRenderer({antialias: true});
             this.renderer.setSize(window.innerWidth, window.innerHeight);
-            document.body.appendChild(this.renderer.domElement);
             this.renderer.setClearColorHex(0xEEEEEE, 1.0);
             this.renderer.clear();
             this.container.appendChild(this.renderer.domElement);
@@ -109,8 +107,11 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
             }
             this.tree = tree;
             this.createTree(50, {'x':0,'y':0,'z':0}, 0);
-            console.log(this.objects);
             
+            this.line.type = THREE.Lines;
+            //this.coordScene.add(this.line);
+            
+            this.renderer.render(this.scene, this.camera);
             this.camera.position.x = Math.cos(this.rotation)*150;
             this.camera.position.z = Math.sin(this.rotation)*150;
             this.scene.add(this.camera);
@@ -121,25 +122,30 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
                 this.paused = (ev.data == 'pause');
             }
 		},
-        
+        animating: false,
 		navShow : function() {
-			if(!this.showedNav) {
+			if(!this.showedNav && !this.animating) {
+				this.animating = true;
 				$('#navigator').css("background-color", "#617c83");
 				$('#navigator').animate({
 					left : '+='+this.navWidth+'px'
-				});
+				},$.proxy(function(){this.animating = false;},this));
 			this.showedNav = true;
-            }			
+			$('#roll').css("z-index", "10");
+            		}			
 		},
 		navHide : function() {
-			if(this.showedNav) {
+			if(this.showedNav && !this.animating) {
+				this.animating = true;
                 $('#navigator').animate({
 					left : '-='+this.navWidth+'px'
-				}, function() {
+				}, $.proxy(function() {
 					$('#navigator').css("background-color", "#1A3457");
-				});
+					this.animating = false;
+					$('#roll').css("z-index", "110");
+				},this));
 			this.showedNav = false;
-            }
+            		}			
 		},
         createCube : function(x,y,z) {
             var cube = new THREE.Mesh(
@@ -149,7 +155,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
             cube.position.set(x,y,z);
             return cube;
         },
-        
+        unit : {},
         createTree : function (id, position, i) {
             if(i==0) {
               var cube = this.createCube(position.x,position.y,position.z);
@@ -176,7 +182,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
                   this.v(cube2.position.x-20, cube2.position.y, cube2.position.z), this.v(cube2.position.x+500, cube2.position.y, cube2.position.z)
                 );
     
-                this.unit = {'x':position.x, 'y':cube2.position.y, 'z':position.z};
+                unit = {'x':position.x, 'y':cube2.position.y, 'z':position.z};
               } else {
                 var cube2 = this.createCube(position.x+50,position.y+50,position.z);
                 this.scene.add(cube2);
@@ -185,7 +191,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
                   this.v(cube2.position.x, cube2.position.y+20, cube2.position.z), this.v(cube2.position.x, cube2.position.y-500, cube2.position.z)
                 );
     
-                this.unit = {'x':cube2.position.x, 'y':position.y, 'z':position.z};
+                unit = {'x':cube2.position.x, 'y':position.y, 'z':position.z};
               }
               this.objects.push(cube2);
             }
@@ -193,12 +199,12 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
               var arr = this.tree[id].ch_ids;
               //console.log(unit);
               this.lineGeo.vertices.push(
-                  this.v(this.unit.x, this.unit.y, this.unit.z-20), this.v(this.unit.x, this.unit.y, this.unit.z+arr.length*50+70)
+                  this.v(unit.x, unit.y, unit.z-20), this.v(unit.x, unit.y, unit.z+arr.length*50+70)
                 );
               var cube3=[];
               for(key in arr){
                 if(this.tree[arr[key]].sex=='m') {
-                  cube3[key] = this.createCube(this.unit.x, this.unit.y-50, this.unit.z + 100 + key*50);
+                  cube3[key] = this.createCube(unit.x, unit.y-50, unit.z + 100 + key*50);
                   this.scene.add(cube3[key]);
                   this.lineGeo.vertices.push(
                     this.v(cube3[key].position.x, cube3[key].position.y+50, cube3[key].position.z), this.v(cube3[key].position.x, cube3[key].position.y-500, cube3[key].position.z)
@@ -218,10 +224,6 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
       
       v : function (x,y,z){
             return new THREE.Vertex(new THREE.Vector3(x,y,z)); 
-      },
-      
-      render: function(){
-			this.renderer.render(this.scene, this.camera);
       },
       
       ////////////////////////////////////////////////////////////////////////////////////////
@@ -245,15 +247,16 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
             var dx = ev.clientX - this.sx;
             var dy = ev.clientY - this.sy;
           this.rotation += dx/100;
-          this.camera.position.x = Math.cos(this.rotation)*150;
-          this.camera.position.z = Math.sin(this.rotation)*150;
+          this.camera.position.x = Math.cos(this.rotation)*this.dist;
+          this.camera.position.z = Math.sin(this.rotation)*this.dist;
           this.camera.position.y += dy;
           this.sx += dx;
           this.sy += dy;
         }
       },
       onmousewheel : function(ev){
-        this.camera.position.z -= ev.originalEvent.wheelDeltaY;
+        this.camera.position.z -= ev.originalEvent.wheelDeltaY/5;
+        this.dist = this.camera.position.z; 
       },
       animate : function (t) {
         requestAnimationFrame($.proxy(this.animate, this));
