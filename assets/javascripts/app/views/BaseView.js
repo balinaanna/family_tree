@@ -60,9 +60,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 		            var t = setTimeout("$('#navigator').animate({left:'-="+this.navWidth+"px'},function(){$('#navigator').css('background-color', '#1A3457');});",2000);
             
 			this.container = document.createElement('div');
-			//this.el.append($("#navigator"));
 			$(this.el).append(this.container);
-			//$(this.container).append($("#osx-modal-data-edit"));
 			this.scene = new THREE.Scene();
 			this.camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 10000);
 			this.camera.position.y = 150;
@@ -76,7 +74,6 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			this.container.appendChild(this.renderer.domElement);
  			
 			this.collection.fetch({
-				//url: '/data2.json',
 				success : $.proxy(function(collection) {
 					var arr = collection.toJSON();
 					for(key in arr) {
@@ -890,13 +887,11 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 						data.id = nodex.info.user_id;
 						if(data.id == localStorage.getItem("prof_id"))return;
 						if(data.ch_ids.length == 0 && data.spouse_id == 0){
-							console.log("delete child");
 							this.model.sendData({
 								url : 'server/api/delete_node',
 								data : data
 							});
 						}else if(data.f_id == 0 && data.m_id == 0 && data.ch_ids.length < 2){
-							console.log("delete parent");
 							this.model.sendData({
 								url : 'server/api/delete_node',
 								data : data
@@ -1137,7 +1132,6 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				upload = 1;
 			}
 
-			console.log(this.TempObj);
 			var data = {
 				'id': $('#user_id').val(),
 				'f_name' : $('#f_name').val(),
@@ -1174,11 +1168,9 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				data.f_id = "";
 				data.m_id = "";
 				if(this.TempObj.node.info.m_id) {
-					console.log(this.TempObj.node.info.m_id);
 					data.spouse_id = this.TempObj.node.info.m_id;
 				}
 				if(this.TempObj.node.info.f_id) {
-					console.log(this.TempObj.node.info.f_id);
 					data.spouse_id = this.TempObj.node.info.f_id;
 				}
 				this.model.sendData({
