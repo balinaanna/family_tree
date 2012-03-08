@@ -23,7 +23,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
         
         lineGeo : new THREE.Geometry(),
         lineMat : new THREE.LineBasicMaterial({color: 0x888888, lineWidth: 1}),
-        line : new THREE.Line(this.lineGeo, this.lineMat),
+        
                 
         light : new THREE.PointLight(0xFFCC99),
         ambient : new THREE.PointLight(0x333366),
@@ -108,8 +108,9 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
             this.tree = tree;
             this.createTree(50, {'x':0,'y':0,'z':0}, 0);
             
+            this.line = new THREE.Line(this.lineGeo, this.lineMat);
             this.line.type = THREE.Lines;
-            //this.coordScene.add(this.line);
+            this.coordScene.add(this.line);
             
             this.renderer.render(this.scene, this.camera);
             this.camera.position.x = Math.cos(this.rotation)*150;
@@ -197,7 +198,6 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
             }
             if(this.tree[id].ch_ids){
               var arr = this.tree[id].ch_ids;
-              //console.log(unit);
               this.lineGeo.vertices.push(
                   this.v(unit.x, unit.y, unit.z-20), this.v(unit.x, unit.y, unit.z+arr.length*50+70)
                 );
@@ -263,7 +263,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
         if (!this.paused) {
           this.last = t;
           var gl = this.renderer.getContext();
-          //this.renderer.clear();
+          this.renderer.clear();
           this.camera.lookAt( this.scene.position );
           this.renderer.render(this.scene, this.camera);
           this.renderer.render(this.coordScene, this.camera);
