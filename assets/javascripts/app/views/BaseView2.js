@@ -167,7 +167,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
             
             var cube = new THREE.Mesh(
               new THREE.CubeGeometry(this.nodeWidth,this.nodeHeight,this.nodeWidth/2, 1, 1, 1, new THREE.MeshBasicMaterial( { color: 0xFFFFFF } ) ),
-              new THREE.MeshFaceMaterial({color: 0xFFFFFF})
+              new THREE.MeshFaceMaterial({color: 0xFFFFFF, opacity : 0})
             );
             cube.position.set(0,0,0);
             node.add(cube);
@@ -305,6 +305,9 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
         if (!this.paused) {
           this.renderer.clear();
           this.camera.lookAt( this.scene.position );
+          for (var k in this.objects){
+                this.objects[k].lookAt(this.camera.position);
+          }
           this.renderer.render(this.scene, this.camera);
           this.renderer.render(this.coordScene, this.camera);
         }
