@@ -15,9 +15,11 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 		nodeHeight : 450,			
 		imgPlusSize : 70,
         SELECTED: null,
-        data1:{},
-		data2:{},
+        data1 : {},
+		data2 : {},
 		TempObj : {},
+		animating : true,
+		
 
 		events : {
 			"mousedown canvas" : "onDocumentMouseDown",
@@ -57,7 +59,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 		            this.navWidth = this.navWidth*1;
 		            this.navWidth -= 5;
 		            this.navWidth -=1;
-		            var t = setTimeout("$('#navigator').animate({left:'-="+this.navWidth+"px'},function(){$('#navigator').css('background-color', '#1A3457');});",2000);
+		            var t = setTimeout($.proxy(function(){this.animating = false; this.showedNav = true; this.navHide()},this),2000);
             
 			this.container = document.createElement('div');
 			$(this.el).append(this.container);
@@ -96,7 +98,6 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				}, this)
 			});
 		},
-		animating: false,
 		navShow : function() {
 			if(!this.showedNav && !this.animating) {
 				this.animating = true;
