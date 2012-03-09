@@ -57,9 +57,8 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			this.navWidth = $('#navigator').css("width");
 		            this.navWidth = this.navWidth.slice(0,-2);
 		            this.navWidth = this.navWidth*1;
-		            this.navWidth -= 5;
-		            this.navWidth -=1;
-		            var t = setTimeout($.proxy(function(){this.animating = false; this.showedNav = true; this.navHide()},this),2000);
+		            this.navWidth -= 6;
+		            setTimeout($.proxy(function(){this.animating = false; this.showedNav = true; this.navHide()},this),2000);
             
 			this.container = document.createElement('div');
 			$(this.el).append(this.container);
@@ -73,6 +72,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			this.onMouseDownPosition = new THREE.Vector2();
 			this.renderer = new THREE.CanvasRenderer();
 			this.renderer.setSize(window.innerWidth, window.innerHeight);
+            this.renderer.autoClear = false;
 			this.container.appendChild(this.renderer.domElement);
  			
 			this.collection.fetch({
@@ -105,9 +105,9 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				$('#navigator').animate({
 					left : '+='+this.navWidth+'px'
 				},$.proxy(function(){this.animating = false;},this));
-			this.showedNav = true;
-			$('#roll').css("z-index", "10");
-            		}			
+                this.showedNav = true;
+                $('#roll').css("z-index", "10");
+            }
 		},
 		navHide : function() {
 			if(this.showedNav && !this.animating) {
@@ -119,8 +119,8 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 					this.animating = false;
 					$('#roll').css("z-index", "110");
 				},this));
-			this.showedNav = false;
-            		}			
+                this.showedNav = false;
+            }
 		},
 		reverseTree : function() {
 			this.reverse = this.reverse*(-1);
@@ -1098,14 +1098,14 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 		},
 		animate : function() {
 			requestAnimationFrame($.proxy(this.animate, this));
+            this.renderer.clear();
 			this.render();
 
 		},
 		render : function() {
 			$("#slider").slider("value", 9099 - this.camera.position.z);
 			this.renderer.render(this.scene, this.camera);
-
-		},
+        },
 		logout : function() {
 			this.loginModel.logout();
 		},
