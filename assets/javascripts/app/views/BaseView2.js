@@ -7,7 +7,6 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
         reverse : 1,
 		stepY : 300,
 		lineTurne : 375,
-        renderer : new THREE.WebGLRenderer({antialias: true}),
         dist : 6750,
 		
 		isMouseDown : false,
@@ -20,6 +19,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
         data1:{},
 		data2:{},
 		TempObj : {},
+		animating : true,
         
         lineGeo : new THREE.Geometry(),
         lineMat : new THREE.LineBasicMaterial({color: 0x888888, lineWidth: 1}),
@@ -62,11 +62,13 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
             this.navWidth = this.navWidth*1;
             this.navWidth -= 5;
             this.navWidth -=1;
-            var t = setTimeout("$('#navigator').animate({left:'-="+this.navWidth+"px'},function(){$('#navigator').css('background-color', '#1A3457');});",2000);
+            var t = setTimeout($.proxy(function(){this.animating = false; this.showedNav = true; this.navHide()},this),2000);
             
             this.container = document.createElement('div');
 			$(this.el).append(this.container);
             this.projector = new THREE.Projector();
+            
+            this.renderer = new THREE.CanvasRenderer({antialias: true});
             this.renderer.setSize(window.innerWidth, window.innerHeight);
             this.renderer.setClearColorHex(0xEEEEEE, 1.0);
             this.renderer.clear();
@@ -125,7 +127,6 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
                 this.paused = (ev.data == 'pause');
             }
 		},
-        animating: false,
 		navShow : function() {
 			if(!this.showedNav && !this.animating) {
 				this.animating = true;
@@ -290,7 +291,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
             if (this.selectedObj != intersects[0].object.parent.children[2] && this.selectedObj != null) this.selectedObj.material = new THREE.MeshPhongMaterial({color: 0xFFFFFF});
             this.selectedObj = intersects[0].object.parent.children[2];
             this.selectedObj.material = new THREE.MeshPhongMaterial({color: 0x462424});
-        } else if(intersects.length == 0) {
+        } else if(intersects.length == 0 && this.selectedObj) {
             this.container.style.cursor = 'default';
             this.selectedObj.material = new THREE.MeshPhongMaterial({color: 0xFFFFFF});
         }
@@ -303,7 +304,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
         requestAnimationFrame($.proxy(this.animate, this));
         if (!this.paused) {
           this.last = t;
-          var gl = this.renderer.getContext();
+          //var gl = this.renderer.getContext();
           //this.renderer.clear();
           this.camera.lookAt( this.scene.position );
           this.renderer.render(this.scene, this.camera);
