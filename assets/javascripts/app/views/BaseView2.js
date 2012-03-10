@@ -19,6 +19,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
         data1:{},
 		data2:{},
 		TempObj : {},
+        texts: [],
 		animating : true,
                
         light : new THREE.PointLight(0xFFCC99),
@@ -186,20 +187,73 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			var item = new THREE.Mesh(new THREE.PlaneGeometry(size_x, size_y), mat);
 			return item;
 		},
+		text : function(data) {
+			var canvas = document.createElement('canvas');
+			canvas.width = this.nodeWidth;
+			canvas.height = this.nodeHeight;
+			var context = canvas.getContext("2d");
+			context.fillStyle = "black";
+			context.font = 'italic 50px Arial Black';
+			//TODO text align
+			var fNameL = data.f_name + ' ' + data.l_name;
+            if (fNameL.length >= 15){
+                fNameL = data.f_name.substring(0,1) + '. ' + data.l_name;
+            }
+			
+			//set new text tabs later!
+            //var nameTab = (this.nodeWidth - 18*fNameL.length)/2;
+            if (!data.d_date || data.d_date == "?"){
+                var dates = data.b_date; 
+            } else {
+                var dates = data.b_date.substr(-4) + ' - ' + data.d_date.substr(-4);
+            }
+            //var datesTab = (this.nodeWidth - 18*dates.length)/2;
+			
+			context.fillText( fNameL, 0, this.nodeWidth);
+			context.fillText( dates, 0, this.nodeWidth*1.15);
+			var tex = new THREE.Texture(canvas);
+			tex.needsUpdate = true;
+			var mat = new THREE.MeshBasicMaterial({
+				map : tex,
+				overdraw : true
+			});
+			mat.transparent = true;
+			var item = new THREE.Mesh(new THREE.PlaneGeometry(this.nodeWidth, this.nodeWidth, 30), mat);
+			item.position.set(0, this.nodeWidth, 0);
+			//item.rotation.x = -3.14/2;
+            this.texts.push(item);
+			return item;
+		},
         createCube : function(x,y,z,data) {
             var node = new THREE.Object3D();
             if(data.photo_url == "" || data.photo_url == null) {
 				data.photo_url = "no_avatar.jpg"
 			};
-            var photo = this.texture('assets/images/uploaded/avatars/thumbs/' + data.photo_url, 260, 260);
-			photo.position.set(0, 0, this.nodeWidth/4+5);
-            var texture = this.texture('trash/pol1.png', this.nodeWidth, this.nodeHeight);
+            var photo = this.texture('assets/images/uploaded/avatars/thumbs/' + data.photo_url, this.nodeWidth*0.8, this.nodeWidth*0.8);
+			photo.position.set(0, 0, this.nodeWidth/2+5);
+            /*var texture = this.texture('trash/pol1.png', this.nodeWidth, this.nodeHeight);
             texture.position.set(0, 0, this.nodeWidth/4+4);
-            node.add(texture);
+            node.add(texture);*/
+			var photo_back = this.texture('assets/images/uploaded/avatars/thumbs/' + data.photo_url, this.nodeWidth*0.8, this.nodeWidth*0.8);
+			photo_back.rotation.y = 3.14;
+			photo_back.position.set(0, 0, -this.nodeWidth/2-10);
+			
+			var photo_right = this.texture('assets/images/uploaded/avatars/thumbs/' + data.photo_url, this.nodeWidth*0.8, this.nodeWidth*0.8);
+			photo_right.rotation.y = 3.14/2;
+			photo_right.position.set(this.nodeWidth/2+10, 0, 0);
+			
+			var photo_left = this.texture('assets/images/uploaded/avatars/thumbs/' + data.photo_url, this.nodeWidth*0.8, this.nodeWidth*0.8);
+			photo_left.rotation.y = -3.14/2;
+			photo_left.position.set(-this.nodeWidth/2-10, 0, 0);
+			
             node.add(photo);
+            node.add(photo_back);
+            node.add(photo_right);
+            node.add(photo_left);
+			node.add(this.text(data));
             
             var cube = new THREE.Mesh(
-              new THREE.CubeGeometry(this.nodeWidth,this.nodeHeight,this.nodeWidth/2, 1, 1, 1, new THREE.MeshBasicMaterial( { color: 0xFFFFFF } ) ),
+              new THREE.CubeGeometry(this.nodeWidth,this.nodeWidth,this.nodeWidth, 1, 1, 1, new THREE.MeshBasicMaterial( { color: 0xFFFFFF } ) ),
               new THREE.MeshFaceMaterial({color: 0xFFFFFF, opacity : 0})
             );
             cube.position.set(0,0,0);
@@ -321,9 +375,9 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
             this.sy += dy;
         } else if(intersects.length > 0) {
             this.container.style.cursor = 'pointer';
-            if (this.selectedObj != intersects[0].object.parent.children[2] && this.selectedObj != null) this.selectedObj.material = new THREE.MeshBasicMaterial({color: 0xFFFFFF});
-            this.selectedObj = intersects[0].object.parent.children[2];
-            this.selectedObj.material = new THREE.MeshBasicMaterial({color: 0x462424});
+            if (this.selectedObj != intersects[0].object.parent.children[5] && this.selectedObj != null) this.selectedObj.material = new THREE.MeshBasicMaterial({color: 0xFFFFFF});
+            this.selectedObj = intersects[0].object.parent.children[5];
+            this.selectedObj.material = new THREE.MeshBasicMaterial({color: 0x86A9F5});
         } else if(intersects.length == 0 && this.selectedObj) {
             this.container.style.cursor = 'default';
             this.selectedObj.material = new THREE.MeshBasicMaterial({color: 0xFFFFFF});
@@ -338,8 +392,8 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
         if (!this.paused) {
           this.renderer.clear();
           this.camera.lookAt( this.scene.position );
-          for (var k in this.objects){
-                this.objects[k].lookAt(this.camera.position);
+          for (var k in this.texts){
+                this.texts[k].lookAt(this.camera.position);
           }
           this.renderer.render(this.scene, this.camera);
           this.renderer.render(this.coordScene, this.camera);
