@@ -7,8 +7,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
         reverse : 1,
 		stepY : 300,
 		lineTurne : 375,
-        renderer : new THREE.WebGLRenderer({antialias: true}),
-        dist : 150,
+        dist : 6750,
 		
 		isMouseDown : false,
 		onMouseDownPosition: null,
@@ -20,11 +19,8 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
         data1:{},
 		data2:{},
 		TempObj : {},
-        
-        lineGeo : new THREE.Geometry(),
-        lineMat : new THREE.LineBasicMaterial({color: 0x888888, lineWidth: 1}),
-        
-                
+		animating : true,
+               
         light : new THREE.PointLight(0xFFCC99),
         ambient : new THREE.PointLight(0x333366),
 		
@@ -60,25 +56,24 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			this.navWidth = $('#navigator').css("width");
             this.navWidth = this.navWidth.slice(0,-2);
             this.navWidth = this.navWidth*1;
-            this.navWidth -= 5;
-            this.navWidth -=1;
-            var t = setTimeout("$('#navigator').animate({left:'-="+this.navWidth+"px'},function(){$('#navigator').css('background-color', '#1A3457');});",2000);
+            this.navWidth -= 6;
+            setTimeout($.proxy(function(){this.animating = false; this.showedNav = true; this.navHide()},this),2000);
             
             this.container = document.createElement('div');
 			$(this.el).append(this.container);
             this.projector = new THREE.Projector();
+            
+            if (new THREE.WebGLRenderer({antialias: true})) this.renderer = new THREE.CanvasRenderer({antialias: true});
+            else this.renderer = new THREE.CanvasRenderer({antialias: true});
             this.renderer.setSize(window.innerWidth, window.innerHeight);
-            this.renderer.setClearColorHex(0xEEEEEE, 1.0);
-            this.renderer.clear();
             this.container.appendChild(this.renderer.domElement);
             
             var width = this.renderer.domElement.width;
             var height = this.renderer.domElement.height;
-            this.camera = new THREE.PerspectiveCamera( 70, width/height, 1, 10000 );
+            this.camera = new THREE.PerspectiveCamera( 70, width/height, 1, 30000 );
             this.camera.position.y = 30;
             this.scene = new THREE.Scene();
             this.coordScene = new THREE.Scene();
-            this.coordScene.fog = new THREE.FogExp2(0xEEEEEE, 0.0035);
             
             this.light.position.set(150, 200, 300);
             this.scene.add(this.light);
@@ -107,25 +102,23 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
                 }
             }
             this.tree = tree;
+            this.lineGeo = new THREE.Geometry();
+            this.lineMat = new THREE.LineBasicMaterial({color: 0x462424, lineWidth: 1});
+            this.lines = [];
+            
             this.createTree(50, {'x':0,'y':0,'z':0}, 0);
+
+            for (var k in this.lines){
+                this.line = new THREE.Line(this.lines[k], this.lineMat);
+                this.scene.add(this.line);
+            }
             
-            this.line = new THREE.Line(this.lineGeo, this.lineMat);
-            this.line.type = THREE.Lines;
-            this.coordScene.add(this.line);
-            
-            this.renderer.render(this.scene, this.camera);
-            this.renderer.render(this.coordScene, this.camera);
-            this.camera.position.x = Math.cos(this.rotation)*150;
-            this.camera.position.z = Math.sin(this.rotation)*150;
+            this.camera.position.x = Math.cos(this.rotation)*this.dist;
+            this.camera.position.z = Math.sin(this.rotation)*this.dist;
             this.scene.add(this.camera);
             this.renderer.autoClear = false;
-            this.qwe = new Date().getTime();
-            this.animate(this.qwe);
-            this.onmessage = function(ev) {
-                this.paused = (ev.data == 'pause');
-            }
+            this.animate();
 		},
-        animating: false,
 		navShow : function() {
 			if(!this.showedNav && !this.animating) {
 				this.animating = true;
@@ -133,9 +126,9 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				$('#navigator').animate({
 					left : '+='+this.navWidth+'px'
 				},$.proxy(function(){this.animating = false;},this));
-			this.showedNav = true;
-			$('#roll').css("z-index", "10");
-            		}			
+                this.showedNav = true;
+                $('#roll').css("z-index", "10");
+            }
 		},
 		navHide : function() {
 			if(this.showedNav && !this.animating) {
@@ -147,77 +140,109 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 					this.animating = false;
 					$('#roll').css("z-index", "110");
 				},this));
-			this.showedNav = false;
-            		}			
+                this.showedNav = false;
+            }
 		},
-        createCube : function(x,y,z) {
+		texture : function(path, size_x, size_y) {
+			var tex = THREE.ImageUtils.loadTexture(path);
+			var mat = new THREE.MeshBasicMaterial({
+				map : tex,
+				overdraw : true
+			});
+			mat.transparent = true;
+			var item = new THREE.Mesh(new THREE.PlaneGeometry(size_x, size_y), mat);
+			return item;
+		},
+        createCube : function(x,y,z,data) {
+            var node = new THREE.Object3D();
+            if(data.photo_url == "" || data.photo_url == null) {
+				data.photo_url = "no_avatar.jpg"
+			};
+            var photo = this.texture('assets/images/uploaded/avatars/thumbs/' + data.photo_url, 260, 260);
+			photo.position.set(0, 0, this.nodeWidth/4+5);
+            var texture = this.texture('trash/pol1.png', this.nodeWidth, this.nodeHeight);
+            texture.position.set(0, 0, this.nodeWidth/4+4);
+            node.add(texture);
+            node.add(photo);
+            
             var cube = new THREE.Mesh(
-              new THREE.CubeGeometry(20,20,20),
-              new THREE.MeshPhongMaterial({color: 0xFFFFFF})
+              new THREE.CubeGeometry(this.nodeWidth,this.nodeHeight,this.nodeWidth/2, 1, 1, 1, new THREE.MeshBasicMaterial( { color: 0xFFFFFF } ) ),
+              new THREE.MeshFaceMaterial({color: 0xFFFFFF, opacity : 0})
             );
-            cube.position.set(x,y,z);
-            return cube;
+            cube.position.set(0,0,0);
+            node.add(cube);
+            
+            node.position.set(x,y,z);
+            return node;
         },
         unit : {},
         createTree : function (id, position, i) {
             if(i==0) {
-              var cube = this.createCube(position.x,position.y,position.z);
+              var cube = this.createCube(position.x,position.y,position.z,this.tree[id]);
               this.scene.add(cube);
               this.objects.push(cube);
               if(this.tree[id].sex=='f') {
                 this.lineGeo.vertices.push(
-                  this.v(cube.position.x-20, cube.position.y, cube.position.z), this.v(cube.position.x+500, cube.position.y, cube.position.z)
+                  this.v(cube.position.x-this.nodeWidth, cube.position.y, cube.position.z), this.v(cube.position.x+25*this.nodeWidth, cube.position.y, cube.position.z)
                 );
               } else {
                 this.lineGeo.vertices.push(
-                  this.v(cube.position.x, cube.position.y+20, cube.position.z), this.v(cube.position.x, cube.position.y-500, cube.position.z)
+                  this.v(cube.position.x, cube.position.y+this.nodeHeight, cube.position.z), this.v(cube.position.x, cube.position.y-25*this.nodeHeight, cube.position.z)
                 );
               }
+              this.lines.push(this.lineGeo);
+              this.lineGeo = new THREE.Geometry();
             }
             var unit={};
             i++;
             if(this.tree[id].spouse_id){
               if(this.tree[this.tree[id].spouse_id].sex=='f') {
-                var cube2 = this.createCube(position.x-50,position.y-50,position.z);
+                var cube2 = this.createCube(position.x-2.5*this.nodeWidth,position.y-2.5*this.nodeHeight,position.z,this.tree[id]);
                 this.scene.add(cube2);
                 
                 this.lineGeo.vertices.push(
-                  this.v(cube2.position.x-20, cube2.position.y, cube2.position.z), this.v(cube2.position.x+500, cube2.position.y, cube2.position.z)
+                  this.v(cube2.position.x-this.nodeWidth, cube2.position.y, cube2.position.z), this.v(cube2.position.x+25*this.nodeWidth, cube2.position.y, cube2.position.z)
                 );
     
                 unit = {'x':position.x, 'y':cube2.position.y, 'z':position.z};
               } else {
-                var cube2 = this.createCube(position.x+50,position.y+50,position.z);
+                var cube2 = this.createCube(position.x+2.5*this.nodeWidth,position.y+2.5*this.nodeHeight,position.z,this.tree[id]);
                 this.scene.add(cube2);
     
                 this.lineGeo.vertices.push(
-                  this.v(cube2.position.x, cube2.position.y+20, cube2.position.z), this.v(cube2.position.x, cube2.position.y-500, cube2.position.z)
+                  this.v(cube2.position.x, cube2.position.y+this.nodeHeight, cube2.position.z), this.v(cube2.position.x, cube2.position.y-2.5*this.nodeHeight, cube2.position.z)
                 );
     
                 unit = {'x':cube2.position.x, 'y':position.y, 'z':position.z};
               }
+              this.lines.push(this.lineGeo);
+              this.lineGeo = new THREE.Geometry();
               this.objects.push(cube2);
             }
             if(this.tree[id].ch_ids){
               var arr = this.tree[id].ch_ids;
               this.lineGeo.vertices.push(
-                  this.v(unit.x, unit.y, unit.z-20), this.v(unit.x, unit.y, unit.z+arr.length*50+70)
+                  this.v(unit.x, unit.y, unit.z-this.nodeWidth), this.v(unit.x, unit.y, unit.z+arr.length*2.5*this.nodeWidth+3.5*this.nodeWidth)
                 );
+              this.lines.push(this.lineGeo);
+              this.lineGeo = new THREE.Geometry();
               var cube3=[];
               for(key in arr){
                 if(this.tree[arr[key]].sex=='m') {
-                  cube3[key] = this.createCube(unit.x, unit.y-50, unit.z + 100 + key*50);
+                  cube3[key] = this.createCube(unit.x, unit.y-2.5*this.nodeHeight, unit.z + 5*this.nodeWidth + key*2.5*this.nodeWidth, this.tree[arr[key]]);
                   this.scene.add(cube3[key]);
                   this.lineGeo.vertices.push(
-                    this.v(cube3[key].position.x, cube3[key].position.y+50, cube3[key].position.z), this.v(cube3[key].position.x, cube3[key].position.y-500, cube3[key].position.z)
+                    this.v(cube3[key].position.x, cube3[key].position.y+2.5*this.nodeHeight, cube3[key].position.z), this.v(cube3[key].position.x, cube3[key].position.y-25*this.nodeHeight, cube3[key].position.z)
                   );
                 } else {
-                  cube3[key] = this.createCube(unit.x+50, unit.y, unit.z + 100 + key*50);
+                  cube3[key] = this.createCube(unit.x+2.5*this.nodeWidth, unit.y, unit.z + 5*this.nodeWidth + key*2.5*this.nodeWidth, this.tree[arr[key]]);
                   this.scene.add(cube3[key]);
                   this.lineGeo.vertices.push(
-                    this.v(cube3[key].position.x-50, cube3[key].position.y, cube3[key].position.z), this.v(cube3[key].position.x+500, cube3[key].position.y, cube3[key].position.z)
+                    this.v(cube3[key].position.x-2.5*this.nodeWidth, cube3[key].position.y, cube3[key].position.z), this.v(cube3[key].position.x+25*this.nodeWidth, cube3[key].position.y, cube3[key].position.z)
                   );
                 }
+                this.lines.push(this.lineGeo);
+                this.lineGeo = new THREE.Geometry();
                 this.objects.push(cube3[key]);
                 this.createTree(arr[key], cube3[key].position, i);
               }
@@ -225,12 +250,10 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
       },
       
       v : function (x,y,z){
-            return new THREE.Vertex(new THREE.Vector3(x,y,z)); 
+            return new THREE.Vertex(new THREE.Vector3(x,y,z));
       },
       
       ////////////////////////////////////////////////////////////////////////////////////////
-      paused : false,
-      last : new Date().getTime(),
       down : false,
       sx : 0,
       sy : 0,
@@ -260,30 +283,31 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
             this.rotation += dx/100;
             this.camera.position.x = Math.cos(this.rotation)*this.dist;
             this.camera.position.z = Math.sin(this.rotation)*this.dist;
-            this.camera.position.y += dy;
+            this.camera.position.y += Math.sin(dy/100)*this.dist;
             this.sx += dx;
             this.sy += dy;
         } else if(intersects.length > 0) {
             this.container.style.cursor = 'pointer';
-            if (this.selectedObj != intersects[0].object && this.selectedObj != null) this.selectedObj.material = new THREE.MeshPhongMaterial({color: 0xFFFFFF});
-            this.selectedObj = intersects[0].object;
-            this.selectedObj.material = new THREE.MeshPhongMaterial({color: 0x462424});
-        } else if(intersects.length == 0) {
+            if (this.selectedObj != intersects[0].object.parent.children[2] && this.selectedObj != null) this.selectedObj.material = new THREE.MeshBasicMaterial({color: 0xFFFFFF});
+            this.selectedObj = intersects[0].object.parent.children[2];
+            this.selectedObj.material = new THREE.MeshBasicMaterial({color: 0x462424});
+        } else if(intersects.length == 0 && this.selectedObj) {
             this.container.style.cursor = 'default';
-            this.selectedObj.material = new THREE.MeshPhongMaterial({color: 0xFFFFFF});
+            this.selectedObj.material = new THREE.MeshBasicMaterial({color: 0xFFFFFF});
         }
       },
       onmousewheel : function(ev){
-        this.camera.position.z -= ev.originalEvent.wheelDeltaY/5;
-        this.dist = this.camera.position.z; 
+        this.camera.position.z -= ev.originalEvent.wheelDeltaY;
+        this.dist = this.camera.position.z;
       },
-      animate : function (t) {
+      animate : function () {
         requestAnimationFrame($.proxy(this.animate, this));
         if (!this.paused) {
-          this.last = t;
-          var gl = this.renderer.getContext();
-          //this.renderer.clear();
+          this.renderer.clear();
           this.camera.lookAt( this.scene.position );
+          for (var k in this.objects){
+                this.objects[k].lookAt(this.camera.position);
+          }
           this.renderer.render(this.scene, this.camera);
           this.renderer.render(this.coordScene, this.camera);
         }
