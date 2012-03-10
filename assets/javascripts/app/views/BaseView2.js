@@ -31,7 +31,9 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			"mousemove canvas" : "onmousemove",
 			"mousewheel canvas" : "onmousewheel",
 			"click canvas" : "onclick",
-			"mousemove #roll" : "navShow"
+			"mousemove #roll" : "navShow",
+			"click #logout_btn" : "logout",
+			"click #submit_person" : "submitFunc"
 		},
 
 		initialize: function(){
@@ -388,7 +390,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 		createTree : function (id, position, i) {
 			if(i==0) {
 				var cube = this.createCube(position.x,position.y,position.z,this.tree[id]);
-				cube.info.user_id = this.tree[id];
+				cube.info.user_id = this.tree[id]['id'];
 				this.scene.add(cube);
 				this.objects.push(cube);
 				if(this.tree[id].sex=='f') {
@@ -408,7 +410,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			if(this.tree[id].spouse_id){
 				if(this.tree[this.tree[id].spouse_id].sex=='f') {
 					var cube2 = this.createCube(position.x-2.5*this.nodeWidth,position.y-2.5*this.nodeHeight,position.z,this.tree[this.tree[id].spouse_id]);
-					cube2.info.user_id = this.tree[this.tree[id].spouse_id];
+					cube2.info.user_id = this.tree[this.tree[id].spouse_id]['id'];
 					this.scene.add(cube2);
 
 					this.lineGeo.vertices.push(
@@ -422,7 +424,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 						};
 				} else {
 					var cube2 = this.createCube(position.x+2.5*this.nodeWidth,position.y+2.5*this.nodeHeight,position.z,this.tree[this.tree[id].spouse_id]);
-					cube2.info.user_id = this.tree[this.tree[id].spouse_id];
+					cube2.info.user_id = this.tree[this.tree[id].spouse_id]['id'];
 					this.scene.add(cube2);
 
 					this.lineGeo.vertices.push(
@@ -450,14 +452,14 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				for(key in arr){
 					if(this.tree[arr[key]].sex=='m') {
 						cube3[key] = this.createCube(unit.x, unit.y-2.5*this.nodeHeight, unit.z + 5*this.nodeWidth + key*2.5*this.nodeWidth, this.tree[arr[key]]);
-						cube3[key].info.user_id = this.tree[arr[key]];
+						cube3[key].info.user_id = this.tree[arr[key]]['id'];
 						this.scene.add(cube3[key]);
 						this.lineGeo.vertices.push(
 							this.v(cube3[key].position.x, cube3[key].position.y+2.5*this.nodeHeight, cube3[key].position.z), this.v(cube3[key].position.x, cube3[key].position.y-25*this.nodeHeight, cube3[key].position.z)
 							);
 					} else {
 						cube3[key] = this.createCube(unit.x+2.5*this.nodeWidth, unit.y, unit.z + 5*this.nodeWidth + key*2.5*this.nodeWidth, this.tree[arr[key]]);
-						cube3[key].info.user_id = this.tree[arr[key]];
+						cube3[key].info.user_id = this.tree[arr[key]]['id'];
 						this.scene.add(cube3[key]);
 						this.lineGeo.vertices.push(
 							this.v(cube3[key].position.x-2.5*this.nodeWidth, cube3[key].position.y, cube3[key].position.z), this.v(cube3[key].position.x+25*this.nodeWidth, cube3[key].position.y, cube3[key].position.z)
@@ -769,6 +771,118 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				this.renderer.render(this.scene, this.camera);
 				this.renderer.render(this.coordScene, this.camera);
 			}
+		},
+		logout : function() {
+			this.loginModel.logout();
+		},
+		submitFunc : function(event) {
+			event.preventDefault();
+			var h = $('#dp').height();
+			var w = $('#dp').width();
+			var scale = 1;
+			var crop = 0;
+			var upload = 0;
+			if(h > $('#photo').height() || w > $('#photo').width()) {
+				scale = h / $('#photo').height();
+			};
+			if(w > h) {
+				scale = w / $('#photo').width();
+			};
+			if($('#cropped').val() == '1') {
+				crop = 1;
+			};
+			if($('#uploaded').val() == '1') {
+				upload = 1;
+			};
+
+			var data = {
+				'id' : $('#user_id').val(),
+				'f_name' : $('#f_name').val(),
+				'l_name' : $('#l_name').val(),
+				'b_date' : $('#b_date').val(),
+				'd_date' : $('#d_date').val(),
+				'x1' : $('#x1').val() * scale,
+				'y1' : $('#y1').val() * scale,
+				'x2' : $('#x2').val() * scale,
+				'y2' : $('#y2').val() * scale,
+				'w' : $('#w').val() * scale,
+				'h' : $('#h').val() * scale,
+				'f_id' : $('#f_id').val(),
+				'm_id' : $('#m_id').val(),
+				'ch_ids' : $('#ch_ids').val(),
+				'spouse_id' : $('#spouse_id').val(),
+				'sex' : $('input:radio[name="gender"]:checked').val(),
+				'photo_url' : $('#photo').attr('src'),
+				'comment' : $('#about').val(),
+				'crop' : crop,
+				'upload' : upload
+			};
+			this.TempObj.node.info.id = this.TempObj.node.info.user_id;
+			if(!this.TempObj.node.info.ch_ids)
+				this.TempObj.node.info.ch_ids = [];
+			if(!data.ch_ids) {
+				data.ch_ids = [];
+			}
+			/*if(this.TempObj.action == "add_parent") {
+				data.action = this.TempObj.action;
+				data.send_node_id = this.TempObj.node.info.id;
+				if(!data.ch_ids)
+					data.ch_ids = [];
+				data.ch_ids.push(this.TempObj.node.info.id);
+				data.f_id = "";
+				data.m_id = "";
+				if(this.TempObj.node.info.m_id) {
+					data.spouse_id = this.TempObj.node.info.m_id;
+				}
+				if(this.TempObj.node.info.f_id) {
+					data.spouse_id = this.TempObj.node.info.f_id;
+				}
+				this.model.sendData({
+					url : 'server/api/add_node',
+					data : data
+				});
+			};*/
+			if(this.TempObj.action == "add_child") {
+				data.action = this.TempObj.action;
+				data.send_node_id = this.TempObj.node.info.id;
+				if(this.TempObj.node.info.sex == "m") {
+					data.f_id = this.TempObj.node.info.id;
+					this.TempObj.node.info.spouse_id != "" ? data.m_id = this.TempObj.node.info.spouse_id : data.m_id = "";
+				}
+				if(this.TempObj.node.info.sex == "f") {
+					data.m_id = this.TempObj.node.info.id;
+					this.TempObj.node.info.spouse_id != "" ? data.f_id = this.TempObj.node.info.spouse_id : data.f_id = "";
+				}
+				this.model.sendData({
+					url : 'server/api/add_node',
+					data : data
+				});
+			};
+			if(this.TempObj.action == "add_spouse") {
+				data.action = this.TempObj.action;
+				data.send_node_id = this.TempObj.node.info.id;
+				data.ch_ids = this.TempObj.node.info.ch_ids;
+				if(!data.ch_ids)
+					data.ch_ids = [];
+				data.f_id = "";
+				data.m_id = "";
+				data.spouse_id = this.TempObj.node.info.id;
+				this.model.sendData({
+					url : 'server/api/add_node',
+					data : data
+				});
+			};
+			if(this.TempObj.action == "edit_person") {
+				data.f_id = this.TempObj.node.info.f_id;
+				data.m_id = this.TempObj.node.info.m_id;
+				data.ch_ids = this.TempObj.node.info.ch_ids;
+				data.id = this.TempObj.node.info.user_id;
+				data.spouse_id = this.TempObj.node.info.spouse_id;
+				this.model.sendData({
+					url : 'server/api/save_node',
+					data : data
+				});
+			};
 		}
 	});
 });
