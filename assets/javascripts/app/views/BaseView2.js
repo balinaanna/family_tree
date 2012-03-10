@@ -19,6 +19,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
         data1:{},
 		data2:{},
 		TempObj : {},
+        texts: [],
 		animating : true,
                
         light : new THREE.PointLight(0xFFCC99),
@@ -220,6 +221,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			var item = new THREE.Mesh(new THREE.PlaneGeometry(this.nodeWidth, this.nodeWidth, 30), mat);
 			item.position.set(0, this.nodeWidth, 0);
 			//item.rotation.x = -3.14/2;
+            this.texts.push(item);
 			return item;
 		},
         createCube : function(x,y,z,data) {
@@ -234,15 +236,15 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
             node.add(texture);*/
 			var photo_back = this.texture('assets/images/uploaded/avatars/thumbs/' + data.photo_url, this.nodeWidth*0.8, this.nodeWidth*0.8);
 			photo_back.rotation.y = 3.14;
-			photo_back.position.set(0, 0, -this.nodeWidth/2-5);
+			photo_back.position.set(0, 0, -this.nodeWidth/2-10);
 			
 			var photo_right = this.texture('assets/images/uploaded/avatars/thumbs/' + data.photo_url, this.nodeWidth*0.8, this.nodeWidth*0.8);
 			photo_right.rotation.y = 3.14/2;
-			photo_right.position.set(this.nodeWidth/2+5, 0, 0);
+			photo_right.position.set(this.nodeWidth/2+10, 0, 0);
 			
 			var photo_left = this.texture('assets/images/uploaded/avatars/thumbs/' + data.photo_url, this.nodeWidth*0.8, this.nodeWidth*0.8);
 			photo_left.rotation.y = -3.14/2;
-			photo_left.position.set(-this.nodeWidth/2-5, 0, 0);
+			photo_left.position.set(-this.nodeWidth/2-10, 0, 0);
 			
             node.add(photo);
             node.add(photo_back);
@@ -373,9 +375,9 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
             this.sy += dy;
         } else if(intersects.length > 0) {
             this.container.style.cursor = 'pointer';
-            if (this.selectedObj != intersects[0].object.parent.children[2] && this.selectedObj != null) this.selectedObj.material = new THREE.MeshBasicMaterial({color: 0xFFFFFF});
-            this.selectedObj = intersects[0].object.parent.children[2];
-            this.selectedObj.material = new THREE.MeshBasicMaterial({color: 0x462424});
+            if (this.selectedObj != intersects[0].object.parent.children[5] && this.selectedObj != null) this.selectedObj.material = new THREE.MeshBasicMaterial({color: 0xFFFFFF});
+            this.selectedObj = intersects[0].object.parent.children[5];
+            this.selectedObj.material = new THREE.MeshBasicMaterial({color: 0x86A9F5});
         } else if(intersects.length == 0 && this.selectedObj) {
             this.container.style.cursor = 'default';
             this.selectedObj.material = new THREE.MeshBasicMaterial({color: 0xFFFFFF});
@@ -390,9 +392,9 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
         if (!this.paused) {
           this.renderer.clear();
           this.camera.lookAt( this.scene.position );
-          /*for (var k in this.objects){
-                this.objects[k].lookAt(this.camera.position);
-          }*/
+          for (var k in this.texts){
+                this.texts[k].lookAt(this.camera.position);
+          }
           this.renderer.render(this.scene, this.camera);
           this.renderer.render(this.coordScene, this.camera);
         }
