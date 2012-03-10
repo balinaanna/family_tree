@@ -1,41 +1,49 @@
 define(['collections/TreeCollection', 'models/login_model'], function(TreeCollection, LoginModel) {
 	return BaseView = Backbone.View.extend({
 		objects : [],
-        
+
 		mouseX : 0,
 		mouseY : 0,
-        reverse : 1,
+		reverse : 1,
 		stepY : 300,
 		lineTurne : 375,
-		
+
 		isMouseDown : false,
-		onMouseDownPosition: null,
+		onMouseDownPosition : null,
 		mouse : new THREE.Vector2(),
 		nodeWidth : 360,
-		nodeHeight : 450,			
+		nodeHeight : 450,
 		imgPlusSize : 70,
-        SELECTED: null,
-        data1 : {},
+		SELECTED : null,
+		data1 : {},
 		data2 : {},
 		TempObj : {},
 		animating : true,
-		
+		width_spouse_for_m : 0,
+		width_spouse_for_f : 0,
+		spouseState : null,
+		chWidth : {},
+		chSide : {},
+		chLShift : {},
+		chRShift : {},
+		RISED : null,
+		riseX : 0,
+		riseY : 0,
 
 		events : {
 			"mousedown canvas" : "onDocumentMouseDown",
-			"mouseup canvas": "onDocumentMouseUp",
-			"mousemove canvas" : "onDocumentMouseMove", 
+			"mouseup canvas" : "onDocumentMouseUp",
+			"mousemove canvas" : "onDocumentMouseMove",
 			"mousewheel canvas" : "onDocumentMouseWheel",
-			"click canvas": "onClick",
-			"click #submit_person": "submitFunc",
+			"click canvas" : "onClick",
+			"click #submit_person" : "submitFunc",
 			"click #logout_btn" : "logout",
 			"click #revers" : "reverseTree",
 			"click #save_image" : "saveImage",
-            "mousemove #roll" : "navShow"
+			"mousemove #roll" : "navShow"
 		},
 
 		initialize : function() {
-
 			this.data2.id = localStorage.getItem("prof_id");
 			$.ajaxSetup({
 				cache : false
@@ -51,15 +59,19 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				max : 7999,
 				slide : $.proxy(function(event, ui) {
 					this.camera.position.z = 9099 - ui.value;
-				},this)
+				}, this)
 			});
 
 			this.navWidth = $('#navigator').css("width");
-		            this.navWidth = this.navWidth.slice(0,-2);
-		            this.navWidth = this.navWidth*1;
-		            this.navWidth -= 6;
-		            setTimeout($.proxy(function(){this.animating = false; this.showedNav = true; this.navHide()},this),2000);
-            
+			this.navWidth = this.navWidth.slice(0, -2);
+			this.navWidth = this.navWidth * 1;
+			this.navWidth -= 6;
+			setTimeout($.proxy(function() {
+				this.animating = false;
+				this.showedNav = true;
+				this.navHide()
+			}, this), 2000);
+
 			this.container = document.createElement('div');
 			$(this.el).append(this.container);
 			this.scene = new THREE.Scene();
@@ -67,47 +79,50 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			this.camera.position.y = 150;
 			this.camera.position.z = 3000;
 			this.scene.add(this.camera);
-
 			this.projector = new THREE.Projector();
 			this.onMouseDownPosition = new THREE.Vector2();
-            
-            try {
-                this.renderer = new THREE.WebGLRenderer({antialias: true});
-            } catch(err) {
-                this.renderer = new THREE.CanvasRenderer({antialias: false});
-            }
-            
+			try {
+				this.renderer = new THREE.WebGLRenderer({
+					antialias : true
+				});
+			} catch(err) {
+				this.renderer = new THREE.CanvasRenderer({
+					antialias : false
+				});
+			}
 			this.renderer.setSize(window.innerWidth, window.innerHeight);
-            this.renderer.autoClear = false;
+			this.renderer.autoClear = false;
 			this.container.appendChild(this.renderer.domElement);
- 			this.redrawTree();
+			this.redrawTree();
 		},
 		navShow : function() {
 			if(!this.showedNav && !this.animating) {
 				this.animating = true;
 				$('#navigator').css("background-color", "#617c83");
 				$('#navigator').animate({
-					left : '+='+this.navWidth+'px'
-				},$.proxy(function(){this.animating = false;},this));
-                this.showedNav = true;
-                $('#roll').css("z-index", "10");
-            }
+					left : '+=' + this.navWidth + 'px'
+				}, $.proxy(function() {
+					this.animating = false;
+				}, this));
+				this.showedNav = true;
+				$('#roll').css("z-index", "10");
+			}
 		},
 		navHide : function() {
 			if(this.showedNav && !this.animating) {
 				this.animating = true;
-                $('#navigator').animate({
-					left : '-='+this.navWidth+'px'
+				$('#navigator').animate({
+					left : '-=' + this.navWidth + 'px'
 				}, $.proxy(function() {
 					$('#navigator').css("background-color", "#1A3457");
 					this.animating = false;
 					$('#roll').css("z-index", "110");
-				},this));
-                this.showedNav = false;
-            }
+				}, this));
+				this.showedNav = false;
+			}
 		},
 		reverseTree : function() {
-			this.reverse = this.reverse*(-1);
+			this.reverse = this.reverse * (-1);
 			this.redrawTree(this.data2.id);
 		},
 		saveImage : function() {
@@ -127,41 +142,49 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			photo.position.set(0, 40, 4);
 
 			var elems = {
-				'child': {
-                    width: this.imgPlusSize,
-                    height: this.imgPlusSize,
-                    path: 'trash/add.png',
-                    trPath: 'trash/add_tr.png',
-					posX: this.mouseX,
-					posY: this.mouseY + (this.reverse)*(Math.floor(this.nodeHeight / 2) - 20),
-					posZ: 10
-                },
-                'edit': {
-                    width: this.imgPlusSize,
-                    height: this.imgPlusSize,
-                    path: 'trash/edit.png',
-                    trPath: 'trash/edit_tr.png',
-                    posX: this.mouseX+this.nodeWidth/4,
-                    posY: this.mouseY + Math.floor(this.nodeHeight / 2) - 20,
-                    posZ: 10
-                }
-            };
-            if(!data.f_id || !data.m_id){
-            	elems.parent = {width: this.imgPlusSize, height: this.imgPlusSize, path: 'trash/add.png', trPath: 'trash/add_tr.png', posX: this.mouseX, posY: this.mouseY - (this.reverse)*(Math.floor(this.nodeHeight / 2) - 20), posZ: 10};
+				'child' : {
+					width : this.imgPlusSize,
+					height : this.imgPlusSize,
+					path : 'trash/add.png',
+					trPath : 'trash/add_tr.png',
+					posX : this.mouseX,
+					posY : this.mouseY + (this.reverse) * (Math.floor(this.nodeHeight / 2) - 20),
+					posZ : 10
+				},
+				'edit' : {
+					width : this.imgPlusSize,
+					height : this.imgPlusSize,
+					path : 'trash/edit.png',
+					trPath : 'trash/edit_tr.png',
+					posX : this.mouseX + this.nodeWidth / 4,
+					posY : this.mouseY + Math.floor(this.nodeHeight / 2) - 20,
+					posZ : 10
+				}
+			};
+			if(!data.f_id || !data.m_id) {
+				elems.parent = {
+					width : this.imgPlusSize,
+					height : this.imgPlusSize,
+					path : 'trash/add.png',
+					trPath : 'trash/add_tr.png',
+					posX : this.mouseX,
+					posY : this.mouseY - (this.reverse) * (Math.floor(this.nodeHeight / 2) - 20),
+					posZ : 10
+				};
 			}
-			if(data.id != localStorage.getItem("prof_id") && data.id != this.data2.id ){
-				if((!data.f_id && !data.m_id && data.ch_ids.length < 2) || (data.ch_ids.length == 0 && data.spouse_id == 0)){
-					elems['delete'] =  {
-		        	    width: this.imgPlusSize,
-		                height: this.imgPlusSize,
-		                path: 'trash/delete.png',
-		                trPath: 'trash/delete_tr.png',
-		                posX: this.mouseX-this.nodeWidth/4,
-		                posY: this.mouseY + Math.floor(this.nodeHeight / 2) - 20,
-		                posZ: 10
-		            }
-	           }
-            }	
+			if(data.id != localStorage.getItem("prof_id") && data.id != this.data2.id) {
+				if((!data.f_id && !data.m_id && data.ch_ids.length < 2) || (data.ch_ids.length == 0 && data.spouse_id == 0)) {
+					elems['delete'] = {
+						width : this.imgPlusSize,
+						height : this.imgPlusSize,
+						path : 'trash/delete.png',
+						trPath : 'trash/delete_tr.png',
+						posX : this.mouseX - this.nodeWidth / 4,
+						posY : this.mouseY + Math.floor(this.nodeHeight / 2) - 20,
+						posZ : 10
+					}
+				}
+			}
 			if(!data.spouse_id) {
 				if(data.sex == "m")
 					var dx = Math.floor(this.nodeWidth / 2) - 40;
@@ -217,13 +240,11 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			element.updateMatrix();
 			element.overdraw = true;
 			element.visible = true;
-			if(elem.trPath)	element.material.map.image.src = elem.trPath;
+			if(elem.trPath)
+				element.material.map.image.src = elem.trPath;
 			element.name = name;
 			return element;
 		},
-		width_spouse_for_m : 0,
-		width_spouse_for_f : 0,
-
 		create_tree : function(id, i, nodex) {
 			var data2 = this.data2;
 			var data = data2.tree;
@@ -344,7 +365,6 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				}
 			}
 		},
-		spouseState : null,
 		create_spouse : function(nodex) {
 			var data2 = this.data2;
 			var data = data2.tree;
@@ -448,10 +468,6 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 
 			this.scene.add(line);
 		},
-		chWidth : {},
-		chSide : {},
-		chLShift : {},
-		chRShift : {},
 		countChildren : function(id, i) {
 			if(i < 4) {
 				var data2 = this.data2;
@@ -679,22 +695,22 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 		},
 		createTree : function() {
 			var arr = this.collection.toJSON();
-					for(key in arr) {
-						this.data1[arr[key].id] = arr[key];
-						if(this.data1[arr[key].id].f_id == "0") {
-							this.data1[arr[key].id].f_id = "";
-						}
-						if(this.data1[arr[key].id].m_id == "0") {
-							this.data1[arr[key].id].m_id = "";
-						}
-						if(this.data1[arr[key].id].spouse_id == "0") {
-							this.data1[arr[key].id].spouse_id = "";
-						}
-					}
-					this.data2.tree = this.data1;
-					this.scene = new THREE.Scene();
-					this.scene.add(this.camera);
-					
+			for(key in arr) {
+				this.data1[arr[key].id] = arr[key];
+				if(this.data1[arr[key].id].f_id == "0") {
+					this.data1[arr[key].id].f_id = "";
+				}
+				if(this.data1[arr[key].id].m_id == "0") {
+					this.data1[arr[key].id].m_id = "";
+				}
+				if(this.data1[arr[key].id].spouse_id == "0") {
+					this.data1[arr[key].id].spouse_id = "";
+				}
+			}
+			this.data2.tree = this.data1;
+			this.scene = new THREE.Scene();
+			this.scene.add(this.camera);
+
 			var data2 = this.data2;
 			var data = data2.tree;
 			//data2.id=26;
@@ -756,18 +772,18 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			context.font = 'italic 30px Arial Black';
 			//TODO text align
 			var fNameL = data.f_name + ' ' + data.l_name;
-            if (fNameL.length >= 15){
-                fNameL = data.f_name.substring(0,1) + '. ' + data.l_name;
-            }
-            var nameTab = (this.nodeWidth - 18*fNameL.length)/2;
-            if (!data.d_date || data.d_date == "?"){
-                var dates = data.b_date; 
-            } else {
-                var dates = data.b_date.substr(-4) + ' - ' + data.d_date.substr(-4);
-            }
-            var datesTab = (this.nodeWidth - 18*dates.length)/2;
-			context.fillText( fNameL, nameTab, this.nodeHeight * 0.78);
-			context.fillText( dates , datesTab, this.nodeHeight * 0.85);
+			if(fNameL.length >= 15) {
+				fNameL = data.f_name.substring(0, 1) + '. ' + data.l_name;
+			}
+			var nameTab = (this.nodeWidth - 18 * fNameL.length) / 2;
+			if(!data.d_date || data.d_date == "?") {
+				var dates = data.b_date;
+			} else {
+				var dates = data.b_date.substr(-4) + ' - ' + data.d_date.substr(-4);
+			}
+			var datesTab = (this.nodeWidth - 18 * dates.length) / 2;
+			context.fillText(fNameL, nameTab, this.nodeHeight * 0.78);
+			context.fillText(dates, datesTab, this.nodeHeight * 0.85);
 			var tex = new THREE.Texture(canvas);
 			tex.needsUpdate = true;
 			var mat = new THREE.MeshBasicMaterial({
@@ -798,7 +814,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				cache : false
 			});
 			this.collection.fetch({
-				success : $.proxy(this.createTree, this) 
+				success : $.proxy(this.createTree, this)
 			});
 
 			///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -859,13 +875,14 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 						nodex = intersects[i].object.parent;
 						data = nodex.info;
 						data.id = nodex.info.user_id;
-						if(data.id == localStorage.getItem("prof_id"))return;
-						if(data.ch_ids.length == 0 && data.spouse_id == 0){
+						if(data.id == localStorage.getItem("prof_id"))
+							return;
+						if(data.ch_ids.length == 0 && data.spouse_id == 0) {
 							this.model.sendData({
 								url : 'server/api/delete_node',
 								data : data
 							});
-						}else if(data.f_id == 0 && data.m_id == 0 && data.ch_ids.length < 2){
+						} else if(data.f_id == 0 && data.m_id == 0 && data.ch_ids.length < 2) {
 							this.model.sendData({
 								url : 'server/api/delete_node',
 								data : data
@@ -890,9 +907,6 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				}
 			}
 		},
-		RISED : null,
-		riseX : 0,
-		riseY : 0,
 		onDocumentMouseMove : function(event) {
 			event.preventDefault();
 			this.navHide();
@@ -1069,14 +1083,14 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 		},
 		animate : function() {
 			requestAnimationFrame($.proxy(this.animate, this));
-            this.renderer.clear();
+			this.renderer.clear();
 			this.render();
 
 		},
 		render : function() {
 			$("#slider").slider("value", 9099 - this.camera.position.z);
 			this.renderer.render(this.scene, this.camera);
-        },
+		},
 		logout : function() {
 			this.loginModel.logout();
 		},
@@ -1087,35 +1101,31 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			var scale = 1;
 			var crop = 0;
 			var upload = 0;
-			if(h > $('#photo').height() || w > $('#photo').width()) 
-			{
+			if(h > $('#photo').height() || w > $('#photo').width()) {
 				scale = h / $('#photo').height();
-			}
-			if(w > h)
-			{
+			};
+			if(w > h) {
 				scale = w / $('#photo').width();
-			}
-			if ($('#cropped').val() == '1')
-			{
+			};
+			if($('#cropped').val() == '1') {
 				crop = 1;
-			}
-			if ($('#uploaded').val() == '1')
-			{
+			};
+			if($('#uploaded').val() == '1') {
 				upload = 1;
-			}
+			};
 
 			var data = {
-				'id': $('#user_id').val(),
+				'id' : $('#user_id').val(),
 				'f_name' : $('#f_name').val(),
 				'l_name' : $('#l_name').val(),
 				'b_date' : $('#b_date').val(),
 				'd_date' : $('#d_date').val(),
-				'x1': $('#x1').val()*scale,
-				'y1': $('#y1').val()*scale,
-				'x2': $('#x2').val()*scale,
-				'y2': $('#y2').val()*scale,
-				'w': $('#w').val()*scale,
-				'h': $('#h').val()*scale,
+				'x1' : $('#x1').val() * scale,
+				'y1' : $('#y1').val() * scale,
+				'x2' : $('#x2').val() * scale,
+				'y2' : $('#y2').val() * scale,
+				'w' : $('#w').val() * scale,
+				'h' : $('#h').val() * scale,
 				'f_id' : $('#f_id').val(),
 				'm_id' : $('#m_id').val(),
 				'ch_ids' : $('#ch_ids').val(),
@@ -1127,10 +1137,11 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				'upload' : upload
 			};
 			this.TempObj.node.info.id = this.TempObj.node.info.user_id;
-			if(!this.TempObj.node.info.ch_ids)this.TempObj.node.info.ch_ids = [];
-			if(!data.ch_ids){
-					data.ch_ids = [];
-					}
+			if(!this.TempObj.node.info.ch_ids)
+				this.TempObj.node.info.ch_ids = [];
+			if(!data.ch_ids) {
+				data.ch_ids = [];
+			}
 			if(this.TempObj.action == "add_parent") {
 				data.action = this.TempObj.action;
 				data.send_node_id = this.TempObj.node.info.id;
@@ -1154,10 +1165,12 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				data.action = this.TempObj.action;
 				data.send_node_id = this.TempObj.node.info.id;
 				if(this.TempObj.node.info.sex == "m") {
-					data.f_id = this.TempObj.node.info.id;this.TempObj.node.info.spouse_id != "" ? data.m_id = this.TempObj.node.info.spouse_id : data.m_id = "";
+					data.f_id = this.TempObj.node.info.id;
+					this.TempObj.node.info.spouse_id != "" ? data.m_id = this.TempObj.node.info.spouse_id : data.m_id = "";
 				}
 				if(this.TempObj.node.info.sex == "f") {
-					data.m_id = this.TempObj.node.info.id;this.TempObj.node.info.spouse_id != "" ? data.f_id = this.TempObj.node.info.spouse_id : data.f_id = "";
+					data.m_id = this.TempObj.node.info.id;
+					this.TempObj.node.info.spouse_id != "" ? data.f_id = this.TempObj.node.info.spouse_id : data.f_id = "";
 				}
 				this.model.sendData({
 					url : 'server/api/add_node',
@@ -1189,10 +1202,6 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 					data : data
 				});
 			};
-			if(this.TempObj.action == "delete_person") {
-
-			}
-
 		}
 	});
 });
