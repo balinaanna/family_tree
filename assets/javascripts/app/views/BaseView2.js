@@ -65,10 +65,10 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
             
             try {
                 this.renderer = new THREE.WebGLRenderer({antialias: true});
-            } catch(err) {
+            } catch (err) {
                 this.renderer = new THREE.CanvasRenderer({antialias: false});
             }
-			
+
             this.renderer.setSize(window.innerWidth, window.innerHeight);
             this.container.appendChild(this.renderer.domElement);
             
