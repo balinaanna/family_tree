@@ -797,28 +797,8 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			$.ajaxSetup({
 				cache : false
 			});
-			this.collection = new TreeCollection();
 			this.collection.fetch({
-				//url: '/data2.json',
-				success : $.proxy(this.createTree, this) //{
-					/*var arr = collection.toJSON();
-					for(key in arr) {
-						this.data1[arr[key].id] = arr[key];
-						if(this.data1[arr[key].id].f_id == "0") {
-							this.data1[arr[key].id].f_id = "";
-						}
-						if(this.data1[arr[key].id].m_id == "0") {
-							this.data1[arr[key].id].m_id = "";
-						}
-						if(this.data1[arr[key].id].spouse_id == "0") {
-							this.data1[arr[key].id].spouse_id = "";
-						}
-					}
-					this.data2.tree = this.data1;
-					this.scene = new THREE.Scene();
-					this.scene.add(this.camera);*/
-					//this.createTree();
-				//}, this)
+				success : $.proxy(this.createTree, this) 
 			});
 
 			///////////////////////////////////////////////////////////////////////////////////////////////////
