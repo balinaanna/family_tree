@@ -63,8 +63,11 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			$(this.el).append(this.container);
             this.projector = new THREE.Projector();
             
-            if (new THREE.WebGLRenderer({antialias: true})) this.renderer = new THREE.CanvasRenderer({antialias: true});
-            else this.renderer = new THREE.CanvasRenderer({antialias: true});
+            try {
+                this.renderer = new THREE.WebGLRenderer({antialias: true});
+            } catch (err) {
+                this.renderer = new THREE.CanvasRenderer({antialias: false});
+            }
             this.renderer.setSize(window.innerWidth, window.innerHeight);
             this.container.appendChild(this.renderer.domElement);
             
