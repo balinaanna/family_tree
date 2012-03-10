@@ -14,7 +14,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 		mouse : new THREE.Vector2(),
 		nodeWidth : 360,
 		nodeHeight : 450,			
-		imgPlusSize : 70,
+		imgPlusSize : 72,
         SELECTED: null,
         data1:{},
 		data2:{},
@@ -260,9 +260,90 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
             node.add(cube);
             
             node.position.set(x,y,z);
+			
+			var elems = {
+				'delete': {
+                    width: this.imgPlusSize,
+                    height: this.imgPlusSize,
+                    path: 'trash/delete.png',
+                    trPath: 'trash/delete_tr.png',
+					posX: -this.nodeWidth/2+this.imgPlusSize/2,
+					posY: -this.nodeWidth/2-this.imgPlusSize/2-20,
+					posZ: 0
+                },
+				'child': {
+                    width: this.imgPlusSize,
+                    height: this.imgPlusSize,
+                    path: 'trash/add.png',
+                    trPath: 'trash/add_tr.png',
+					posX: -this.nodeWidth/4+this.imgPlusSize/2,
+					posY: -this.nodeWidth/2-this.imgPlusSize/2-20,
+					posZ: 0
+                },
+                'edit': {
+                    width: this.imgPlusSize,
+                    height: this.imgPlusSize,
+                    path: 'trash/edit.png',
+                    trPath: 'trash/edit_tr.png',
+                    posX: this.imgPlusSize/2,
+                    posY: -this.nodeWidth/2-this.imgPlusSize/2-20,
+                    posZ: 0
+                },
+                'spouse': {
+                    width: this.imgPlusSize,
+                    height: this.imgPlusSize,
+                    path: 'trash/add.png',
+                    trPath: 'trash/add_tr.png',
+                    posX: this.nodeWidth/4+this.imgPlusSize/2,
+                    posY: -this.nodeWidth/2-this.imgPlusSize/2-20,
+                    posZ: 0
+                }
+            };
+			for(var key in elems) {
+				node.add(this.nodeElement(elems[key], key));
+			}
+			
             return node;
         },
         unit : {},
+		nodeElement : function(elem, name) {
+			var element = new THREE.Object3D();
+			
+            var pic_front = this.texture(elem.trPath, this.imgPlusSize, this.imgPlusSize);
+			pic_front.position.set(0, 0, this.imgPlusSize/2+3);
+            element.add(pic_front);
+			
+            var pic_back = this.texture(elem.trPath, this.imgPlusSize, this.imgPlusSize);
+			pic_back.position.set(0, 0, -this.imgPlusSize/2-3);
+			pic_back.rotation.x = 3.14;
+            element.add(pic_back);
+			
+            var pic_left = this.texture(elem.trPath, this.imgPlusSize, this.imgPlusSize);
+			pic_left.position.set(this.imgPlusSize/2+3, 0, 0);
+			pic_left.rotation.y = 3.14/2;
+            element.add(pic_left);
+			
+            var pic_right = this.texture(elem.trPath, this.imgPlusSize, this.imgPlusSize);
+			pic_right.position.set(-this.imgPlusSize/2-3, 0, 0);
+			pic_right.rotation.y = -3.14/2;
+            element.add(pic_right);
+			
+			var cube = new THREE.Mesh(
+              new THREE.CubeGeometry(this.imgPlusSize,this.imgPlusSize,this.imgPlusSize, 1, 1, 1, new THREE.MeshBasicMaterial( { color: 0xFFFFFF } ) ),
+              new THREE.MeshFaceMaterial({color: 0xFFFFFF, opacity : 0})
+            );
+            cube.position.set(0,0,0);
+            element.add(cube);
+            
+			element.position.set(elem.posX, elem.posY, elem.posZ);
+			element.matrixAutoUpdate = false;
+			element.updateMatrix();
+			element.overdraw = true;
+			element.visible = true;
+			//if(elem.trPath)	element.material.map.image.src = elem.trPath;
+			element.name = name;
+			return element;
+		},
         createTree : function (id, position, i) {
             if(i==0) {
               var cube = this.createCube(position.x,position.y,position.z,this.tree[id]);
@@ -353,6 +434,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
         }
       },
       onmouseup : function(){ this.down = false; },
+		RISED : null,
       onmousemove : function(ev) {
         event.preventDefault();
 		this.navHide();
@@ -377,11 +459,172 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
             this.container.style.cursor = 'pointer';
             if (this.selectedObj != intersects[0].object.parent.children[5] && this.selectedObj != null) this.selectedObj.material = new THREE.MeshBasicMaterial({color: 0xFFFFFF});
             this.selectedObj = intersects[0].object.parent.children[5];
-            this.selectedObj.material = new THREE.MeshBasicMaterial({color: 0x86A9F5});
-        } else if(intersects.length == 0 && this.selectedObj) {
-            this.container.style.cursor = 'default';
-            this.selectedObj.material = new THREE.MeshBasicMaterial({color: 0xFFFFFF});
-        }
+			
+			var hint = false;
+				for( i = 0; i < intersects.length; i++) {
+					switch (intersects[i].object.parent.name) {
+						case 'child':
+							hint = true;
+							$('#hint').css('left', event.clientX);
+							$('#hint').css('top', event.clientY - 40);
+							$('#hint').html('Add child');
+							$('#hint').css('opacity', '0.7');
+							
+							for( j = 0; j < intersects[i].object.parent.children.length; j++) {
+								if(intersects[i].object.parent.children[j].material.map)
+								{
+									intersects[i].object.parent.children[j].material.map.image.src = 'trash/add.png';
+								}
+							}
+							break;
+						case 'edit':
+							hint = true;
+							$('#hint').css('left', event.clientX);
+							$('#hint').css('top', event.clientY - 40);
+							$('#hint').html('Edit');
+							$('#hint').css('opacity', '0.7');
+							
+							for( j = 0; j < intersects[i].object.parent.children.length; j++) {
+								if(intersects[i].object.parent.children[j].material.map)
+								{
+									intersects[i].object.parent.children[j].material.map.image.src = 'trash/edit.png';
+								}
+							}
+							break;
+						case 'delete':
+							hint = true;
+							$('#hint').css('left', event.clientX);
+							$('#hint').css('top', event.clientY - 40);
+							$('#hint').html('Delete');
+							$('#hint').css('opacity', '0.7');
+							
+							for( j = 0; j < intersects[i].object.parent.children.length; j++) {
+								if(intersects[i].object.parent.children[j].material.map)
+								{
+									intersects[i].object.parent.children[j].material.map.image.src = 'trash/delete.png';
+								}
+							}
+							break;
+						case 'spouse':
+							hint = true;
+							$('#hint').css('left', event.clientX);
+							$('#hint').css('top', event.clientY - 40);
+							$('#hint').html('Add spouse');
+							$('#hint').css('opacity', '0.7');
+							
+							for( j = 0; j < intersects[i].object.parent.children.length; j++) {
+								if(intersects[i].object.parent.children[j].material.map)
+								{
+									intersects[i].object.parent.children[j].material.map.image.src = 'trash/add.png';
+								}
+							}
+							break;
+						default:
+							if(hint == false) {
+								$('#hint').css('left', -100);
+								$('#hint').css('top', -100);
+								$('#hint').css('opacity', '0');
+								this.selectedObj.material = new THREE.MeshBasicMaterial({color: 0x86A9F5});
+							}
+							break;
+					}
+				}
+
+				if(this.RISED != null) {
+					if(this.RISED != intersects[0].object.parent) {
+						for( j = 0; j < this.RISED.children.length; j++) {
+							if(this.RISED.name == 'child') {
+								for( k = 0; k < par.children.length; k++) {
+									if(this.RISED.children[k].material.map)
+										this.RISED.children[k].material.map.image.src = 'trash/add_tr.png';
+								}
+							} else if(this.RISED.name == 'edit') {
+								for( k = 0; k < par.children.length; k++) {
+									if(this.RISED.children[k].material.map)
+										this.RISED.children[k].material.map.image.src = 'trash/edit_tr.png';
+								}
+							} else if(this.RISED.name == 'delete') {
+								for( k = 0; k < par.children.length; k++) {
+									if(this.RISED.children[k].material.map)
+										this.RISED.children[k].material.map.image.src = 'trash/delete_tr.png';
+								}
+							} else if(this.RISED.name == 'spouse') {
+								for( k = 0; k < par.children.length; k++) {
+									if(this.RISED.children[k].material.map)
+										this.RISED.children[k].material.map.image.src = 'trash/add_tr.png';
+								}
+							}
+						}
+						this.RISED = null;
+					}
+				}
+				if(this.RISED == null) {
+					//set full visibility for buttons
+					par = intersects[0].object.parent;
+					for( j = 0; j < par.children.length; j++) {
+						if(par.name == 'child') {
+							for( k = 0; k < par.children.length; k++) {
+								if(par.children[k].material.map)
+									par.children[k].material.map.image.src = 'trash/add.png';
+							}
+						} else if(par.name == 'edit') {
+							for( k = 0; k < par.children.length; k++) {
+								if(par.children[k].material.map)
+									par.children[k].material.map.image.src = 'trash/edit.png';
+							}
+						} else if(par.name == 'delete') {
+							for( k = 0; k < par.children.length; k++) {
+								if(par.children[k].material.map)
+									par.children[k].material.map.image.src = 'trash/delete.png';
+							}
+						} else if(par.name == 'spouse') {
+							for( k = 0; k < par.children.length; k++) {
+								if(par.children[k].material.map)
+									par.children[k].material.map.image.src = 'trash/add.png';
+							}
+						}
+					}
+					this.RISED = par;
+				}
+            
+        } else {
+			//hide hint
+			$('#hint').css('opacity', '0');
+			$('#hint').css('left', -100);
+			$('#hint').css('top', -100);
+			
+			if(this.RISED != null) {
+					for( j = 0; j < this.RISED.children.length; j++) {
+						if(this.RISED.name == 'child') {
+							for( k = 0; k < par.children.length; k++) {
+								if(this.RISED.children[k].material.map)
+									this.RISED.children[k].material.map.image.src = 'trash/add_tr.png';
+							}
+						} else if(this.RISED.name == 'edit') {
+							for( k = 0; k < par.children.length; k++) {
+								if(this.RISED.children[k].material.map)
+									this.RISED.children[k].material.map.image.src = 'trash/edit_tr.png';
+							}
+						} else if(this.RISED.name == 'delete') {
+							for( k = 0; k < par.children.length; k++) {
+								if(this.RISED.children[k].material.map)
+									this.RISED.children[k].material.map.image.src = 'trash/delete_tr.png';
+							}
+						} else if(this.RISED.name == 'spouse') {
+							for( k = 0; k < par.children.length; k++) {
+								if(this.RISED.children[k].material.map)
+									this.RISED.children[k].material.map.image.src = 'trash/add_tr.png';
+							}
+						}
+					}
+					this.RISED = null;
+			}
+				
+			if(intersects.length == 0 && this.selectedObj) {
+				this.container.style.cursor = 'default';
+				this.selectedObj.material = new THREE.MeshBasicMaterial({color: 0xFFFFFF});
+			}
+		}
       },
       onmousewheel : function(ev){
         this.camera.position.z -= ev.originalEvent.wheelDeltaY;
