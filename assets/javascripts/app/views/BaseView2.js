@@ -8,7 +8,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 		stepY : 300,
 		lineTurne : 375,
         dist : 6750,
-		
+
 		isMouseDown : false,
 		onMouseDownPosition: null,
 		mouse : new THREE.Vector2(),
@@ -23,7 +23,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
                
         light : new THREE.PointLight(0xFFCC99),
         ambient : new THREE.PointLight(0x333366),
-		
+
 		events: {
 			"mousedown canvas" : "onmousedown",
 			"mouseup canvas": "onmouseup",
@@ -31,7 +31,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			"mousewheel canvas" : "onmousewheel",
             "mousemove #roll" : "navShow"
 		},
-		
+
 		initialize: function(){
             
             this.data2.id = localStorage.getItem("prof_id");
@@ -63,8 +63,12 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			$(this.el).append(this.container);
             this.projector = new THREE.Projector();
             
-            if (new THREE.WebGLRenderer({antialias: true})) this.renderer = new THREE.CanvasRenderer({antialias: true});
-            else this.renderer = new THREE.CanvasRenderer({antialias: true});
+            try {
+                this.renderer = new THREE.WebGLRenderer({antialias: true});
+            } catch(err) {
+                this.renderer = new THREE.CanvasRenderer({antialias: false});
+            }
+			
             this.renderer.setSize(window.innerWidth, window.innerHeight);
             this.container.appendChild(this.renderer.domElement);
             
@@ -156,17 +160,21 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
         createCube : function(x,y,z,data) {
             var node = new THREE.Object3D();
             if(data.photo_url == "" || data.photo_url == null) {
-				data.photo_url = "no_avatar.jpg"
+				data.photo_url = "152.jpg"
 			};
             var photo = this.texture('assets/images/uploaded/avatars/thumbs/' + data.photo_url, 260, 260);
-			photo.position.set(0, 0, this.nodeWidth/4+5);
+			var photo_back = this.texture('assets/images/uploaded/avatars/thumbs/' + data.photo_url, 260, 260);
+			photo.position.set(0, 0, this.nodeWidth/2+2);
+			photo_back.position.set(-this.nodeWidth/2-2, 0, 0);
+			photo_back.rotation.y = -3.14/2;
             var texture = this.texture('trash/pol1.png', this.nodeWidth, this.nodeHeight);
             texture.position.set(0, 0, this.nodeWidth/4+4);
-            node.add(texture);
+            //node.add(texture);
             node.add(photo);
+            node.add(photo_back);
             
             var cube = new THREE.Mesh(
-              new THREE.CubeGeometry(this.nodeWidth,this.nodeHeight,this.nodeWidth/2, 1, 1, 1, new THREE.MeshBasicMaterial( { color: 0xFFFFFF } ) ),
+              new THREE.CubeGeometry(this.nodeWidth,this.nodeWidth*1.2,this.nodeWidth, 1, 1, 1, new THREE.MeshBasicMaterial( { color: 0xFFFFFF } ) ),
               new THREE.MeshFaceMaterial({color: 0xFFFFFF, opacity : 0})
             );
             cube.position.set(0,0,0);
@@ -305,9 +313,9 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
         if (!this.paused) {
           this.renderer.clear();
           this.camera.lookAt( this.scene.position );
-          for (var k in this.objects){
+          /*for (var k in this.objects){
                 this.objects[k].lookAt(this.camera.position);
-          }
+          }*/
           this.renderer.render(this.scene, this.camera);
           this.renderer.render(this.coordScene, this.camera);
         }
