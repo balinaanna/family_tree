@@ -989,7 +989,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 						} else if(par.children[j].name == 'edit') {
 							par.children[j].material.map.image.src = 'trash/edit.png';
 						} else if(par.children[j].name == 'delete') {
-							par.children[j].children[0].material.map.image.src = 'trash/delete.png';
+							par.children[j].material.map.image.src = 'trash/delete.png';
 						} else if(par.children[j].name == 'spouse') {
 							par.children[j].material.map.image.src = 'trash/add.png';
 						}
