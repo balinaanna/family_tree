@@ -70,7 +70,13 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 
 			this.projector = new THREE.Projector();
 			this.onMouseDownPosition = new THREE.Vector2();
-			this.renderer = new THREE.CanvasRenderer();
+            
+            try {
+                this.renderer = new THREE.WebGLRenderer({antialias: true});
+            } catch(err) {
+                this.renderer = new THREE.CanvasRenderer({antialias: false});
+            }
+            
 			this.renderer.setSize(window.innerWidth, window.innerHeight);
             this.renderer.autoClear = false;
 			this.container.appendChild(this.renderer.domElement);
@@ -224,22 +230,16 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				"ch_ids" : data.ch_ids,
 				"spouse_id" : data.spouse_id
 			};
-			node.mother
-			node.father
-			node.child
-
 			return node;
 		},
 		nodeElement : function(elem, name) {
-			var element = new THREE.Mesh(new THREE.PlaneGeometry(elem.width, elem.height));
-			element.add(this.texture(elem.path, elem.width, elem.height));
+			var element = this.texture(elem.path, elem.width, elem.height)
 			element.position.set(elem.posX, elem.posY, elem.posZ);
 			element.matrixAutoUpdate = false;
 			element.updateMatrix();
 			element.overdraw = true;
 			element.visible = true;
-			if(elem.trPath)
-				element.children[0].material.map.image.src = elem.trPath;
+			if(elem.trPath)	element.material.map.image.src = elem.trPath;
 			element.name = name;
 			return element;
 		},
@@ -826,8 +826,6 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				}, this)
 			});
 
-			//this.scene = new THREE.Scene();
-			//this.scene.add(this.camera);
 			///////////////////////////////////////////////////////////////////////////////////////////////////
 		},
 		onDocumentMouseDown : function(event) {
@@ -991,15 +989,15 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 						this.RISED.position.z = 0;
 						for( j = 0; j < this.RISED.children.length; j++) {
 							if(this.RISED.children[j].name == 'child') {
-								this.RISED.children[j].children[0].material.map.image.src = 'trash/add_tr.png';
+								this.RISED.children[j].material.map.image.src = 'trash/add_tr.png';
 							} else if(this.RISED.children[j].name == 'parent') {
-								this.RISED.children[j].children[0].material.map.image.src = 'trash/add_tr.png';
+								this.RISED.children[j].material.map.image.src = 'trash/add_tr.png';
 							} else if(this.RISED.children[j].name == 'edit') {
-								this.RISED.children[j].children[0].material.map.image.src = 'trash/edit_tr.png';
+								this.RISED.children[j].material.map.image.src = 'trash/edit_tr.png';
 							} else if(this.RISED.children[j].name == 'delete') {
-								this.RISED.children[j].children[0].material.map.image.src = 'trash/delete_tr.png';
+								this.RISED.children[j].material.map.image.src = 'trash/delete_tr.png';
 							} else if(this.RISED.children[j].name == 'spouse') {
-								this.RISED.children[j].children[0].material.map.image.src = 'trash/add_tr.png';
+								this.RISED.children[j].material.map.image.src = 'trash/add_tr.png';
 							}
 						}
 						this.RISED = null;
@@ -1010,17 +1008,15 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 					par = intersects[1].object.parent;
 					for( j = 0; j < par.children.length; j++) {
 						if(par.children[j].name == 'child') {
-							par.children[j].children[0].material.map.image.src = 'trash/add.png';
+							par.children[j].material.map.image.src = 'trash/add.png';
 						} else if(par.children[j].name == 'parent') {
-							par.children[j].children[0].material.map.image.src = 'trash/add.png';
+							par.children[j].material.map.image.src = 'trash/add.png';
 						} else if(par.children[j].name == 'edit') {
-							par.children[j].children[0].material.map.image.src = 'trash/edit.png';
+							par.children[j].material.map.image.src = 'trash/edit.png';
 						} else if(par.children[j].name == 'delete') {
-							//if(par.info.ch_ids.length == 0 && par.info.spouse_id == 0){
-								par.children[j].children[0].material.map.image.src = 'trash/delete.png';
-							//}
+							par.children[j].children[0].material.map.image.src = 'trash/delete.png';
 						} else if(par.children[j].name == 'spouse') {
-							par.children[j].children[0].material.map.image.src = 'trash/add.png';
+							par.children[j].material.map.image.src = 'trash/add.png';
 						}
 					}
 					par.position.z = 300;
@@ -1037,15 +1033,15 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 					this.RISED.position.z = 0;
 					for( j = 0; j < this.RISED.children.length; j++) {
 						if(this.RISED.children[j].name == 'child') {
-							this.RISED.children[j].children[0].material.map.image.src = 'trash/add_tr.png';
+							this.RISED.children[j].material.map.image.src = 'trash/add_tr.png';
 						} else if(this.RISED.children[j].name == 'parent') {
-							this.RISED.children[j].children[0].material.map.image.src = 'trash/add_tr.png';
+							this.RISED.children[j].material.map.image.src = 'trash/add_tr.png';
 						} else if(this.RISED.children[j].name == 'edit') {
-							this.RISED.children[j].children[0].material.map.image.src = 'trash/edit_tr.png';
+							this.RISED.children[j].material.map.image.src = 'trash/edit_tr.png';
 						} else if(this.RISED.children[j].name == 'delete') {
-							this.RISED.children[j].children[0].material.map.image.src = 'trash/delete_tr.png';
+							this.RISED.children[j].material.map.image.src = 'trash/delete_tr.png';
 						} else if(this.RISED.children[j].name == 'spouse') {
-							this.RISED.children[j].children[0].material.map.image.src = 'trash/add_tr.png';
+							this.RISED.children[j].material.map.image.src = 'trash/add_tr.png';
 						}
 					}
 					this.RISED = null;

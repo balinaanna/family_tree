@@ -8,7 +8,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 		stepY : 300,
 		lineTurne : 375,
         dist : 6750,
-		
+
 		isMouseDown : false,
 		onMouseDownPosition: null,
 		mouse : new THREE.Vector2(),
@@ -23,7 +23,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
                
         light : new THREE.PointLight(0xFFCC99),
         ambient : new THREE.PointLight(0x333366),
-		
+
 		events: {
 			"mousedown canvas" : "onmousedown",
 			"mouseup canvas": "onmouseup",
@@ -31,7 +31,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			"mousewheel canvas" : "onmousewheel",
             "mousemove #roll" : "navShow"
 		},
-		
+
 		initialize: function(){
             
             this.data2.id = localStorage.getItem("prof_id");
@@ -63,8 +63,12 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			$(this.el).append(this.container);
             this.projector = new THREE.Projector();
             
-            if (new THREE.WebGLRenderer({antialias: true})) this.renderer = new THREE.CanvasRenderer({antialias: true});
-            else this.renderer = new THREE.CanvasRenderer({antialias: true});
+            try {
+                this.renderer = new THREE.WebGLRenderer({antialias: true});
+            } catch (err) {
+                this.renderer = new THREE.CanvasRenderer({antialias: false});
+            }
+
             this.renderer.setSize(window.innerWidth, window.innerHeight);
             this.container.appendChild(this.renderer.domElement);
             
@@ -83,8 +87,8 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
             
             var json='[{"id":"50","l_name":"Derevenets","f_name":"Bogdan","f_id":"115","m_id":"116","ch_ids":["120","123","124","125"],"spouse_id":"121","b_date":"1989","d_date":"0","sex":"m","photo_url":"","comment":""},{"id":"115","l_name":"","f_name":"Father","f_id":"0","m_id":"0","ch_ids":["50","117"],"spouse_id":"116","b_date":"0","d_date":"0","sex":"m","photo_url":"no_avatar.jpg","comment":""},{"id":"116","l_name":"?","f_name":"Mother","f_id":"0","m_id":"0","ch_ids":["50","117"],"spouse_id":"115","b_date":"0","d_date":"0","sex":"f","photo_url":"no_avatar.jpg","comment":""},{"id":"117","l_name":"","f_name":"Brother","f_id":"115","m_id":"116","ch_ids":[],"spouse_id":"0","b_date":"0","d_date":"0","sex":"m","photo_url":"no_avatar.jpg","comment":""},{"id":"120","l_name":"","f_name":"kim","f_id":"50","m_id":"121","ch_ids":["127"],"spouse_id":"126","b_date":"0","d_date":"0","sex":"f","photo_url":"no_avatar.jpg","comment":""},{"id":"121","l_name":"?","f_name":"?","f_id":"0","m_id":"0","ch_ids":["120","123","124","125"],"spouse_id":"50","b_date":"0","d_date":"0","sex":"f","photo_url":"no_avatar.jpg","comment":""},{"id":"123","l_name":"12","f_name":"12","f_id":"50","m_id":"121","ch_ids":[],"spouse_id":"0","b_date":"12","d_date":"0","sex":"m","photo_url":"no_avatar.jpg","comment":""},{"id":"124","l_name":"123","f_name":"123","f_id":"50","m_id":"121","ch_ids":[],"spouse_id":"0","b_date":"12","d_date":"0","sex":"m","photo_url":"no_avatar.jpg","comment":""},{"id":"125","l_name":"222","f_name":"112","f_id":"50","m_id":"121","ch_ids":[],"spouse_id":"0","b_date":"2222","d_date":"0","sex":"f","photo_url":"no_avatar.jpg","comment":""},{"id":"126","l_name":"21312","f_name":"2321","f_id":"0","m_id":"0","ch_ids":["127"],"spouse_id":"120","b_date":"1221","d_date":"0","sex":"m","photo_url":"no_avatar.jpg","comment":""},{"id":"127","l_name":"ewrw","f_name":"324","f_id":"126","m_id":"120","ch_ids":[],"spouse_id":"0","b_date":"0","d_date":"0","sex":"m","photo_url":"no_avatar.jpg","comment":""}]';
             var jsonObject = JSON.parse(json);
-            var prof_id=50;
             var tree=[];
+            /*var prof_id=50;
             var arr = jsonObject;
             for(key in arr){
                 tree[arr[key].id] = arr[key];
@@ -100,13 +104,41 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
                 if(tree[arr[key].id].ch_ids == "[]") {
                   tree[arr[key].id].ch_ids = [];
                 }
-            }
+            }*/
+			
+			$.ajaxSetup({
+				cache : false
+			});
+			this.collection = new TreeCollection();
+			this.collection.fetch({
+				//url: '/data2.json',
+				success : $.proxy(function(collection) {
+					var arr = collection.toJSON();
+					for(key in arr) {
+						this.data1[arr[key].id] = arr[key];
+						if(this.data1[arr[key].id].f_id == "0") {
+							this.data1[arr[key].id].f_id = "";
+						}
+						if(this.data1[arr[key].id].m_id == "0") {
+							this.data1[arr[key].id].m_id = "";
+						}
+						if(this.data1[arr[key].id].spouse_id == "0") {
+							this.data1[arr[key].id].spouse_id = "";
+						}
+					}
+					this.data2.tree = this.data1;
+					this.scene = new THREE.Scene();
+					this.scene.add(this.camera);
+					//this.createTree();
+				}, this)
+			});
+			tree = this.data1;
             this.tree = tree;
             this.lineGeo = new THREE.Geometry();
             this.lineMat = new THREE.LineBasicMaterial({color: 0x462424, lineWidth: 1});
             this.lines = [];
             
-            this.createTree(50, {'x':0,'y':0,'z':0}, 0);
+            this.createTree(this.data2.id, {'x':0,'y':0,'z':0}, 0);
 
             for (var k in this.lines){
                 this.line = new THREE.Line(this.lines[k], this.lineMat);
@@ -119,6 +151,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
             this.renderer.autoClear = false;
             this.animate();
 		},
+	
 		navShow : function() {
 			if(!this.showedNav && !this.animating) {
 				this.animating = true;
@@ -197,7 +230,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
             i++;
             if(this.tree[id].spouse_id){
               if(this.tree[this.tree[id].spouse_id].sex=='f') {
-                var cube2 = this.createCube(position.x-2.5*this.nodeWidth,position.y-2.5*this.nodeHeight,position.z,this.tree[id]);
+                var cube2 = this.createCube(position.x-2.5*this.nodeWidth,position.y-2.5*this.nodeHeight,position.z,this.tree[this.tree[id].spouse_id]);
                 this.scene.add(cube2);
                 
                 this.lineGeo.vertices.push(
@@ -206,7 +239,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
     
                 unit = {'x':position.x, 'y':cube2.position.y, 'z':position.z};
               } else {
-                var cube2 = this.createCube(position.x+2.5*this.nodeWidth,position.y+2.5*this.nodeHeight,position.z,this.tree[id]);
+                var cube2 = this.createCube(position.x+2.5*this.nodeWidth,position.y+2.5*this.nodeHeight,position.z,this.tree[this.tree[id].spouse_id]);
                 this.scene.add(cube2);
     
                 this.lineGeo.vertices.push(
