@@ -80,29 +80,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			this.renderer.setSize(window.innerWidth, window.innerHeight);
             this.renderer.autoClear = false;
 			this.container.appendChild(this.renderer.domElement);
- 			
-			this.collection.fetch({
-				success : $.proxy(function(collection) {
-					var arr = collection.toJSON();
-					for(key in arr) {
-						this.data1[arr[key].id] = arr[key];
-						if(this.data1[arr[key].id].f_id == "0") {
-							this.data1[arr[key].id].f_id = "";
-						}
-						if(this.data1[arr[key].id].m_id == "0") {
-							this.data1[arr[key].id].m_id = "";
-						}
-						if(this.data1[arr[key].id].spouse_id == "0") {
-							this.data1[arr[key].id].spouse_id = "";
-						}
-						if(this.data1[arr[key].id].ch_ids == "[]") {
-							this.data1[arr[key].id].ch_ids = [];
-						}
-					}
-					this.data2.tree = this.data1;
-					this.createTree();
-				}, this)
-			});
+ 			this.redrawTree();
 		},
 		navShow : function() {
 			if(!this.showedNav && !this.animating) {
@@ -700,6 +678,23 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			}
 		},
 		createTree : function() {
+			var arr = this.collection.toJSON();
+					for(key in arr) {
+						this.data1[arr[key].id] = arr[key];
+						if(this.data1[arr[key].id].f_id == "0") {
+							this.data1[arr[key].id].f_id = "";
+						}
+						if(this.data1[arr[key].id].m_id == "0") {
+							this.data1[arr[key].id].m_id = "";
+						}
+						if(this.data1[arr[key].id].spouse_id == "0") {
+							this.data1[arr[key].id].spouse_id = "";
+						}
+					}
+					this.data2.tree = this.data1;
+					this.scene = new THREE.Scene();
+					this.scene.add(this.camera);
+					
 			var data2 = this.data2;
 			var data = data2.tree;
 			//data2.id=26;
@@ -805,8 +800,8 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			this.collection = new TreeCollection();
 			this.collection.fetch({
 				//url: '/data2.json',
-				success : $.proxy(function(collection) {
-					var arr = collection.toJSON();
+				success : $.proxy(this.createTree, this) //{
+					/*var arr = collection.toJSON();
 					for(key in arr) {
 						this.data1[arr[key].id] = arr[key];
 						if(this.data1[arr[key].id].f_id == "0") {
@@ -821,9 +816,9 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 					}
 					this.data2.tree = this.data1;
 					this.scene = new THREE.Scene();
-					this.scene.add(this.camera);
-					this.createTree();
-				}, this)
+					this.scene.add(this.camera);*/
+					//this.createTree();
+				//}, this)
 			});
 
 			///////////////////////////////////////////////////////////////////////////////////////////////////
