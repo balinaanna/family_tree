@@ -34,7 +34,8 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			"click canvas" : "onclick",
 			"mousemove #roll" : "navShow",
 			"click #logout_btn" : "logout",
-			"click #submit_person" : "submitFunc"
+			"click #submit_person" : "submitFunc",
+			"click #save_image" : "saveImage"
 		},
 
 		initialize: function(){
@@ -866,6 +867,13 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 		},
 		logout : function() {
 			this.loginModel.logout();
+		},
+		saveImage : function() {
+			var canvas = document.getElementsByTagName('canvas')[0];
+			var context = canvas.getContext("2d");
+			var dataURL = canvas.toDataURL("image/jpeg");
+			document.getElementById("canvasImg").src = dataURL;
+			Canvas2Image.saveAsJPEG(canvas);
 		},
 		submitFunc : function(event) {
 			event.preventDefault();
