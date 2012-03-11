@@ -120,26 +120,73 @@ class Api extends CI_Controller {
 										WHERE a.email="' . $email . '" AND a.pass="' . $pass . '"
 							    	');
 			$db_result = $result -> result();
-			$this -> db -> query('INSERT INTO `profile_data`(`user_id`, `f_id`, `m_id`, `ch_ids`, `spouse_id`, `f_name`, `l_name`, `b_date`, `d_date`, `sex`, `photo_url`, `comment`)
-				    	    	VALUES (
-					    			"' . $db_result[0] -> user_id . '",
+			if(isset($_FILES['gedcom']['tmp_name'])){
+				$last_index = $this -> db -> query('SELECT id FROM profile_data ORDER BY id DESC LIMIT 1');
+				$last_index = $last_index->result(); $last_index = $last_index[0]->id + 1;
+				$ged_array = $this->api_model->ged_parse($_FILES['gedcom']['tmp_name'], $last_index);
+				$sql="";
+				foreach ($ged_array as $key => $value) {
+					if($key!=$last_index){
+						$sql = $sql.'
+								(	"'.$key.'"
+									"' . $db_result[0] -> user_id . '",
+									"'.$value->f_id.'",
+							    	"'.$value->m_id.'",
+									"'.json_encode($value->ch_ids).'",
+									"'.$value->spouse_id.'",
+									"'.$value->f_name.'",
+									"'.$value->$l_name.'",
+									"'.$value->$b_date.'",
+									"'.$value->$d_date.'",
+									"'.$value->sex.'",
 									"",
-							    	"",
-									"' . json_encode(array()) . '",
+									""),
+								';
+					}
+				}
+				$sql=$sql.'(		"'.$last_index.'"
+									"' . $db_result[0] -> user_id . '",
+									"'.$ged_array[$last_index]->f_id.'",
+							    	"'.$ged_array[$last_index]->m_id.'",
+									"'.json_encode($ged_array[$last_index]->ch_ids).'",
+									"'.$ged_array[$last_index]->spouse_id.'",
+									"'.$ged_array[$last_index]->f_name.'",
+									"'.$ged_array[$last_index]->$l_name.'",
+									"'.$ged_array[$last_index]->$b_date.'",
+									"'.$ged_array[$last_index]->$d_date.'",
+									"'.$ged_array[$last_index]->sex.'",
 									"",
-									"' . $f_name . '",
-									"' . $l_name . '",
-									"' . $b_date . '",
-									"",
-									"' . $sex . '",
-									"",
-									""
-								)');
-			$this -> db -> query('UPDATE `users` SET `prof_id`=(SELECT `id` FROM `profile_data` WHERE `user_id`="' . $db_result[0] -> user_id . '" LIMIT 1) WHERE email="' . $email . '"');
-			$json -> action = "registration";
-			$json -> status = "1";
-			$json -> message = "Registration successful";
-			mail($email, 'Family Tree Registration', 'Thanks for registration');
+									"")';
+				$this -> db -> query('INSERT INTO `profile_data`(`id`, `user_id`, `f_id`, `m_id`, `ch_ids`, `spouse_id`, `f_name`, `l_name`, `b_date`, `d_date`, `sex`, `photo_url`, `comment`) VALUES '.$sql);
+				$this -> db -> query('UPDATE `users` SET `prof_id`='.$last_index.' WHERE email="' . $email . '"');
+				$this -> db -> query('UPDATE `users` SET `prof_id`=(SELECT `id` FROM `profile_data` WHERE `user_id`="' . $db_result[0] -> user_id . '" LIMIT 1) WHERE email="' . $email . '"');
+				
+				$json -> action = "registration";
+				$json -> status = "1";
+				$json -> message = "Registration successful, import successful";
+				mail($email, 'Family Tree Registration', 'Thanks for registration');
+			} else {
+				$this -> db -> query('INSERT INTO `profile_data`(`user_id`, `f_id`, `m_id`, `ch_ids`, `spouse_id`, `f_name`, `l_name`, `b_date`, `d_date`, `sex`, `photo_url`, `comment`)
+					    	    	VALUES (
+						    			"' . $db_result[0] -> user_id . '",
+										"",
+								    	"",
+										"' . json_encode(array()) . '",
+										"",
+										"' . $f_name . '",
+										"' . $l_name . '",
+										"' . $b_date . '",
+										"",
+										"' . $sex . '",
+										"",
+										""
+									)');
+				$this -> db -> query('UPDATE `users` SET `prof_id`=(SELECT `id` FROM `profile_data` WHERE `user_id`="' . $db_result[0] -> user_id . '" LIMIT 1) WHERE email="' . $email . '"');
+				$json -> action = "registration";
+				$json -> status = "1";
+				$json -> message = "Registration successful";
+				mail($email, 'Family Tree Registration', 'Thanks for registration');
+			}
 		} else {
 			$json -> action = "registration";
 			$json -> status = "0";
@@ -545,6 +592,15 @@ class Api extends CI_Controller {
 			$json -> status = "0";
 
 		echo json_encode($json);
+	}
+
+	public function export_gedcom() {
+		$result = $this->db->query('SELECT  * FROM profile_data	WHERE `user_id`="'.$this->session->userdata('user_id').'" ORDER BY id');
+		$export = $this->api_model->ged_export($result->result());
+		 
+		header("Content-type: application/octet-stream");
+        header("Content-Disposition: attachment; filename=\"family_tree.ged\"");
+        echo $export;
 	}
 
 }
