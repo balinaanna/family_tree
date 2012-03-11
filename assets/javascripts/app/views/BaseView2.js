@@ -315,10 +315,10 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			return element;
 		},
 		create_tree : function(){
-			this.collection = new TreeCollection();
-			this.collection.fetch({
-				success : $.proxy(function(collection) {
-					var arr = collection.toJSON();
+			//this.collection = new TreeCollection();
+			//this.collection.fetch({
+				//success : $.proxy(function(collection) {
+					var arr = this.collection.toJSON();
 					for(key in arr) {
 						this.data1[arr[key].id] = arr[key];
 						if(this.data1[arr[key].id].f_id == "0") {
@@ -337,9 +337,9 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 					this.camera.position.z = Math.sin(this.rotation)*this.dist;
 					this.scene.add(this.camera);
 					this.renderer.autoClear = false;
-					this.animate();
-				}, this)
-			});
+					//this.animate();
+			//	}, this)
+			//});
 			tree = this.data1;
 			this.tree = tree;
 			
@@ -477,7 +477,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				cache : false
 			});
 			this.collection.fetch({
-				success : $.proxy(this.create_tree(), this)
+				success : $.proxy(this.create_tree, this)
 			});
 		},
 
