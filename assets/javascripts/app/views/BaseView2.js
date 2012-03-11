@@ -306,7 +306,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 
 			var pic_back = this.texture(elem.trPath, this.imgPlusSize, this.imgPlusSize);
 			pic_back.position.set(0, 0, -this.imgPlusSize/2-3);
-			pic_back.rotation.x = 3.14;
+			pic_back.rotation.y = 3.14;
 			element.add(pic_back);
 
 			var pic_left = this.texture(elem.trPath, this.imgPlusSize, this.imgPlusSize);
