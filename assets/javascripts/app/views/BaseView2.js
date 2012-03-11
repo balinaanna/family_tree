@@ -147,7 +147,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			context.font = 'italic 50px Arial Black';
 			//TODO text align
 			var fNameL = data.f_name + ' ' + data.l_name;
-			if (fNameL.length >= 15){
+			if (fNameL.length >= 14){
 				fNameL = data.f_name.substring(0,1) + '. ' + data.l_name;
 			}
 
