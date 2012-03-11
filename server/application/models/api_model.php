@@ -21,7 +21,7 @@ class Api_model extends CI_Model {
 		}
 	}
 
-	public function ged_parse($file_path) {
+	public function ged_parse($file_path, $last_index) {
 		//# init all needed variables
 		$anfang   = 0;
 		$anfangf  = 0;
@@ -379,7 +379,7 @@ class Api_model extends CI_Model {
 			}
 		}
 		$json = json_encode($profile_data);
-		$i=0;
+		$i=$last_index;
 		foreach ($profile_data as $key=>$el) {
 			$json = str_replace('"'.$key.'"', "\"".$i."\"", $json);
 			$i++;
@@ -424,11 +424,12 @@ class Api_model extends CI_Model {
 	}
 
 	private function date_conv($string){
-		if(!$string){return "UNKNOWN";}
-		$dt=trim($string);//$dob1='dd.mm.yyyy' format
-		list($d, $m, $y) = explode('.', $dt);
-		$mk=mktime(0, 0, 0, $m, $d, $y);
-		$dt_conv=strtoupper(strftime('%d %M %Y',$mk));
+		if(!$string || $string=="?"){return "UNKNOWN";}
+		$dt=trim($string);//$dob1='dd/mm/yyyy' format
+		@list($d, $m, $y) = explode('/', $dt);
+		if(!$d || !$m){$d=1; $m=1; $y=$string;}
+		@$mk=mktime(0, 0, 0, $m, $d, $y);
+		$dt_conv=strtoupper(strftime('%d %h %Y',$mk));
 		return $dt_conv;
 	}
 	
