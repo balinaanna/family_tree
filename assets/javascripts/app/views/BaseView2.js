@@ -214,12 +214,21 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			node.position.set(x,y,z);
 
 			var elems = {
+				'parent': {
+					width: this.imgPlusSize,
+					height: this.imgPlusSize,
+					path: 'trash/add.png',
+					trPath: 'trash/add_tr.png',
+					posX: -this.nodeWidth/2-this.imgPlusSize/2,
+					posY: -this.nodeWidth/2-this.imgPlusSize/2-20,
+					posZ: 0
+				},
 				'delete': {
 					width: this.imgPlusSize,
 					height: this.imgPlusSize,
 					path: 'trash/delete.png',
 					trPath: 'trash/delete_tr.png',
-					posX: -this.nodeWidth/2+this.imgPlusSize/2,
+					posX: -this.nodeWidth/4-this.imgPlusSize/2,
 					posY: -this.nodeWidth/2-this.imgPlusSize/2-20,
 					posZ: 0
 				},
@@ -228,7 +237,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 					height: this.imgPlusSize,
 					path: 'trash/add.png',
 					trPath: 'trash/add_tr.png',
-					posX: -this.nodeWidth/4+this.imgPlusSize/2,
+					posX: -this.imgPlusSize/2,
 					posY: -this.nodeWidth/2-this.imgPlusSize/2-20,
 					posZ: 0
 				},
@@ -237,7 +246,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 					height: this.imgPlusSize,
 					path: 'trash/edit.png',
 					trPath: 'trash/edit_tr.png',
-					posX: this.imgPlusSize/2,
+					posX: this.nodeWidth/4-this.imgPlusSize/2,
 					posY: -this.nodeWidth/2-this.imgPlusSize/2-20,
 					posZ: 0
 				},
@@ -246,7 +255,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 					height: this.imgPlusSize,
 					path: 'trash/add.png',
 					trPath: 'trash/add_tr.png',
-					posX: this.nodeWidth/4+this.imgPlusSize/2,
+					posX: this.nodeWidth/2-this.imgPlusSize/2,
 					posY: -this.nodeWidth/2-this.imgPlusSize/2-20,
 					posZ: 0
 				}
@@ -534,6 +543,20 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				var hint = false;
 				for( i = 0; i < intersects.length; i++) {
 					switch (intersects[i].object.parent.name) {
+						case 'parent':
+							hint = true;
+							$('#hint').css('left', event.clientX);
+							$('#hint').css('top', event.clientY - 40);
+							$('#hint').html('Add parent');
+							$('#hint').css('opacity', '0.7');
+
+							for( j = 0; j < intersects[i].object.parent.children.length; j++) {
+								if(intersects[i].object.parent.children[j].material.map)
+								{
+									intersects[i].object.parent.children[j].material.map.image.src = 'trash/add.png';
+								}
+							}
+							break;
 						case 'child':
 							hint = true;
 							$('#hint').css('left', event.clientX);
@@ -611,7 +634,12 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				if(this.RISED != null) {
 					if(this.RISED != intersects[0].object.parent) {
 						for( j = 0; j < this.RISED.children.length; j++) {
-							if(this.RISED.name == 'child') {
+							if(this.RISED.name == 'parent') {
+								for( k = 0; k < par.children.length; k++) {
+									if(this.RISED.children[k].material.map)
+										this.RISED.children[k].material.map.image.src = 'trash/add_tr.png';
+								}
+							} else if(this.RISED.name == 'child') {
 								for( k = 0; k < par.children.length; k++) {
 									if(this.RISED.children[k].material.map)
 										this.RISED.children[k].material.map.image.src = 'trash/add_tr.png';
@@ -640,7 +668,12 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 					//set full visibility for buttons
 					par = intersects[0].object.parent;
 					for( j = 0; j < par.children.length; j++) {
-						if(par.name == 'child') {
+						if(par.name == 'parent') {
+							for( k = 0; k < par.children.length; k++) {
+								if(par.children[k].material.map)
+									par.children[k].material.map.image.src = 'trash/add.png';
+							}
+						} else if(par.name == 'child') {
 							for( k = 0; k < par.children.length; k++) {
 								if(par.children[k].material.map)
 									par.children[k].material.map.image.src = 'trash/add.png';
@@ -673,7 +706,12 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 
 				if(this.RISED != null) {
 					for( j = 0; j < this.RISED.children.length; j++) {
-						if(this.RISED.name == 'child') {
+						if(this.RISED.name == 'parent') {
+							for( k = 0; k < par.children.length; k++) {
+								if(this.RISED.children[k].material.map)
+									this.RISED.children[k].material.map.image.src = 'trash/add_tr.png';
+							}
+						} else if(this.RISED.name == 'child') {
 							for( k = 0; k < par.children.length; k++) {
 								if(this.RISED.children[k].material.map)
 									this.RISED.children[k].material.map.image.src = 'trash/add_tr.png';
@@ -724,6 +762,17 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				var but = false;
 				switch (intersects[0].object.parent.name)
 				{
+					case 'parent':
+						nodex = intersects[0].object.parent.parent;
+						this.TempObj = {
+							"action" : 'add_parent',
+							node : nodex
+						};
+						OSX.init_edit({
+							"action" : 'add_parent'
+						}, nodex);
+						but = true;
+						break;
 					case 'child':
 						nodex = intersects[0].object.parent.parent;
 						this.TempObj = {
@@ -850,7 +899,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			if(!data.ch_ids) {
 				data.ch_ids = [];
 			}
-			/*if(this.TempObj.action == "add_parent") {
+			if(this.TempObj.action == "add_parent") {
 				data.action = this.TempObj.action;
 				data.send_node_id = this.TempObj.node.info.id;
 				if(!data.ch_ids)
@@ -868,7 +917,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 					url : 'server/api/add_node',
 					data : data
 				});
-			};*/
+			};
 			if(this.TempObj.action == "add_child") {
 				data.action = this.TempObj.action;
 				data.send_node_id = this.TempObj.node.info.id;
