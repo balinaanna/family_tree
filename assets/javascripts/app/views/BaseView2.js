@@ -15,7 +15,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 		mouse : new THREE.Vector2(),
 		nodeWidth : 360,
 		nodeHeight : 450,
-		imgPlusSize : 72,
+		imgPlusSize : 90,
 		SELECTED: null,
 		data1:{},
 		data2:{},
@@ -169,7 +169,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			});
 			mat.transparent = true;
 			var item = new THREE.Mesh(new THREE.PlaneGeometry(this.nodeWidth, this.nodeWidth, 30), mat);
-			item.position.set(0, this.nodeWidth, 0);
+			item.position.set(0, this.nodeWidth*1.1, 0);
 			//item.rotation.x = -3.14/2;
 			this.texts.push(item);
 			return item;
@@ -214,31 +214,13 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			node.position.set(x,y,z);
 
 			var elems = {
-				'parent': {
-					width: this.imgPlusSize,
-					height: this.imgPlusSize,
-					path: 'trash/add.png',
-					trPath: 'trash/add_tr.png',
-					posX: -this.nodeWidth/2-this.imgPlusSize/2,
-					posY: -this.nodeWidth/2-this.imgPlusSize/2-20,
-					posZ: 0
-				},
-				'delete': {
-					width: this.imgPlusSize,
-					height: this.imgPlusSize,
-					path: 'trash/delete.png',
-					trPath: 'trash/delete_tr.png',
-					posX: -this.nodeWidth/4-this.imgPlusSize/2,
-					posY: -this.nodeWidth/2-this.imgPlusSize/2-20,
-					posZ: 0
-				},
 				'child': {
 					width: this.imgPlusSize,
 					height: this.imgPlusSize,
 					path: 'trash/add.png',
 					trPath: 'trash/add_tr.png',
 					posX: -this.imgPlusSize/2,
-					posY: -this.nodeWidth/2-this.imgPlusSize/2-20,
+					posY: -this.nodeWidth/2-this.imgPlusSize/2-30,
 					posZ: 0
 				},
 				'edit': {
@@ -246,20 +228,54 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 					height: this.imgPlusSize,
 					path: 'trash/edit.png',
 					trPath: 'trash/edit_tr.png',
-					posX: this.nodeWidth/4-this.imgPlusSize/2,
-					posY: -this.nodeWidth/2-this.imgPlusSize/2-20,
+					posX: this.imgPlusSize/2,
+					posY: -this.nodeWidth/2-this.imgPlusSize/2-30,
 					posZ: 0
-				},
-				'spouse': {
+				}
+			};
+			
+			var set_right = 1;
+			if(!data.f_id || !data.m_id) {
+				set_right = -1;
+				elems.parent = {
 					width: this.imgPlusSize,
 					height: this.imgPlusSize,
 					path: 'trash/add.png',
 					trPath: 'trash/add_tr.png',
-					posX: this.nodeWidth/2-this.imgPlusSize/2,
-					posY: -this.nodeWidth/2-this.imgPlusSize/2-20,
+					posX: -this.imgPlusSize/2*3,
+					posY: -this.nodeWidth/2-this.imgPlusSize/2-30,
 					posZ: 0
+				};
+			}
+			if(!data.spouse_id) {
+				set_right = 1;
+				if(data.sex == "m")
+					var dx = Math.floor(this.nodeWidth / 2) - 40;
+				if(data.sex == "f")
+					var dx = -Math.floor(this.nodeWidth / 2) + 40;
+				elems.spouse = {
+					width: this.imgPlusSize,
+					height: this.imgPlusSize,
+					path: 'trash/add.png',
+					trPath: 'trash/add_tr.png',
+					posX: this.imgPlusSize/2*3,
+					posY: -this.nodeWidth/2-this.imgPlusSize/2-30,
+					posZ: 0
+				};
+			}
+			if(data.id != localStorage.getItem("prof_id") && data.id != this.data2.id) {
+				if((!data.f_id && !data.m_id && data.ch_ids.length < 1) || (data.ch_ids.length == 0 && data.spouse_id == 0)) {
+					elems['delete'] = {
+						width: this.imgPlusSize,
+						height: this.imgPlusSize,
+						path: 'trash/delete.png',
+						trPath: 'trash/delete_tr.png',
+						posX: (-this.nodeWidth/2+this.imgPlusSize/2)*set_right,
+						posY: -this.nodeWidth/2-this.imgPlusSize/2-30,
+						posZ: 0
+					}
 				}
-			};
+			}
 			for(var key in elems) {
 				node.add(this.nodeElement(elems[key], key));
 			}
@@ -304,7 +320,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 
 			var cube = new THREE.Mesh(
 				new THREE.CubeGeometry(this.imgPlusSize,this.imgPlusSize,this.imgPlusSize, 1, 1, 1, new THREE.MeshBasicMaterial( {
-					color: 0xFFFFFF
+					color: 0xddffdd
 				} ) ),
 				new THREE.MeshFaceMaterial({
 					color: 0xFFFFFF,
