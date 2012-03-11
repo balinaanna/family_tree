@@ -314,7 +314,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			element.name = name;
 			return element;
 		},
-		createTree : function (id, position, i) {
+		create_tree : function(){
 			this.collection = new TreeCollection();
 			this.collection.fetch({
 				success : $.proxy(function(collection) {
@@ -349,7 +349,15 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				lineWidth: 1
 			});
 			this.lines = [];
-		
+			this.createTree(this.data2.id, {'x': 0, 'y': 0, 'z': 0}, 0);
+			
+			for (var k in this.lines){
+				this.line = new THREE.Line(this.lines[k], this.lineMat);
+				this.scene.add(this.line);
+			}
+		},
+		createTree : function (id, position, i) {
+			
 			if(i==0) {
 				var cube = this.createCube(position.x,position.y,position.z,this.tree[id]);
 				cube.info.user_id = this.tree[id]['id'];
@@ -430,14 +438,9 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 					this.lines.push(this.lineGeo);
 					this.lineGeo = new THREE.Geometry();
 					this.objects.push(cube3[key]);
-					//this.createTree(arr[key], cube3[key].position, i);
+					this.createTree(arr[key], cube3[key].position, i);
 				}
 			}
-			
-			for (var k in this.lines){
-				this.line = new THREE.Line(this.lines[k], this.lineMat);
-				this.scene.add(this.line);
-			}	
 		},
 		
 		redrawTree : function(id) {
@@ -458,7 +461,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				cache : false
 			});
 			this.collection.fetch({
-				success : $.proxy(this.createTree(this.data2.id, {'x': 0, 'y': 0, 'z': 0}, 0), this)
+				success : $.proxy(this.create_tree(), this)
 			});
 		},
 
