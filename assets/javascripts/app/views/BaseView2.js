@@ -8,7 +8,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 		stepY : 300,
 		lineTurne : 375,
 		dist : 6750,
-		step : 2,
+		step : 2.5,
 
 		isMouseDown : false,
 		onMouseDownPosition: null,
