@@ -357,9 +357,18 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			}
 		},
 		createTree : function (id, position, i) {
-			
+			var start_node_id = id;
 			if(i==0) {
+				if(this.tree[id].f_id != '') id = this.tree[id].f_id;
+				else if(this.tree[id].m_id != '') id = this.tree[id].m_id;
+				
 				var cube = this.createCube(position.x,position.y,position.z,this.tree[id]);
+				if(this.tree[id]['id'] == start_node_id)
+				{
+					cube.children[5].material = new THREE.MeshBasicMaterial({
+									color: 0xffff77
+								});
+				}
 				cube.info.user_id = this.tree[id]['id'];
 				this.scene.add(cube);
 				this.objects.push(cube);
@@ -377,7 +386,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			}
 			var unit={};
 			i++;
-			if(this.tree[id].spouse_id && i<=2){
+			if(this.tree[id].spouse_id && i<=3){
 				if(this.tree[this.tree[id].spouse_id].sex=='f') {
 					var cube2 = this.createCube(position.x-this.step*this.nodeWidth,position.y-(this.step-1)*this.nodeHeight,position.z,this.tree[this.tree[id].spouse_id]);
 					cube2.info.user_id = this.tree[this.tree[id].spouse_id]['id'];
@@ -411,7 +420,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				this.lineGeo = new THREE.Geometry();
 				this.objects.push(cube2);
 			}
-			if(this.tree[id].ch_ids && i<=1){
+			if(this.tree[id].ch_ids && i<=2){
 				var arr = this.tree[id].ch_ids;
 				this.lineGeo.vertices.push(
 					this.v(unit.x, unit.y, unit.z - this.nodeWidth), this.v(unit.x, unit.y, unit.z+arr.length*this.step*this.nodeWidth)
@@ -435,6 +444,13 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 							this.v(cube3[key].position.x-this.step*this.nodeWidth + this.nodeWidth/2, cube3[key].position.y, cube3[key].position.z), this.v(cube3[key].position.x+this.step*this.nodeWidth, cube3[key].position.y, cube3[key].position.z)
 							);
 					}
+					
+					if(this.tree[arr[key]]['id'] == start_node_id)
+					{
+						cube3[key].children[5].material = new THREE.MeshBasicMaterial({
+										color: 0xffff77
+									});
+					}	
 					this.lines.push(this.lineGeo);
 					this.lineGeo = new THREE.Geometry();
 					this.objects.push(cube3[key]);
@@ -506,9 +522,14 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				this.sy += dy;
 			} else if(intersects.length > 0) {
 				this.container.style.cursor = 'pointer';
-				if (this.selectedObj != intersects[0].object.parent.children[5] && this.selectedObj != null) this.selectedObj.material = new THREE.MeshBasicMaterial({
-					color: 0xFFFFFF
-				});
+				if (this.selectedObj != intersects[0].object.parent.children[5] && 
+					this.selectedObj != null && 
+					this.data2.id != this.selectedObj.parent.info.user_id)
+				{
+					this.selectedObj.material = new THREE.MeshBasicMaterial({
+						color: 0xFFFFFF
+					});
+				}
 				
 				var hint = false;
 				for( i = 0; i < intersects.length; i++) {
@@ -575,9 +596,13 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 								$('#hint').css('left', -100);
 								$('#hint').css('top', -100);
 								$('#hint').css('opacity', '0');
-								this.selectedObj.material = new THREE.MeshBasicMaterial({
-									color: 0x86A9F5
-								});
+								
+								if(this.data2.id != this.selectedObj.parent.info.user_id)
+								{
+									this.selectedObj.material = new THREE.MeshBasicMaterial({
+										color: 0x86A9F5
+									});
+								}
 							}
 							break;
 					}
@@ -675,9 +700,12 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 
 				if(intersects.length == 0 && this.selectedObj) {
 					this.container.style.cursor = 'default';
-					this.selectedObj.material = new THREE.MeshBasicMaterial({
-						color: 0xFFFFFF
-					});
+					if(this.data2.id != this.selectedObj.parent.info.user_id)
+					{
+						this.selectedObj.material = new THREE.MeshBasicMaterial({
+							color: 0xFFFFFF
+						});
+					}
 				}
 			}
 		},
