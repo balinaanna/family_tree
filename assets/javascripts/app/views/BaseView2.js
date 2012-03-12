@@ -35,7 +35,8 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			"mousemove #roll" : "navShow",
 			"click #logout_btn" : "logout",
 			"click #submit_person" : "submitFunc",
-			"click #save_image" : "saveImage"
+			"click #save_image" : "saveImage",
+			"click #view3d" : "changeView"
 		},
 
 		initialize: function(){
@@ -103,7 +104,9 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 
 			this.redrawTree();
 		},
-
+		changeView : function() {
+			Backbone.history.navigate('tree', true);
+		},
 		navShow : function() {
 			if(!this.showedNav && !this.animating) {
 				this.animating = true;

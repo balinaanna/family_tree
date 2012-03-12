@@ -40,6 +40,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			"click #logout_btn" : "logout",
 			"click #revers" : "reverseTree",
 			"click #save_image" : "saveImage",
+			"click #view3d" : "changeView",
 			"mousemove #roll" : "navShow"
 		},
 
@@ -96,6 +97,9 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			this.renderer.autoClear = false;
 			this.container.appendChild(this.renderer.domElement);
 			this.redrawTree();
+		},
+		changeView : function() {
+			Backbone.history.navigate('tree3d', true);
 		},
 		navShow : function() {
 			if(!this.showedNav && !this.animating) {
