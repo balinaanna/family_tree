@@ -801,10 +801,22 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				{
 					case 'parent':
 						nodex = intersects[0].object.parent.parent;
-						this.TempObj = {
-							"action" : 'add_parent',
-							node : nodex
-						};
+						if (nodex.father){
+	                                		this.TempObj = {
+	    							"action" : 'add_spouse',
+	    							node : nodex.father
+	    						};
+						} else if (nodex.mother){
+                                			this.TempObj = {
+    								"action" : 'add_spouse',
+    								node : nodex.mother
+    							};
+						} else {
+                                			this.TempObj = {
+    								"action" : 'add_parent',
+    								node : nodex
+    							};
+						}
 						OSX.init_edit({
 							"action" : 'add_parent'
 						}, nodex);
