@@ -73,6 +73,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			}, this), 2000);
 
 			$("#revers").css('display', 'block');
+			$("#view3d").attr('value','3D View');
 			this.container = document.createElement('div');
 			$(this.el).append(this.container);
 			this.scene = new THREE.Scene();

@@ -70,6 +70,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				},this),2000);
 
 			$("#revers").css('display', 'none');
+			$("#view3d").attr('value','2D View');
 			this.container = document.createElement('div');
 			$(this.el).append(this.container);
 			this.projector = new THREE.Projector();
