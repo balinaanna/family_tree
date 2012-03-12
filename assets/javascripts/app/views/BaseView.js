@@ -972,7 +972,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 
 				if(this.RISED != null) {
 
-					if(this.RISED != intersects[1].object.parent) {
+					if(this.RISED != intersects[0].object.parent) {
 						this.RISED.position.x += this.riseX;
 						this.RISED.position.y += this.riseY;
 						this.RISED.position.z = 0;
@@ -994,7 +994,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				}
 				if(this.RISED == null) {
 					//set full visibility for buttons
-					par = intersects[1].object.parent;
+					par = intersects[0].object.parent;
 					for( j = 0; j < par.children.length; j++) {
 						if(par.children[j].name == 'child') {
 							par.children[j].material.map.image.src = 'trash/add.png';
