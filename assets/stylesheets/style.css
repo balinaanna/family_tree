@@ -378,7 +378,7 @@ p a {
 	top: 220px;
 }
 #export {
-	top: 260px;
+	top: 300px;
 }
 #zoom_text, #save_img {
 	padding-top: 10px;
@@ -388,17 +388,6 @@ p a {
 	font-size:16pt;
 	text-shadow: 0px 2px 2px #000;
 	color: #fff;
-}
-.view {
-	text-align: center;
-	font-family: Tahoma 12px;
-	font-size:12pt;
-	text-shadow: 0px 2px 2px #000;
-	color: #fff;	
-}
-#select-view {
-	position: absolute;
-	top: 320px;
 }
 #recoverbox {
 	display: none;
