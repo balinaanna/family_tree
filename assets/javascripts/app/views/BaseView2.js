@@ -569,7 +569,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				this.rotation += dx/100;
 				this.camera.position.x -= dx*10;
 				this.camera.position.y += dy*10;
-				//this.camera.position.z += Math.sin(dy/100)*this.dist;
+				this.camera.position.z += (Math.sin(dx/1000) - Math.sin(dy/1000))*this.dist;
 				this.sx += dx;
 				this.sy += dy;
 			} else if(intersects.length > 0) {
