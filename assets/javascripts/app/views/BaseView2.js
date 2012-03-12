@@ -388,6 +388,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 		createTree : function (id, position, i) {
 			var start_node_id = id;
 			if(i==0) {
+				start_node_id0 = id;
 				if(this.tree[id].f_id != '' && this.tree[id].m_id != '')
 				{
 					if(this.tree[id].f_id != '') id = this.tree[id].f_id;
@@ -406,11 +407,11 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				this.objects.push(cube);
 				if(this.tree[id].sex=='f') {
 					this.lineGeo.vertices.push(
-						this.v(cube.position.x, cube.position.y, cube.position.z), this.v(cube.position.x+(this.step+1)*this.nodeWidth, cube.position.y, cube.position.z)
+						this.v(cube.position.x, cube.position.y, cube.position.z), this.v(cube.position.x+(this.step+0.2)*this.nodeWidth, cube.position.y, cube.position.z)
 						);
 				} else {
 					this.lineGeo.vertices.push(
-						this.v(cube.position.x, cube.position.y, cube.position.z), this.v(cube.position.x, cube.position.y-(this.step+1)*this.nodeHeight, cube.position.z)
+						this.v(cube.position.x, cube.position.y, cube.position.z), this.v(cube.position.x, cube.position.y-(this.step-0.8)*this.nodeHeight, cube.position.z)
 						);
 				}
 				this.lines.push(this.lineGeo);
@@ -418,6 +419,8 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			}
 			var unit={};
 			i++;
+			if((this.tree[id].m_id != this.tree[start_node_id0].m_id && this.tree[id].f_id != this.tree[start_node_id0].f_id) || this.tree[id].id == start_node_id0)
+			{
 			if(this.tree[id].spouse_id && i<=3){
 				if(this.tree[this.tree[id].spouse_id].sex=='f') {
 					var cube2 = this.createCube(position.x-this.step*this.nodeWidth,position.y-(this.step-1)*this.nodeHeight,position.z,this.tree[this.tree[id].spouse_id]);
@@ -425,7 +428,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 					this.scene.add(cube2);
 
 					this.lineGeo.vertices.push(
-						this.v(cube2.position.x, cube2.position.y, cube2.position.z), this.v(cube2.position.x+(this.step+1)*this.nodeWidth, cube2.position.y, cube2.position.z)
+						this.v(cube2.position.x, cube2.position.y, cube2.position.z), this.v(cube2.position.x+(this.step+0.2)*this.nodeWidth, cube2.position.y, cube2.position.z)
 						);
 
 					unit = {
@@ -439,7 +442,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 					this.scene.add(cube2);
 
 					this.lineGeo.vertices.push(
-						this.v(cube2.position.x, cube2.position.y, cube2.position.z), this.v(cube2.position.x, cube2.position.y-(this.step+1)*this.nodeHeight, cube2.position.z)
+						this.v(cube2.position.x, cube2.position.y, cube2.position.z), this.v(cube2.position.x, cube2.position.y-(this.step+0.2)*this.nodeHeight, cube2.position.z)
 						);
 
 					unit = {
@@ -452,6 +455,9 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				this.lineGeo = new THREE.Geometry();
 				this.objects.push(cube2);
 			}
+			}
+			if(!(this.tree[id].id != start_node_id && (this.tree[id].m_id == this.tree[start_node_id].m_id || this.tree[id].f_id == this.tree[start_node_id].f_id)))
+			{
 			if(this.tree[id].ch_ids && i<=2){
 				var arr = this.tree[id].ch_ids;
 				this.lineGeo.vertices.push(
@@ -465,15 +471,38 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 						cube3[key] = this.createCube(unit.x, unit.y-this.step*this.nodeHeight + this.nodeHeight/2, unit.z + (key*1+1)*this.step*this.nodeWidth, this.tree[arr[key]]);
 						cube3[key].info.user_id = this.tree[arr[key]]['id'];
 						this.scene.add(cube3[key]);
+						
+						if(cube3[key].info.user_id != start_node_id && (cube3[key].info.m_id == this.tree[start_node_id]['m_id'] || cube3[key].info.f_id == this.tree[start_node_id]['f_id']))
+						{
+							l1 = this.v(cube3[key].position.x, cube3[key].position.y+this.step*this.nodeHeight - this.nodeHeight/2, cube3[key].position.z);
+							l2 = this.v(cube3[key].position.x, cube3[key].position.y-(this.step-2)*this.nodeHeight, cube3[key].position.z);
+						}
+						else
+						{
+							l1 = this.v(cube3[key].position.x, cube3[key].position.y+this.step*this.nodeHeight - this.nodeHeight/2, cube3[key].position.z);
+							l2 = this.v(cube3[key].position.x, cube3[key].position.y-(this.step)*this.nodeHeight, cube3[key].position.z);
+						}
 						this.lineGeo.vertices.push(
-							this.v(cube3[key].position.x, cube3[key].position.y+this.step*this.nodeHeight - this.nodeHeight/2, cube3[key].position.z), this.v(cube3[key].position.x, cube3[key].position.y-this.step*this.nodeHeight, cube3[key].position.z)
+							l1, l2
 							);
 					} else {
 						cube3[key] = this.createCube(unit.x+this.step*this.nodeWidth - this.nodeWidth/2, unit.y, unit.z + (key*1+1)*this.step*this.nodeWidth, this.tree[arr[key]]);
 						cube3[key].info.user_id = this.tree[arr[key]]['id'];
 						this.scene.add(cube3[key]);
+						
+						if(cube3[key].info.user_id != start_node_id && (cube3[key].info.m_id == this.tree[start_node_id]['m_id'] || cube3[key].info.f_id == this.tree[start_node_id]['f_id']))
+						{
+							l1 = this.v(cube3[key].position.x-this.step*this.nodeWidth + this.nodeWidth/2, cube3[key].position.y, cube3[key].position.z);
+							l2 = this.v(cube3[key].position.x+(this.step-2)*this.nodeWidth, cube3[key].position.y, cube3[key].position.z);
+						}
+						else
+						{
+							l1 = this.v(cube3[key].position.x-this.step*this.nodeWidth + this.nodeWidth/2, cube3[key].position.y, cube3[key].position.z);
+							l2 = this.v(cube3[key].position.x+(this.step)*this.nodeWidth, cube3[key].position.y, cube3[key].position.z);
+						}
 						this.lineGeo.vertices.push(
-							this.v(cube3[key].position.x-this.step*this.nodeWidth + this.nodeWidth/2, cube3[key].position.y, cube3[key].position.z), this.v(cube3[key].position.x+this.step*this.nodeWidth, cube3[key].position.y, cube3[key].position.z)
+							//this.v(cube3[key].position.x-this.step*this.nodeWidth + this.nodeWidth/2, cube3[key].position.y, cube3[key].position.z), this.v(cube3[key].position.x+this.step*this.nodeWidth, cube3[key].position.y, cube3[key].position.z)
+							l1, l2
 							);
 					}
 					
@@ -489,6 +518,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 					this.createTree(arr[key], cube3[key].position, i);
 				}
 			}
+		}
 		},
 		
 		redrawTree : function(id) {
