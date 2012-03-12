@@ -485,3 +485,4 @@ class Api_model extends CI_Model {
 		$statement = str_replace("\xC3\x96", "\xD6", $statement); //Ö
 		return $statement;
 	}
+}
