@@ -455,7 +455,6 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				if(child.mother && child.father) {
 					geom.vertices.push(new THREE.Vertex(new THREE.Vector3((child.mother.position.x + child.father.position.x) / 2, child.position.y - this.reverse * this.lineTurne, -10)));
 					geom.vertices.push(new THREE.Vertex(new THREE.Vector3((child.mother.position.x + child.father.position.x) / 2, parent.position.y, -10)));
-					geom.vertices.push(new THREE.Vertex(new THREE.Vector3(parent.position.x, parent.position.y, -10)));
 				}
 				if(child.mother && !child.father) {
 					geom.vertices.push(new THREE.Vertex(new THREE.Vector3(child.position.x, child.mother.position.y + this.reverse * this.lineTurne, -10)));
@@ -468,9 +467,15 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 					geom.vertices.push(new THREE.Vertex(new THREE.Vector3(child.father.position.x, child.father.position.y, -10)));
 				}
 			} else {
+		                var lineMat2 = new THREE.LineBasicMaterial({
+        				color : '0x023703',
+        				opacity : 1,
+        				linewidth : 4
+        			});
 				geom.vertices.push(new THREE.Vertex(new THREE.Vector3(parent.position.x, parent.position.y, -10)));
 			}
-			line = new THREE.Line(geom, lineMat);
+		            if (!spouse) line = new THREE.Line(geom, lineMat);
+		            if (spouse) line = new THREE.Line(geom, lineMat2);
 
 			this.scene.add(line);
 		},
