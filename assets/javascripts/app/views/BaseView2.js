@@ -35,7 +35,8 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			"mousemove #roll" : "navShow",
 			"click #logout_btn" : "logout",
 			"click #submit_person" : "submitFunc",
-			"click #save_image" : "saveImage"
+			"click #save_image" : "saveImage",
+			"click #view3d" : "changeView"
 		},
 
 		initialize: function(){
@@ -103,7 +104,9 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 
 			this.redrawTree();
 		},
-
+		changeView : function() {
+			Backbone.history.navigate('tree', true);
+		},
 		navShow : function() {
 			if(!this.showedNav && !this.animating) {
 				this.animating = true;
@@ -596,7 +599,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				this.rotation += dx/100;
 				this.camera.position.x -= dx*10;
 				this.camera.position.y += dy*10;
-				//this.camera.position.z += Math.sin(dy/100)*this.dist;
+				this.camera.position.z += (Math.sin(dx/1000) - Math.sin(dy/1000))*this.dist;
 				this.sx += dx;
 				this.sy += dy;
 			} else if(intersects.length > 0) {
