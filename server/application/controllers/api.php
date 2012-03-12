@@ -546,5 +546,14 @@ class Api extends CI_Controller {
 
 		echo json_encode($json);
 	}
+	
+	public function export_gedcom() {
+		$result = $this->db->query('SELECT  * FROM profile_data	WHERE `user_id`="'.$this->session->userdata('user_id').'" ORDER BY id');
+		$export = $this->api_model->ged_export($result->result());
+		 
+		header("Content-type: application/octet-stream");
+        header("Content-Disposition: attachment; filename=\"family_tree.ged\"");
+        echo $export;
+	}
 
 }
