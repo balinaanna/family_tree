@@ -735,7 +735,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 					this.RISED = par;
 				}
 
-			} else if (intersects.objects.length == 0){
+			} else if (intersects.length == 0){
 				//hide hint
 				$('#hint').css('opacity', '0');
 				$('#hint').css('left', -100);
