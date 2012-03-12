@@ -75,7 +75,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 
 			try {
 				this.renderer = new THREE.WebGLRenderer({
-					antialias: true
+					antialias: false
 				});
 			} catch (err) {
 				this.renderer = new THREE.CanvasRenderer({
@@ -517,14 +517,22 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 		sy : 0,
 		rotation : 1,
 		onmousedown : function (ev){
-			if (ev.target == this.renderer.domElement) {
+			ev = ev || window.Event || window.event;
+            if (ev && ((ev.button == 3 || ev.button == 2) || (ev.which ==3 || ev.which == 2))){
+                if (ev.target == this.renderer.domElement) {
+    				this.middledown = true;
+    				this.sx = ev.clientX;
+    				this.sy = ev.clientY;
+    			}
+            } else if (ev.target == this.renderer.domElement) {
 				this.down = true;
 				this.sx = ev.clientX;
 				this.sy = ev.clientY;
 			}
 		},
 		onmouseup : function(){
-			this.down = false;
+			this.middledown = false;
+            this.down = false;
 		},
 		onmousemove : function(ev) {
 			event.preventDefault();
@@ -537,13 +545,22 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			var ray = new THREE.Ray(this.camera.position, vector.subSelf(this.camera.position).normalize());
 			var intersects = ray.intersectObjects(this.objects);
 
-			if (this.down) {
+			if (this.middledown) {
 				var dx = ev.clientX - this.sx;
 				var dy = ev.clientY - this.sy;
 				this.rotation += dx/100;
 				this.camera.position.x = Math.cos(this.rotation)*this.dist;
 				this.camera.position.z = Math.sin(this.rotation)*this.dist;
 				this.camera.position.y += Math.sin(dy/100)*this.dist;
+				this.sx += dx;
+				this.sy += dy;
+			} else if (this.down) {
+                var dx = ev.clientX - this.sx;
+				var dy = ev.clientY - this.sy;
+				this.rotation += dx/100;
+				this.camera.position.x -= dx*10;
+				this.camera.position.y += dy*10;
+				//this.camera.position.z += Math.sin(dy/100)*this.dist;
 				this.sx += dx;
 				this.sy += dy;
 			} else if(intersects.length > 0) {
@@ -715,7 +732,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 					this.RISED = par;
 				}
 
-			} else {
+			} else if (intersects.objects.length == 0){
 				//hide hint
 				$('#hint').css('opacity', '0');
 				$('#hint').css('left', -100);
@@ -765,8 +782,8 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			}
 		},
 		onmousewheel : function(ev){
-			this.camera.position.z -= ev.originalEvent.wheelDeltaY;
-			this.dist = this.camera.position.z;
+            this.camera.fov -= ev.originalEvent.wheelDeltaY*0.05;
+            this.camera.updateProjectionMatrix();
 		},
 		onclick : function(event){
 			event.preventDefault();
@@ -857,7 +874,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			requestAnimationFrame($.proxy(this.animate, this));
 			if (!this.paused) {
 				this.renderer.clear();
-				this.camera.lookAt( this.scene.position );
+				if (this.middledown) this.camera.lookAt( this.scene.position);
 				for (var k in this.texts){
 					this.texts[k].lookAt(this.camera.position);
 				}
