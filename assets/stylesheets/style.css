@@ -386,6 +386,17 @@ p a {
 	text-shadow: 0px 2px 2px #000;
 	color: #fff;
 }
+.view {
+	text-align: center;
+	font-family: Tahoma 12px;
+	font-size:12pt;
+	text-shadow: 0px 2px 2px #000;
+	color: #fff;	
+}
+#select-view {
+	position: absolute;
+	top: 300px;
+}
 #recoverbox {
 	display: none;
 }
