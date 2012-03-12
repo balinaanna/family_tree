@@ -69,6 +69,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				this.navHide()
 				},this),2000);
 
+			$("#revers").css('display', 'none');
 			this.container = document.createElement('div');
 			$(this.el).append(this.container);
 			this.projector = new THREE.Projector();
