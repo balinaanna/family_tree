@@ -363,6 +363,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 					this.scene = new THREE.Scene();
 					this.camera.position.x = Math.cos(this.rotation)*this.dist;
 					this.camera.position.z = Math.sin(this.rotation)*this.dist;
+					this.camera.lookAt(this.scene.position);
 					this.scene.add(this.camera);
 					this.renderer.autoClear = false;
 					//this.animate();
