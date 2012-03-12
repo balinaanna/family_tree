@@ -385,8 +385,11 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 		createTree : function (id, position, i) {
 			var start_node_id = id;
 			if(i==0) {
-				if(this.tree[id].f_id != '') id = this.tree[id].f_id;
-				else if(this.tree[id].m_id != '') id = this.tree[id].m_id;
+				if(this.tree[id].f_id != '' && this.tree[id].m_id != '')
+				{
+					if(this.tree[id].f_id != '') id = this.tree[id].f_id;
+					else if(this.tree[id].m_id != '') id = this.tree[id].m_id;
+				}
 				
 				var cube = this.createCube(position.x,position.y,position.z,this.tree[id]);
 				if(this.tree[id]['id'] == start_node_id)
