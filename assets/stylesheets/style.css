@@ -362,12 +362,12 @@ p a {
 		);
 
 }
-#logout_btn:hover, #revers:hover, #save_image:hover {
+#logout_btn:hover, #revers:hover, #save_image:hover, #view3d:hover, #export:hover {
     text-decoration: none;
 	opacity: 1;
 	/*margin-top: 1px;*/
 }
-#logout_btn:active, #revers:active, #save_image:active {
+#logout_btn:active, #revers:active, #save_image:active, #view3d:active, #export:active {
     position: relative;
     /*top: 1px;*/
 }
@@ -377,6 +377,12 @@ p a {
 #save_image {
 	top: 220px;
 }
+#view3d {
+	top: 260px;
+}
+#export {
+	top: 300px;
+}
 #zoom_text, #save_img {
 	padding-top: 10px;
 	width: 100%;
@@ -385,17 +391,6 @@ p a {
 	font-size:16pt;
 	text-shadow: 0px 2px 2px #000;
 	color: #fff;
-}
-.view {
-	text-align: center;
-	font-family: Tahoma 12px;
-	font-size:12pt;
-	text-shadow: 0px 2px 2px #000;
-	color: #fff;	
-}
-#select-view {
-	position: absolute;
-	top: 300px;
 }
 #recoverbox {
 	display: none;

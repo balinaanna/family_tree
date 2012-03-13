@@ -40,6 +40,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			"click #logout_btn" : "logout",
 			"click #revers" : "reverseTree",
 			"click #save_image" : "saveImage",
+			"click #view3d" : "changeView",
 			"mousemove #roll" : "navShow"
 		},
 
@@ -72,6 +73,8 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				this.navHide()
 			}, this), 2000);
 
+			$("#revers").css('opacity', '0.7');
+			$("#view3d").attr('value','3D View');
 			this.container = document.createElement('div');
 			$(this.el).append(this.container);
 			this.scene = new THREE.Scene();
@@ -94,6 +97,9 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			this.renderer.autoClear = false;
 			this.container.appendChild(this.renderer.domElement);
 			this.redrawTree();
+		},
+		changeView : function() {
+			Backbone.history.navigate('tree3d', true);
 		},
 		navShow : function() {
 			if(!this.showedNav && !this.animating) {
@@ -468,7 +474,6 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				if(child.mother && child.father) {
 					geom.vertices.push(new THREE.Vertex(new THREE.Vector3((child.mother.position.x + child.father.position.x) / 2, child.position.y - this.reverse * this.lineTurne, -10)));
 					geom.vertices.push(new THREE.Vertex(new THREE.Vector3((child.mother.position.x + child.father.position.x) / 2, parent.position.y, -10)));
-					geom.vertices.push(new THREE.Vertex(new THREE.Vector3(parent.position.x, parent.position.y, -10)));
 				}
 				if(child.mother && !child.father) {
 					geom.vertices.push(new THREE.Vertex(new THREE.Vector3(child.position.x, child.mother.position.y + this.reverse * this.lineTurne, -10)));
@@ -481,9 +486,15 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 					geom.vertices.push(new THREE.Vertex(new THREE.Vector3(child.father.position.x, child.father.position.y, -10)));
 				}
 			} else {
+		                var lineMat2 = new THREE.LineBasicMaterial({
+        				color : '0x023703',
+        				opacity : 1,
+        				linewidth : 4
+        			});
 				geom.vertices.push(new THREE.Vertex(new THREE.Vector3(parent.position.x, parent.position.y, -10)));
 			}
-			line = new THREE.Line(geom, lineMat);
+		            if (!spouse) line = new THREE.Line(geom, lineMat);
+		            if (spouse) line = new THREE.Line(geom, lineMat2);
 
 			this.scene.add(line);
 		},
@@ -881,6 +892,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 					} else if(intersects[i].object.name == 'edit') {
 						//edit persone
 						nodex = intersects[i].object.parent;
+						if(!nodex.info) nodex = nodex.parent;
 						this.TempObj = {
 							"action" : 'edit_person',
 							node : nodex
@@ -991,7 +1003,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 
 				if(this.RISED != null) {
 
-					if(this.RISED != intersects[1].object.parent) {
+					if(this.RISED != intersects[0].object.parent) {
 						this.RISED.position.x += this.riseX;
 						this.RISED.position.y += this.riseY;
 						this.RISED.position.z = 0;
@@ -1013,7 +1025,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				}
 				if(this.RISED == null) {
 					//set full visibility for buttons
-					par = intersects[1].object.parent;
+					par = intersects[0].object.parent;
 					for( j = 0; j < par.children.length; j++) {
 						if(par.children[j].name == 'child') {
 							par.children[j].material.map.image.src = 'trash/add.png';

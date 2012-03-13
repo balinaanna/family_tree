@@ -21,6 +21,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 		data2:{},
 		TempObj : {},
 		texts: [],
+                buttons: [],
 		animating : true,
 
 		light : new THREE.PointLight(0xFFCC99),
@@ -35,7 +36,8 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			"mousemove #roll" : "navShow",
 			"click #logout_btn" : "logout",
 			"click #submit_person" : "submitFunc",
-			"click #save_image" : "saveImage"
+			"click #save_image" : "saveImage",
+			"click #view3d" : "changeView"
 		},
 
 		initialize: function(){
@@ -69,6 +71,8 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				this.navHide()
 				},this),2000);
 
+			$("#revers").css('opacity', '0');
+			$("#view3d").attr('value','2D View');
 			this.container = document.createElement('div');
 			$(this.el).append(this.container);
 			this.projector = new THREE.Projector();
@@ -101,7 +105,9 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 
 			this.redrawTree();
 		},
-
+		changeView : function() {
+			Backbone.history.navigate('tree', true);
+		},
 		navShow : function() {
 			if(!this.showedNav && !this.animating) {
 				this.animating = true;
@@ -177,6 +183,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 		},
 		createCube : function(x,y,z,data) {
 			var node = new THREE.Object3D();
+                        var buttonPlace = new THREE.Object3D();
 			if(data.photo_url == "" || data.photo_url == null) {
 				data.photo_url = "no_avatar.jpg"
 			};
@@ -221,7 +228,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 					path: 'trash/add.png',
 					trPath: 'trash/add_tr.png',
 					posX: -this.imgPlusSize/2,
-					posY: -this.nodeWidth/2-this.imgPlusSize/2-30,
+					posY: 0,
 					posZ: 0
 				},
 				'edit': {
@@ -230,7 +237,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 					path: 'trash/edit.png',
 					trPath: 'trash/edit_tr.png',
 					posX: this.imgPlusSize/2,
-					posY: -this.nodeWidth/2-this.imgPlusSize/2-30,
+					posY: 0,
 					posZ: 0
 				}
 			};
@@ -244,7 +251,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 					path: 'trash/add.png',
 					trPath: 'trash/add_tr.png',
 					posX: -this.imgPlusSize/2*3,
-					posY: -this.nodeWidth/2-this.imgPlusSize/2-30,
+					posY: 0,
 					posZ: 0
 				};
 			}
@@ -260,25 +267,25 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 					path: 'trash/add.png',
 					trPath: 'trash/add_tr.png',
 					posX: this.imgPlusSize/2*3,
-					posY: -this.nodeWidth/2-this.imgPlusSize/2-30,
+					posY: 0,
 					posZ: 0
 				};
 			}
 			if(data.id != localStorage.getItem("prof_id") && data.id != this.data2.id) {
-				if((!data.f_id && !data.m_id && data.ch_ids.length < 1) || (data.ch_ids.length == 0 && data.spouse_id == 0)) {
+				if((!data.f_id && !data.m_id && data.ch_ids.length < 2) || (data.ch_ids.length == 0 && data.spouse_id == 0)) {
 					elems['delete'] = {
 						width: this.imgPlusSize,
 						height: this.imgPlusSize,
 						path: 'trash/delete.png',
 						trPath: 'trash/delete_tr.png',
 						posX: (-this.nodeWidth/2+this.imgPlusSize/2)*set_right,
-						posY: -this.nodeWidth/2-this.imgPlusSize/2-30,
+						posY: 0,
 						posZ: 0
 					}
 				}
 			}
 			for(var key in elems) {
-				node.add(this.nodeElement(elems[key], key));
+				buttonPlace.add(this.nodeElement(elems[key], key));
 			}
 			node.info = {
 				"l_name" : data.l_name,
@@ -293,6 +300,9 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				"ch_ids" : data.ch_ids,
 				"spouse_id" : data.spouse_id
 			};
+                        buttonPlace.position.y = -this.nodeWidth/2-this.imgPlusSize/2-30;
+                        node.add(buttonPlace);
+                        this.buttons.push(buttonPlace);
 
 			return node;
 		},
@@ -361,6 +371,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 					this.scene = new THREE.Scene();
 					this.camera.position.x = Math.cos(this.rotation)*this.dist;
 					this.camera.position.z = Math.sin(this.rotation)*this.dist;
+					this.camera.lookAt(this.scene.position);
 					this.scene.add(this.camera);
 					this.renderer.autoClear = false;
 					//this.animate();
@@ -385,8 +396,12 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 		createTree : function (id, position, i) {
 			var start_node_id = id;
 			if(i==0) {
-				if(this.tree[id].f_id != '') id = this.tree[id].f_id;
-				else if(this.tree[id].m_id != '') id = this.tree[id].m_id;
+				start_node_id0 = id;
+				if(this.tree[id].f_id != '' && this.tree[id].m_id != '')
+				{
+					if(this.tree[id].f_id != '') id = this.tree[id].f_id;
+					else if(this.tree[id].m_id != '') id = this.tree[id].m_id;
+				}
 				
 				var cube = this.createCube(position.x,position.y,position.z,this.tree[id]);
 				if(this.tree[id]['id'] == start_node_id)
@@ -400,11 +415,11 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				this.objects.push(cube);
 				if(this.tree[id].sex=='f') {
 					this.lineGeo.vertices.push(
-						this.v(cube.position.x, cube.position.y, cube.position.z), this.v(cube.position.x+(this.step+1)*this.nodeWidth, cube.position.y, cube.position.z)
+						this.v(cube.position.x, cube.position.y, cube.position.z), this.v(cube.position.x+(this.step+0.2)*this.nodeWidth, cube.position.y, cube.position.z)
 						);
 				} else {
 					this.lineGeo.vertices.push(
-						this.v(cube.position.x, cube.position.y, cube.position.z), this.v(cube.position.x, cube.position.y-(this.step+1)*this.nodeHeight, cube.position.z)
+						this.v(cube.position.x, cube.position.y, cube.position.z), this.v(cube.position.x, cube.position.y-(this.step-0.8)*this.nodeHeight, cube.position.z)
 						);
 				}
 				this.lines.push(this.lineGeo);
@@ -412,6 +427,8 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			}
 			var unit={};
 			i++;
+			if((this.tree[id].m_id != this.tree[start_node_id0].m_id && this.tree[id].f_id != this.tree[start_node_id0].f_id) || this.tree[id].id == start_node_id0)
+			{
 			if(this.tree[id].spouse_id && i<=3){
 				if(this.tree[this.tree[id].spouse_id].sex=='f') {
 					var cube2 = this.createCube(position.x-this.step*this.nodeWidth,position.y-(this.step-1)*this.nodeHeight,position.z,this.tree[this.tree[id].spouse_id]);
@@ -419,7 +436,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 					this.scene.add(cube2);
 
 					this.lineGeo.vertices.push(
-						this.v(cube2.position.x, cube2.position.y, cube2.position.z), this.v(cube2.position.x+(this.step+1)*this.nodeWidth, cube2.position.y, cube2.position.z)
+						this.v(cube2.position.x, cube2.position.y, cube2.position.z), this.v(cube2.position.x+(this.step+0.2)*this.nodeWidth, cube2.position.y, cube2.position.z)
 						);
 
 					unit = {
@@ -433,7 +450,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 					this.scene.add(cube2);
 
 					this.lineGeo.vertices.push(
-						this.v(cube2.position.x, cube2.position.y, cube2.position.z), this.v(cube2.position.x, cube2.position.y-(this.step+1)*this.nodeHeight, cube2.position.z)
+						this.v(cube2.position.x, cube2.position.y, cube2.position.z), this.v(cube2.position.x, cube2.position.y-(this.step+0.2)*this.nodeHeight, cube2.position.z)
 						);
 
 					unit = {
@@ -446,6 +463,14 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				this.lineGeo = new THREE.Geometry();
 				this.objects.push(cube2);
 			}
+			}
+			
+			if(
+				((this.tree[id].m_id != this.tree[start_node_id0].m_id && this.tree[id].f_id != this.tree[start_node_id0].f_id ) &&
+				(this.tree[id].m_id != start_node_id0 && this.tree[id].f_id != start_node_id0 )) || 
+				this.tree[id].id == start_node_id0
+			)
+			{
 			if(this.tree[id].ch_ids && i<=2){
 				var arr = this.tree[id].ch_ids;
 				this.lineGeo.vertices.push(
@@ -459,15 +484,38 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 						cube3[key] = this.createCube(unit.x, unit.y-this.step*this.nodeHeight + this.nodeHeight/2, unit.z + (key*1+1)*this.step*this.nodeWidth, this.tree[arr[key]]);
 						cube3[key].info.user_id = this.tree[arr[key]]['id'];
 						this.scene.add(cube3[key]);
+						
+						if(cube3[key].info.user_id != start_node_id && (cube3[key].info.m_id == this.tree[start_node_id]['m_id'] || cube3[key].info.f_id == this.tree[start_node_id]['f_id']))
+						{
+							l1 = this.v(cube3[key].position.x, cube3[key].position.y+this.step*this.nodeHeight - this.nodeHeight/2, cube3[key].position.z);
+							l2 = this.v(cube3[key].position.x, cube3[key].position.y-(this.step-2)*this.nodeHeight, cube3[key].position.z);
+						}
+						else
+						{
+							l1 = this.v(cube3[key].position.x, cube3[key].position.y+this.step*this.nodeHeight - this.nodeHeight/2, cube3[key].position.z);
+							l2 = this.v(cube3[key].position.x, cube3[key].position.y-(this.step)*this.nodeHeight, cube3[key].position.z);
+						}
 						this.lineGeo.vertices.push(
-							this.v(cube3[key].position.x, cube3[key].position.y+this.step*this.nodeHeight - this.nodeHeight/2, cube3[key].position.z), this.v(cube3[key].position.x, cube3[key].position.y-this.step*this.nodeHeight, cube3[key].position.z)
+							l1, l2
 							);
 					} else {
 						cube3[key] = this.createCube(unit.x+this.step*this.nodeWidth - this.nodeWidth/2, unit.y, unit.z + (key*1+1)*this.step*this.nodeWidth, this.tree[arr[key]]);
 						cube3[key].info.user_id = this.tree[arr[key]]['id'];
 						this.scene.add(cube3[key]);
+						
+						if(cube3[key].info.user_id != start_node_id && (cube3[key].info.m_id == this.tree[start_node_id]['m_id'] || cube3[key].info.f_id == this.tree[start_node_id]['f_id']))
+						{
+							l1 = this.v(cube3[key].position.x-this.step*this.nodeWidth + this.nodeWidth/2, cube3[key].position.y, cube3[key].position.z);
+							l2 = this.v(cube3[key].position.x+(this.step-2)*this.nodeWidth, cube3[key].position.y, cube3[key].position.z);
+						}
+						else
+						{
+							l1 = this.v(cube3[key].position.x-this.step*this.nodeWidth + this.nodeWidth/2, cube3[key].position.y, cube3[key].position.z);
+							l2 = this.v(cube3[key].position.x+(this.step)*this.nodeWidth, cube3[key].position.y, cube3[key].position.z);
+						}
 						this.lineGeo.vertices.push(
-							this.v(cube3[key].position.x-this.step*this.nodeWidth + this.nodeWidth/2, cube3[key].position.y, cube3[key].position.z), this.v(cube3[key].position.x+this.step*this.nodeWidth, cube3[key].position.y, cube3[key].position.z)
+							//this.v(cube3[key].position.x-this.step*this.nodeWidth + this.nodeWidth/2, cube3[key].position.y, cube3[key].position.z), this.v(cube3[key].position.x+this.step*this.nodeWidth, cube3[key].position.y, cube3[key].position.z)
+							l1, l2
 							);
 					}
 					
@@ -483,6 +531,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 					this.createTree(arr[key], cube3[key].position, i);
 				}
 			}
+		}
 		},
 		
 		redrawTree : function(id) {
@@ -560,7 +609,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				this.rotation += dx/100;
 				this.camera.position.x -= dx*10;
 				this.camera.position.y += dy*10;
-				//this.camera.position.z += Math.sin(dy/100)*this.dist;
+				this.camera.position.z += (Math.sin(dx/1000) - Math.sin(dy/1000))*this.dist;
 				this.sx += dx;
 				this.sy += dy;
 			} else if(intersects.length > 0) {
@@ -732,7 +781,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 					this.RISED = par;
 				}
 
-			} else if (intersects.objects.length == 0){
+			} else if (intersects.length == 0){
 				//hide hint
 				$('#hint').css('opacity', '0');
 				$('#hint').css('left', -100);
@@ -798,10 +847,22 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				{
 					case 'parent':
 						nodex = intersects[0].object.parent.parent;
-						this.TempObj = {
-							"action" : 'add_parent',
-							node : nodex
-						};
+						if (nodex.father){
+	                                		this.TempObj = {
+	    							"action" : 'add_spouse',
+	    							node : nodex.father
+	    						};
+						} else if (nodex.mother){
+                                			this.TempObj = {
+    								"action" : 'add_spouse',
+    								node : nodex.mother
+    							};
+						} else {
+                                			this.TempObj = {
+    								"action" : 'add_parent',
+    								node : nodex
+    							};
+						}
 						OSX.init_edit({
 							"action" : 'add_parent'
 						}, nodex);
@@ -820,6 +881,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 						break;
 					case 'edit':
 						nodex = intersects[0].object.parent.parent;
+						if(!nodex.info) nodex = nodex.parent;
 						this.TempObj = {
 							"action" : 'edit_person',
 							node : nodex
@@ -877,6 +939,10 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				if (this.middledown) this.camera.lookAt( this.scene.position);
 				for (var k in this.texts){
 					this.texts[k].lookAt(this.camera.position);
+				}
+				for (var k in this.buttons){
+				
+                                        this.buttons[k].lookAt(this.camera.position);
 				}
 				this.renderer.render(this.scene, this.camera);
 				this.renderer.render(this.coordScene, this.camera);
@@ -1021,4 +1087,4 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			};
 		}
 	});
-});
+});			

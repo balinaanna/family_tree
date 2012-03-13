@@ -1,4 +1,4 @@
-define(['controllers/login_controller', 'controllers/BaseController', 'models/login_model'], function(loginController, BaseController, LoginModel) {
+define(['controllers/login_controller', 'controllers/BaseController', 'controllers/Tree3dController', 'models/login_model'], function(loginController, BaseController, Tree3dController, LoginModel) {
 	return Backbone.Router.extend({
 
 		initialize : function () {
@@ -10,6 +10,7 @@ define(['controllers/login_controller', 'controllers/BaseController', 'models/lo
 		
 		routes : {
 			"tree" 		: "tree",
+			"tree3d"	: "tree3d",
 			"*actions"  : "login"
 		},
 		
@@ -27,6 +28,10 @@ define(['controllers/login_controller', 'controllers/BaseController', 'models/lo
 		
 		tree : function () {
 			this._runController(BaseController);
+		},
+		
+		tree3d : function () {
+			this._runController(Tree3dController);
 		}
 		
 	});
