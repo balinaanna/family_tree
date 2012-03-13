@@ -73,7 +73,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				this.navHide()
 			}, this), 2000);
 
-			$("#revers").css('opacity', '0.7');
+			$("#rev_div").css('display', 'block');
 			$("#view3d").attr('value','3D View');
 			this.container = document.createElement('div');
 			$(this.el).append(this.container);
