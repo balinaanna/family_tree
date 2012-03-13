@@ -21,6 +21,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 		data2:{},
 		TempObj : {},
 		texts: [],
+                buttons: [],
 		animating : true,
 
 		light : new THREE.PointLight(0xFFCC99),
@@ -70,7 +71,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				this.navHide()
 				},this),2000);
 
-			$("#revers").css('display', 'none');
+			$("#revers").css('opacity', '0');
 			$("#view3d").attr('value','2D View');
 			this.container = document.createElement('div');
 			$(this.el).append(this.container);
@@ -182,6 +183,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 		},
 		createCube : function(x,y,z,data) {
 			var node = new THREE.Object3D();
+                        var buttonPlace = new THREE.Object3D();
 			if(data.photo_url == "" || data.photo_url == null) {
 				data.photo_url = "no_avatar.jpg"
 			};
@@ -226,7 +228,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 					path: 'trash/add.png',
 					trPath: 'trash/add_tr.png',
 					posX: -this.imgPlusSize/2,
-					posY: -this.nodeWidth/2-this.imgPlusSize/2-30,
+					posY: 0,
 					posZ: 0
 				},
 				'edit': {
@@ -235,7 +237,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 					path: 'trash/edit.png',
 					trPath: 'trash/edit_tr.png',
 					posX: this.imgPlusSize/2,
-					posY: -this.nodeWidth/2-this.imgPlusSize/2-30,
+					posY: 0,
 					posZ: 0
 				}
 			};
@@ -249,7 +251,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 					path: 'trash/add.png',
 					trPath: 'trash/add_tr.png',
 					posX: -this.imgPlusSize/2*3,
-					posY: -this.nodeWidth/2-this.imgPlusSize/2-30,
+					posY: 0,
 					posZ: 0
 				};
 			}
@@ -265,7 +267,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 					path: 'trash/add.png',
 					trPath: 'trash/add_tr.png',
 					posX: this.imgPlusSize/2*3,
-					posY: -this.nodeWidth/2-this.imgPlusSize/2-30,
+					posY: 0,
 					posZ: 0
 				};
 			}
@@ -277,13 +279,13 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 						path: 'trash/delete.png',
 						trPath: 'trash/delete_tr.png',
 						posX: (-this.nodeWidth/2+this.imgPlusSize/2)*set_right,
-						posY: -this.nodeWidth/2-this.imgPlusSize/2-30,
+						posY: 0,
 						posZ: 0
 					}
 				}
 			}
 			for(var key in elems) {
-				node.add(this.nodeElement(elems[key], key));
+				buttonPlace.add(this.nodeElement(elems[key], key));
 			}
 			node.info = {
 				"l_name" : data.l_name,
@@ -298,6 +300,9 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				"ch_ids" : data.ch_ids,
 				"spouse_id" : data.spouse_id
 			};
+                        buttonPlace.position.y = -this.nodeWidth/2-this.imgPlusSize/2-30;
+                        node.add(buttonPlace);
+                        this.buttons.push(buttonPlace);
 
 			return node;
 		},
@@ -459,7 +464,12 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				this.objects.push(cube2);
 			}
 			}
-			if(!(this.tree[id].id != start_node_id && (this.tree[id].m_id == this.tree[start_node_id].m_id || this.tree[id].f_id == this.tree[start_node_id].f_id)))
+			
+			if(
+				((this.tree[id].m_id != this.tree[start_node_id0].m_id && this.tree[id].f_id != this.tree[start_node_id0].f_id ) &&
+				(this.tree[id].m_id != start_node_id0 && this.tree[id].f_id != start_node_id0 )) || 
+				this.tree[id].id == start_node_id0
+			)
 			{
 			if(this.tree[id].ch_ids && i<=2){
 				var arr = this.tree[id].ch_ids;
@@ -929,6 +939,10 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				for (var k in this.texts){
 					this.texts[k].lookAt(this.camera.position);
 				}
+				for (var k in this.buttons){
+				
+                                        this.buttons[k].lookAt(this.camera.position);
+				}
 				this.renderer.render(this.scene, this.camera);
 				this.renderer.render(this.coordScene, this.camera);
 			}
@@ -1053,4 +1067,4 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			};
 		}
 	});
-});
+});			
