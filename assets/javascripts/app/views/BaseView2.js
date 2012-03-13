@@ -459,7 +459,12 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				this.objects.push(cube2);
 			}
 			}
-			if(!(this.tree[id].id != start_node_id && (this.tree[id].m_id == this.tree[start_node_id].m_id || this.tree[id].f_id == this.tree[start_node_id].f_id)))
+			
+			if(
+				((this.tree[id].m_id != this.tree[start_node_id0].m_id && this.tree[id].f_id != this.tree[start_node_id0].f_id ) &&
+				(this.tree[id].m_id != start_node_id0 && this.tree[id].f_id != start_node_id0 )) || 
+				this.tree[id].id == start_node_id0
+			)
 			{
 			if(this.tree[id].ch_ids && i<=2){
 				var arr = this.tree[id].ch_ids;
