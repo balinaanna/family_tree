@@ -888,9 +888,28 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 		saveImage : function() {
 			var canvas = document.getElementsByTagName('canvas')[0];
 			var context = canvas.getContext("2d");
-			var dataURL = canvas.toDataURL("image/jpeg");
-			document.getElementById("canvasImg").src = dataURL;
-			Canvas2Image.saveAsJPEG(canvas);
+			var dataURL = canvas.toDataURL("image/png");
+      		var fname = 'family_tree';
+        	var data = dataURL;
+        	data = data.substr(data.indexOf(',') + 1).toString();
+         
+        	var dataInput = document.createElement("input") ;
+        	dataInput.setAttribute("name", 'imgdata') ;
+        	dataInput.setAttribute("value", data);
+         
+        	var nameInput = document.createElement("input") ;
+        	nameInput.setAttribute("name", 'name') ;
+        	nameInput.setAttribute("value", fname + '.png');
+         
+        	var myForm = document.createElement("form");
+        	myForm.method = 'post';
+        	myForm.action = "/server/api/screenshot";
+        	myForm.appendChild(dataInput);
+        	myForm.appendChild(nameInput);
+         
+        	document.body.appendChild(myForm) ;
+        	myForm.submit() ;
+        	document.body.removeChild(myForm) ;
 		},
 		submitFunc : function(event) {
 			event.preventDefault();
