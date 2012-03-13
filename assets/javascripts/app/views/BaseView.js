@@ -86,7 +86,8 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			this.onMouseDownPosition = new THREE.Vector2();
 			try {
 				this.renderer = new THREE.WebGLRenderer({
-					antialias : true
+					antialias : true,
+                    			preserveDrawingBuffer : true
 				});
 			} catch(err) {
 				this.renderer = new THREE.CanvasRenderer({
