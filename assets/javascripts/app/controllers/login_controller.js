@@ -7,6 +7,7 @@ define(['models/login_model'], function (LoginModel) {
 			"click #loginbtn" 			: "login",
 			"click .flipLink"			: "flipShow",
 			"click #recoverbtn"			: "passwordRecover",
+			"keypress #loginPass"		: "checkEnter",
 			"keyup input[type='text'], input[type='password']"	: "checkInputText"
 		},
 		
@@ -142,6 +143,12 @@ define(['models/login_model'], function (LoginModel) {
         	}else{
 				$('#registrationbtn').attr('disabled','disabled');
         	}
+		},
+		
+		checkEnter : function(e) {
+			if (e.keyCode == 13) {
+        		this.login();
+    		}
 		}
 	})
 });
