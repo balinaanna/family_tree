@@ -79,7 +79,8 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 
 			try {
 				this.renderer = new THREE.WebGLRenderer({
-					antialias: false
+					antialias: false,
+                    			preserveDrawingBuffer : true
 				});
 			} catch (err) {
 				this.renderer = new THREE.CanvasRenderer({
