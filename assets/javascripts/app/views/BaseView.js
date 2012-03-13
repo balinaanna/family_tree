@@ -873,6 +873,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 					} else if(intersects[i].object.name == 'edit') {
 						//edit persone
 						nodex = intersects[i].object.parent;
+						if(!nodex.info) nodex = nodex.parent;
 						this.TempObj = {
 							"action" : 'edit_person',
 							node : nodex

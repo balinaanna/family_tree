@@ -881,6 +881,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 						break;
 					case 'edit':
 						nodex = intersects[0].object.parent.parent;
+						if(!nodex.info) nodex = nodex.parent;
 						this.TempObj = {
 							"action" : 'edit_person',
 							node : nodex
