@@ -122,6 +122,22 @@ var OSX = {
 								}
 								$('input:radio[name="gender"]').attr('disabled','disabled');
 							}
+							else if(data.action == 'add_parent'){
+								if (user_data.info.m_id != "")
+								{
+									$('#m_radio').attr('checked', true);
+									$('input:radio[name="gender"]').attr('disabled','disabled');
+								}
+								else if (user_data.info.f_id != "")
+								{
+									$('#f_radio').attr('checked', true);
+									$('input:radio[name="gender"]').attr('disabled','disabled');
+								}
+								else
+								{
+									$('#m_radio').attr('checked', true);
+								}
+							}							
 							else{
 								$('#m_radio').attr('checked', true);
 							}

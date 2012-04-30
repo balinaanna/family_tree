@@ -1,39 +1,50 @@
 define(['collections/TreeCollection', 'models/login_model'], function(TreeCollection, LoginModel) {
 	return BaseView = Backbone.View.extend({
 		objects : [],
-        
+
 		mouseX : 0,
 		mouseY : 0,
-        reverse : 1,
+		reverse : 1,
 		stepY : 300,
 		lineTurne : 375,
-		
+
 		isMouseDown : false,
-		onMouseDownPosition: null,
+		onMouseDownPosition : null,
 		mouse : new THREE.Vector2(),
 		nodeWidth : 360,
-		nodeHeight : 450,			
+		nodeHeight : 450,
 		imgPlusSize : 70,
-        SELECTED: null,
-        data1:{},
-		data2:{},
+		SELECTED : null,
+		data1 : {},
+		data2 : {},
 		TempObj : {},
+		animating : true,
+		width_spouse_for_m : 0,
+		width_spouse_for_f : 0,
+		spouseState : null,
+		chWidth : {},
+		chSide : {},
+		chLShift : {},
+		chRShift : {},
+		RISED : null,
+		riseX : 0,
+		riseY : 0,
 
 		events : {
 			"mousedown canvas" : "onDocumentMouseDown",
-			"mouseup canvas": "onDocumentMouseUp",
-			"mousemove canvas" : "onDocumentMouseMove", 
+			"mouseup canvas" : "onDocumentMouseUp",
+			"mousemove canvas" : "onDocumentMouseMove",
 			"mousewheel canvas" : "onDocumentMouseWheel",
-			"click canvas": "onClick",
-			"click #submit_person": "submitFunc",
+			"click canvas" : "onClick",
+			"click #submit_person" : "submitFunc",
 			"click #logout_btn" : "logout",
 			"click #revers" : "reverseTree",
 			"click #save_image" : "saveImage",
-            "mousemove #roll" : "navShow"
+			"click #view3d" : "changeView",
+			"mousemove #roll" : "navShow"
 		},
 
 		initialize : function() {
-
 			this.data2.id = localStorage.getItem("prof_id");
 			$.ajaxSetup({
 				cache : false
@@ -49,16 +60,21 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				max : 7999,
 				slide : $.proxy(function(event, ui) {
 					this.camera.position.z = 9099 - ui.value;
-				},this)
+				}, this)
 			});
 
 			this.navWidth = $('#navigator').css("width");
-		            this.navWidth = this.navWidth.slice(0,-2);
-		            this.navWidth = this.navWidth*1;
-		            this.navWidth -= 5;
-		            this.navWidth -=1;
-		            var t = setTimeout("$('#navigator').animate({left:'-="+this.navWidth+"px'},function(){$('#navigator').css('background-color', '#1A3457');});",2000);
-            
+			this.navWidth = this.navWidth.slice(0, -2);
+			this.navWidth = this.navWidth * 1;
+			this.navWidth -= 6;
+			setTimeout($.proxy(function() {
+				this.animating = false;
+				this.showedNav = true;
+				this.navHide()
+			}, this), 2000);
+
+			$("#rev_div").css('display', 'block');
+			$("#view3d").attr('value','3D View');
 			this.container = document.createElement('div');
 			$(this.el).append(this.container);
 			this.scene = new THREE.Scene();
@@ -66,71 +82,81 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			this.camera.position.y = 150;
 			this.camera.position.z = 3000;
 			this.scene.add(this.camera);
-
 			this.projector = new THREE.Projector();
 			this.onMouseDownPosition = new THREE.Vector2();
-			this.renderer = new THREE.CanvasRenderer();
+			try {
+				this.renderer = new THREE.WebGLRenderer({
+					antialias : true,
+                    			preserveDrawingBuffer : true
+				});
+			} catch(err) {
+				this.renderer = new THREE.CanvasRenderer({
+					antialias : false
+				});
+			}
 			this.renderer.setSize(window.innerWidth, window.innerHeight);
+			this.renderer.autoClear = false;
 			this.container.appendChild(this.renderer.domElement);
- 			
-			this.collection.fetch({
-				success : $.proxy(function(collection) {
-					var arr = collection.toJSON();
-					for(key in arr) {
-						this.data1[arr[key].id] = arr[key];
-						if(this.data1[arr[key].id].f_id == "0") {
-							this.data1[arr[key].id].f_id = "";
-						}
-						if(this.data1[arr[key].id].m_id == "0") {
-							this.data1[arr[key].id].m_id = "";
-						}
-						if(this.data1[arr[key].id].spouse_id == "0") {
-							this.data1[arr[key].id].spouse_id = "";
-						}
-						if(this.data1[arr[key].id].ch_ids == "[]") {
-							this.data1[arr[key].id].ch_ids = [];
-						}
-					}
-					this.data2.tree = this.data1;
-					this.createTree();
-				}, this)
-			});
+			this.redrawTree();
 		},
-		animating: false,
+		changeView : function() {
+			Backbone.history.navigate('tree3d', true);
+		},
 		navShow : function() {
 			if(!this.showedNav && !this.animating) {
 				this.animating = true;
 				$('#navigator').css("background-color", "#617c83");
 				$('#navigator').animate({
-					left : '+='+this.navWidth+'px'
-				},$.proxy(function(){this.animating = false;},this));
-			this.showedNav = true;
-			$('#roll').css("z-index", "10");
-            		}			
+					left : '+=' + this.navWidth + 'px'
+				}, $.proxy(function() {
+					this.animating = false;
+				}, this));
+				this.showedNav = true;
+				$('#roll').css("z-index", "10");
+			}
 		},
 		navHide : function() {
 			if(this.showedNav && !this.animating) {
 				this.animating = true;
-                $('#navigator').animate({
-					left : '-='+this.navWidth+'px'
+				$('#navigator').animate({
+					left : '-=' + this.navWidth + 'px'
 				}, $.proxy(function() {
 					$('#navigator').css("background-color", "#1A3457");
 					this.animating = false;
 					$('#roll').css("z-index", "110");
-				},this));
-			this.showedNav = false;
-            		}			
+				}, this));
+				this.showedNav = false;
+			}
 		},
 		reverseTree : function() {
-			this.reverse = this.reverse*(-1);
+			this.reverse = this.reverse * (-1);
 			this.redrawTree(this.data2.id);
 		},
 		saveImage : function() {
 			var canvas = document.getElementsByTagName('canvas')[0];
 			var context = canvas.getContext("2d");
-			var dataURL = canvas.toDataURL("image/jpeg");
-			document.getElementById("canvasImg").src = dataURL;
-			Canvas2Image.saveAsJPEG(canvas);
+			var dataURL = canvas.toDataURL("image/png");
+      		var fname = 'family_tree';
+        	var data = dataURL;
+        	data = data.substr(data.indexOf(',') + 1).toString();
+         
+        	var dataInput = document.createElement("input") ;
+        	dataInput.setAttribute("name", 'imgdata') ;
+        	dataInput.setAttribute("value", data);
+         
+        	var nameInput = document.createElement("input") ;
+        	nameInput.setAttribute("name", 'name') ;
+        	nameInput.setAttribute("value", fname + '.png');
+         
+        	var myForm = document.createElement("form");
+        	myForm.method = 'post';
+        	myForm.action = "/server/api/screenshot";
+        	myForm.appendChild(dataInput);
+        	myForm.appendChild(nameInput);
+         
+        	document.body.appendChild(myForm) ;
+        	myForm.submit() ;
+        	document.body.removeChild(myForm) ;
 		},
 		create_node : function(data) {
 			var node = new THREE.Object3D();
@@ -142,41 +168,49 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			photo.position.set(0, 40, 4);
 
 			var elems = {
-				'child': {
-                    width: this.imgPlusSize,
-                    height: this.imgPlusSize,
-                    path: 'trash/add.png',
-                    trPath: 'trash/add_tr.png',
-					posX: this.mouseX,
-					posY: this.mouseY + (this.reverse)*(Math.floor(this.nodeHeight / 2) - 20),
-					posZ: 10
-                },
-                'edit': {
-                    width: this.imgPlusSize,
-                    height: this.imgPlusSize,
-                    path: 'trash/edit.png',
-                    trPath: 'trash/edit_tr.png',
-                    posX: this.mouseX+this.nodeWidth/4,
-                    posY: this.mouseY + Math.floor(this.nodeHeight / 2) - 20,
-                    posZ: 10
-                }
-            };
-            if(!data.f_id || !data.m_id){
-            	elems.parent = {width: this.imgPlusSize, height: this.imgPlusSize, path: 'trash/add.png', trPath: 'trash/add_tr.png', posX: this.mouseX, posY: this.mouseY - (this.reverse)*(Math.floor(this.nodeHeight / 2) - 20), posZ: 10};
+				'child' : {
+					width : this.imgPlusSize,
+					height : this.imgPlusSize,
+					path : 'trash/add.png',
+					trPath : 'trash/add_tr.png',
+					posX : this.mouseX,
+					posY : this.mouseY + (this.reverse) * (Math.floor(this.nodeHeight / 2) - 20),
+					posZ : 10
+				},
+				'edit' : {
+					width : this.imgPlusSize,
+					height : this.imgPlusSize,
+					path : 'trash/edit.png',
+					trPath : 'trash/edit_tr.png',
+					posX : this.mouseX + this.nodeWidth / 4,
+					posY : this.mouseY + Math.floor(this.nodeHeight / 2) - 20,
+					posZ : 10
+				}
+			};
+			if(!data.f_id || !data.m_id) {
+				elems.parent = {
+					width : this.imgPlusSize,
+					height : this.imgPlusSize,
+					path : 'trash/add.png',
+					trPath : 'trash/add_tr.png',
+					posX : this.mouseX,
+					posY : this.mouseY - (this.reverse) * (Math.floor(this.nodeHeight / 2) - 20),
+					posZ : 10
+				};
 			}
-			if(data.id != localStorage.getItem("prof_id") && data.id != this.data2.id ){
-				if((!data.f_id && !data.m_id && data.ch_ids.length < 2) || (data.ch_ids.length == 0 && data.spouse_id == 0)){
-					elems['delete'] =  {
-		        	    width: this.imgPlusSize,
-		                height: this.imgPlusSize,
-		                path: 'trash/delete.png',
-		                trPath: 'trash/delete_tr.png',
-		                posX: this.mouseX-this.nodeWidth/4,
-		                posY: this.mouseY + Math.floor(this.nodeHeight / 2) - 20,
-		                posZ: 10
-		            }
-	           }
-            }	
+			if(data.id != localStorage.getItem("prof_id") && data.id != this.data2.id) {
+				if((!data.f_id && !data.m_id && data.ch_ids.length < 2) || (data.ch_ids.length == 0 && data.spouse_id == 0)) {
+					elems['delete'] = {
+						width : this.imgPlusSize,
+						height : this.imgPlusSize,
+						path : 'trash/delete.png',
+						trPath : 'trash/delete_tr.png',
+						posX : this.mouseX - this.nodeWidth / 4,
+						posY : this.mouseY + Math.floor(this.nodeHeight / 2) - 20,
+						posZ : 10
+					}
+				}
+			}
 			if(!data.spouse_id) {
 				if(data.sex == "m")
 					var dx = Math.floor(this.nodeWidth / 2) - 40;
@@ -223,28 +257,20 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				"ch_ids" : data.ch_ids,
 				"spouse_id" : data.spouse_id
 			};
-			node.mother
-			node.father
-			node.child
-
 			return node;
 		},
 		nodeElement : function(elem, name) {
-			var element = new THREE.Mesh(new THREE.PlaneGeometry(elem.width, elem.height));
-			element.add(this.texture(elem.path, elem.width, elem.height));
+			var element = this.texture(elem.path, elem.width, elem.height)
 			element.position.set(elem.posX, elem.posY, elem.posZ);
 			element.matrixAutoUpdate = false;
 			element.updateMatrix();
 			element.overdraw = true;
 			element.visible = true;
 			if(elem.trPath)
-				element.children[0].material.map.image.src = elem.trPath;
+				element.material.map.image.src = elem.trPath;
 			element.name = name;
 			return element;
 		},
-		width_spouse_for_m : 0,
-		width_spouse_for_f : 0,
-
 		create_tree : function(id, i, nodex) {
 			var data2 = this.data2;
 			var data = data2.tree;
@@ -365,7 +391,6 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				}
 			}
 		},
-		spouseState : null,
 		create_spouse : function(nodex) {
 			var data2 = this.data2;
 			var data = data2.tree;
@@ -450,7 +475,6 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				if(child.mother && child.father) {
 					geom.vertices.push(new THREE.Vertex(new THREE.Vector3((child.mother.position.x + child.father.position.x) / 2, child.position.y - this.reverse * this.lineTurne, -10)));
 					geom.vertices.push(new THREE.Vertex(new THREE.Vector3((child.mother.position.x + child.father.position.x) / 2, parent.position.y, -10)));
-					geom.vertices.push(new THREE.Vertex(new THREE.Vector3(parent.position.x, parent.position.y, -10)));
 				}
 				if(child.mother && !child.father) {
 					geom.vertices.push(new THREE.Vertex(new THREE.Vector3(child.position.x, child.mother.position.y + this.reverse * this.lineTurne, -10)));
@@ -463,16 +487,18 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 					geom.vertices.push(new THREE.Vertex(new THREE.Vector3(child.father.position.x, child.father.position.y, -10)));
 				}
 			} else {
+		                var lineMat2 = new THREE.LineBasicMaterial({
+        				color : '0x023703',
+        				opacity : 1,
+        				linewidth : 4
+        			});
 				geom.vertices.push(new THREE.Vertex(new THREE.Vector3(parent.position.x, parent.position.y, -10)));
 			}
-			line = new THREE.Line(geom, lineMat);
+		            if (!spouse) line = new THREE.Line(geom, lineMat);
+		            if (spouse) line = new THREE.Line(geom, lineMat2);
 
 			this.scene.add(line);
 		},
-		chWidth : {},
-		chSide : {},
-		chLShift : {},
-		chRShift : {},
 		countChildren : function(id, i) {
 			if(i < 4) {
 				var data2 = this.data2;
@@ -699,6 +725,23 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			}
 		},
 		createTree : function() {
+			var arr = this.collection.toJSON();
+			for(key in arr) {
+				this.data1[arr[key].id] = arr[key];
+				if(this.data1[arr[key].id].f_id == "0") {
+					this.data1[arr[key].id].f_id = "";
+				}
+				if(this.data1[arr[key].id].m_id == "0") {
+					this.data1[arr[key].id].m_id = "";
+				}
+				if(this.data1[arr[key].id].spouse_id == "0") {
+					this.data1[arr[key].id].spouse_id = "";
+				}
+			}
+			this.data2.tree = this.data1;
+			this.scene = new THREE.Scene();
+			this.scene.add(this.camera);
+
 			var data2 = this.data2;
 			var data = data2.tree;
 			//data2.id=26;
@@ -760,18 +803,18 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			context.font = 'italic 30px Arial Black';
 			//TODO text align
 			var fNameL = data.f_name + ' ' + data.l_name;
-            if (fNameL.length >= 15){
-                fNameL = data.f_name.substring(0,1) + '. ' + data.l_name;
-            }
-            var nameTab = (this.nodeWidth - 18*fNameL.length)/2;
-            if (!data.d_date || data.d_date == "?"){
-                var dates = data.b_date; 
-            } else {
-                var dates = data.b_date.substr(-4) + ' - ' + data.d_date.substr(-4);
-            }
-            var datesTab = (this.nodeWidth - 18*dates.length)/2;
-			context.fillText( fNameL, nameTab, this.nodeHeight * 0.78);
-			context.fillText( dates , datesTab, this.nodeHeight * 0.85);
+			if(fNameL.length >= 15) {
+				fNameL = data.f_name.substring(0, 1) + '. ' + data.l_name;
+			}
+			var nameTab = (this.nodeWidth - 18 * fNameL.length) / 2;
+			if(!data.d_date || data.d_date == "?") {
+				var dates = data.b_date;
+			} else {
+				var dates = data.b_date.substr(-4) + ' - ' + data.d_date.substr(-4);
+			}
+			var datesTab = (this.nodeWidth - 18 * dates.length) / 2;
+			context.fillText(fNameL, nameTab, this.nodeHeight * 0.78);
+			context.fillText(dates, datesTab, this.nodeHeight * 0.85);
 			var tex = new THREE.Texture(canvas);
 			tex.needsUpdate = true;
 			var mat = new THREE.MeshBasicMaterial({
@@ -801,32 +844,10 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			$.ajaxSetup({
 				cache : false
 			});
-			this.collection = new TreeCollection();
 			this.collection.fetch({
-				//url: '/data2.json',
-				success : $.proxy(function(collection) {
-					var arr = collection.toJSON();
-					for(key in arr) {
-						this.data1[arr[key].id] = arr[key];
-						if(this.data1[arr[key].id].f_id == "0") {
-							this.data1[arr[key].id].f_id = "";
-						}
-						if(this.data1[arr[key].id].m_id == "0") {
-							this.data1[arr[key].id].m_id = "";
-						}
-						if(this.data1[arr[key].id].spouse_id == "0") {
-							this.data1[arr[key].id].spouse_id = "";
-						}
-					}
-					this.data2.tree = this.data1;
-					this.scene = new THREE.Scene();
-					this.scene.add(this.camera);
-					this.createTree();
-				}, this)
+				success : $.proxy(this.createTree, this)
 			});
 
-			//this.scene = new THREE.Scene();
-			//this.scene.add(this.camera);
 			///////////////////////////////////////////////////////////////////////////////////////////////////
 		},
 		onDocumentMouseDown : function(event) {
@@ -872,6 +893,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 					} else if(intersects[i].object.name == 'edit') {
 						//edit persone
 						nodex = intersects[i].object.parent;
+						if(!nodex.info) nodex = nodex.parent;
 						this.TempObj = {
 							"action" : 'edit_person',
 							node : nodex
@@ -885,13 +907,14 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 						nodex = intersects[i].object.parent;
 						data = nodex.info;
 						data.id = nodex.info.user_id;
-						if(data.id == localStorage.getItem("prof_id"))return;
-						if(data.ch_ids.length == 0 && data.spouse_id == 0){
+						if(data.id == localStorage.getItem("prof_id"))
+							return;
+						if(data.ch_ids.length == 0 && data.spouse_id == 0) {
 							this.model.sendData({
 								url : 'server/api/delete_node',
 								data : data
 							});
-						}else if(data.f_id == 0 && data.m_id == 0 && data.ch_ids.length < 2){
+						} else if(data.f_id == 0 && data.m_id == 0 && data.ch_ids.length < 2) {
 							this.model.sendData({
 								url : 'server/api/delete_node',
 								data : data
@@ -916,9 +939,6 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				}
 			}
 		},
-		RISED : null,
-		riseX : 0,
-		riseY : 0,
 		onDocumentMouseMove : function(event) {
 			event.preventDefault();
 			this.navHide();
@@ -984,21 +1004,21 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 
 				if(this.RISED != null) {
 
-					if(this.RISED != intersects[1].object.parent) {
+					if(this.RISED != intersects[0].object.parent) {
 						this.RISED.position.x += this.riseX;
 						this.RISED.position.y += this.riseY;
 						this.RISED.position.z = 0;
 						for( j = 0; j < this.RISED.children.length; j++) {
 							if(this.RISED.children[j].name == 'child') {
-								this.RISED.children[j].children[0].material.map.image.src = 'trash/add_tr.png';
+								this.RISED.children[j].material.map.image.src = 'trash/add_tr.png';
 							} else if(this.RISED.children[j].name == 'parent') {
-								this.RISED.children[j].children[0].material.map.image.src = 'trash/add_tr.png';
+								this.RISED.children[j].material.map.image.src = 'trash/add_tr.png';
 							} else if(this.RISED.children[j].name == 'edit') {
-								this.RISED.children[j].children[0].material.map.image.src = 'trash/edit_tr.png';
+								this.RISED.children[j].material.map.image.src = 'trash/edit_tr.png';
 							} else if(this.RISED.children[j].name == 'delete') {
-								this.RISED.children[j].children[0].material.map.image.src = 'trash/delete_tr.png';
+								this.RISED.children[j].material.map.image.src = 'trash/delete_tr.png';
 							} else if(this.RISED.children[j].name == 'spouse') {
-								this.RISED.children[j].children[0].material.map.image.src = 'trash/add_tr.png';
+								this.RISED.children[j].material.map.image.src = 'trash/add_tr.png';
 							}
 						}
 						this.RISED = null;
@@ -1006,20 +1026,18 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				}
 				if(this.RISED == null) {
 					//set full visibility for buttons
-					par = intersects[1].object.parent;
+					par = intersects[0].object.parent;
 					for( j = 0; j < par.children.length; j++) {
 						if(par.children[j].name == 'child') {
-							par.children[j].children[0].material.map.image.src = 'trash/add.png';
+							par.children[j].material.map.image.src = 'trash/add.png';
 						} else if(par.children[j].name == 'parent') {
-							par.children[j].children[0].material.map.image.src = 'trash/add.png';
+							par.children[j].material.map.image.src = 'trash/add.png';
 						} else if(par.children[j].name == 'edit') {
-							par.children[j].children[0].material.map.image.src = 'trash/edit.png';
+							par.children[j].material.map.image.src = 'trash/edit.png';
 						} else if(par.children[j].name == 'delete') {
-							//if(par.info.ch_ids.length == 0 && par.info.spouse_id == 0){
-								par.children[j].children[0].material.map.image.src = 'trash/delete.png';
-							//}
+							par.children[j].material.map.image.src = 'trash/delete.png';
 						} else if(par.children[j].name == 'spouse') {
-							par.children[j].children[0].material.map.image.src = 'trash/add.png';
+							par.children[j].material.map.image.src = 'trash/add.png';
 						}
 					}
 					par.position.z = 300;
@@ -1036,15 +1054,15 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 					this.RISED.position.z = 0;
 					for( j = 0; j < this.RISED.children.length; j++) {
 						if(this.RISED.children[j].name == 'child') {
-							this.RISED.children[j].children[0].material.map.image.src = 'trash/add_tr.png';
+							this.RISED.children[j].material.map.image.src = 'trash/add_tr.png';
 						} else if(this.RISED.children[j].name == 'parent') {
-							this.RISED.children[j].children[0].material.map.image.src = 'trash/add_tr.png';
+							this.RISED.children[j].material.map.image.src = 'trash/add_tr.png';
 						} else if(this.RISED.children[j].name == 'edit') {
-							this.RISED.children[j].children[0].material.map.image.src = 'trash/edit_tr.png';
+							this.RISED.children[j].material.map.image.src = 'trash/edit_tr.png';
 						} else if(this.RISED.children[j].name == 'delete') {
-							this.RISED.children[j].children[0].material.map.image.src = 'trash/delete_tr.png';
+							this.RISED.children[j].material.map.image.src = 'trash/delete_tr.png';
 						} else if(this.RISED.children[j].name == 'spouse') {
-							this.RISED.children[j].children[0].material.map.image.src = 'trash/add_tr.png';
+							this.RISED.children[j].material.map.image.src = 'trash/add_tr.png';
 						}
 					}
 					this.RISED = null;
@@ -1097,13 +1115,13 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 		},
 		animate : function() {
 			requestAnimationFrame($.proxy(this.animate, this));
+			this.renderer.clear();
 			this.render();
 
 		},
 		render : function() {
 			$("#slider").slider("value", 9099 - this.camera.position.z);
 			this.renderer.render(this.scene, this.camera);
-
 		},
 		logout : function() {
 			this.loginModel.logout();
@@ -1115,35 +1133,31 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			var scale = 1;
 			var crop = 0;
 			var upload = 0;
-			if(h > $('#photo').height() || w > $('#photo').width()) 
-			{
+			if(h > $('#photo').height() || w > $('#photo').width()) {
 				scale = h / $('#photo').height();
-			}
-			if(w > h)
-			{
+			};
+			if(w > h) {
 				scale = w / $('#photo').width();
-			}
-			if ($('#cropped').val() == '1')
-			{
+			};
+			if($('#cropped').val() == '1') {
 				crop = 1;
-			}
-			if ($('#uploaded').val() == '1')
-			{
+			};
+			if($('#uploaded').val() == '1') {
 				upload = 1;
-			}
+			};
 
 			var data = {
-				'id': $('#user_id').val(),
+				'id' : $('#user_id').val(),
 				'f_name' : $('#f_name').val(),
 				'l_name' : $('#l_name').val(),
 				'b_date' : $('#b_date').val(),
 				'd_date' : $('#d_date').val(),
-				'x1': $('#x1').val()*scale,
-				'y1': $('#y1').val()*scale,
-				'x2': $('#x2').val()*scale,
-				'y2': $('#y2').val()*scale,
-				'w': $('#w').val()*scale,
-				'h': $('#h').val()*scale,
+				'x1' : $('#x1').val() * scale,
+				'y1' : $('#y1').val() * scale,
+				'x2' : $('#x2').val() * scale,
+				'y2' : $('#y2').val() * scale,
+				'w' : $('#w').val() * scale,
+				'h' : $('#h').val() * scale,
 				'f_id' : $('#f_id').val(),
 				'm_id' : $('#m_id').val(),
 				'ch_ids' : $('#ch_ids').val(),
@@ -1155,10 +1169,11 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				'upload' : upload
 			};
 			this.TempObj.node.info.id = this.TempObj.node.info.user_id;
-			if(!this.TempObj.node.info.ch_ids)this.TempObj.node.info.ch_ids = [];
-			if(!data.ch_ids){
-					data.ch_ids = [];
-					}
+			if(!this.TempObj.node.info.ch_ids)
+				this.TempObj.node.info.ch_ids = [];
+			if(!data.ch_ids) {
+				data.ch_ids = [];
+			}
 			if(this.TempObj.action == "add_parent") {
 				data.action = this.TempObj.action;
 				data.send_node_id = this.TempObj.node.info.id;
@@ -1182,10 +1197,12 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				data.action = this.TempObj.action;
 				data.send_node_id = this.TempObj.node.info.id;
 				if(this.TempObj.node.info.sex == "m") {
-					data.f_id = this.TempObj.node.info.id;this.TempObj.node.info.spouse_id != "" ? data.m_id = this.TempObj.node.info.spouse_id : data.m_id = "";
+					data.f_id = this.TempObj.node.info.id;
+					this.TempObj.node.info.spouse_id != "" ? data.m_id = this.TempObj.node.info.spouse_id : data.m_id = "";
 				}
 				if(this.TempObj.node.info.sex == "f") {
-					data.m_id = this.TempObj.node.info.id;this.TempObj.node.info.spouse_id != "" ? data.f_id = this.TempObj.node.info.spouse_id : data.f_id = "";
+					data.m_id = this.TempObj.node.info.id;
+					this.TempObj.node.info.spouse_id != "" ? data.f_id = this.TempObj.node.info.spouse_id : data.f_id = "";
 				}
 				this.model.sendData({
 					url : 'server/api/add_node',
@@ -1217,10 +1234,6 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 					data : data
 				});
 			};
-			if(this.TempObj.action == "delete_person") {
-
-			}
-
 		}
 	});
 });
