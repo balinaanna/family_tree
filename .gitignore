@@ -1,1 +1,2 @@
-
+.gitignore
+server/application/config/database.php
