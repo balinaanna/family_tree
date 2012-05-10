@@ -165,7 +165,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				data.photo_url = "no_avatar.jpg"
 			};
 			var photo = this.texture('assets/images/uploaded/avatars/thumbs/' + data.photo_url, 260, 260);
-			photo.position.set(0, 40, 4);
+			photo.position.set(0, 1, 1);
 
 			var elems = {
 				'child' : {
@@ -174,8 +174,8 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 					path : 'trash/add.png',
 					trPath : 'trash/add_tr.png',
 					posX : this.mouseX,
-					posY : this.mouseY + (this.reverse) * (Math.floor(this.nodeHeight / 2) - 20),
-					posZ : 10
+					posZ : this.mouseY + (this.reverse) * (Math.floor(this.nodeHeight / 2) - 20),
+					posY : 10
 				},
 				'edit' : {
 					width : this.imgPlusSize,
@@ -183,8 +183,8 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 					path : 'trash/edit.png',
 					trPath : 'trash/edit_tr.png',
 					posX : this.mouseX + this.nodeWidth / 4,
-					posY : this.mouseY + Math.floor(this.nodeHeight / 2) - 20,
-					posZ : 10
+					posZ : this.mouseY + Math.floor(this.nodeHeight / 2) - 20,
+					posY : 10
 				}
 			};
 			if(!data.f_id || !data.m_id) {
@@ -194,8 +194,8 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 					path : 'trash/add.png',
 					trPath : 'trash/add_tr.png',
 					posX : this.mouseX,
-					posY : this.mouseY - (this.reverse) * (Math.floor(this.nodeHeight / 2) - 20),
-					posZ : 10
+					posZ : this.mouseY - (this.reverse) * (Math.floor(this.nodeHeight / 2) - 20),
+					posY : 10
 				};
 			}
 			if(data.id != localStorage.getItem("prof_id") && data.id != this.data2.id) {
@@ -206,8 +206,8 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 						path : 'trash/delete.png',
 						trPath : 'trash/delete_tr.png',
 						posX : this.mouseX - this.nodeWidth / 4,
-						posY : this.mouseY + Math.floor(this.nodeHeight / 2) - 20,
-						posZ : 10
+						posZ : this.mouseY + Math.floor(this.nodeHeight / 2) - 20,
+						posY : 10
 					}
 				}
 			}
@@ -222,8 +222,8 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 					path : 'trash/add.png',
 					trPath : 'trash/add_tr.png',
 					posX : this.mouseX + dx,
-					posY : this.mouseY / 2,
-					posZ : 10
+					posZ : this.mouseY / 2,
+					posY : 10
 				};
 			}
 
@@ -234,7 +234,8 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			var maxVal = 0.2;
 			var floatVal = 2;
 			var randVal = minVal + (Math.random() * (maxVal - minVal));
-			node.rotation.z = typeof floatVal == 'undefined' ? Math.round(randVal) : randVal.toFixed(floatVal);
+			//node.rotation.z = typeof floatVal == 'undefined' ? Math.round(randVal) : randVal.toFixed(floatVal);
+			node.rotation.x = Math.PI/2;
 
 			node.add(photo);
 			// children[1]
@@ -267,7 +268,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 			element.overdraw = true;
 			element.visible = true;
 			if(elem.trPath)
-				element.material.map.image.src = elem.trPath;
+				element.material.map.image = {"src": elem.trPath};//element.material.map.image.src = elem.trPath;
 			element.name = name;
 			return element;
 		},
@@ -468,23 +469,23 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
 				linewidth : 2
 			});
 			var geom = new THREE.Geometry();
-			geom.vertices.push(new THREE.Vertex(new THREE.Vector3(child.position.x, child.position.y, -10)));
+			geom.vertices.push(new THREE.Vector3(child.position.x, child.position.y, -10));
 
 			if(!spouse) {
-				geom.vertices.push(new THREE.Vertex(new THREE.Vector3(child.position.x, child.position.y - this.reverse * this.lineTurne, -10)));
+				geom.vertices.push(new THREE.Vector3(child.position.x, child.position.y - this.reverse * this.lineTurne, -10));
 				if(child.mother && child.father) {
-					geom.vertices.push(new THREE.Vertex(new THREE.Vector3((child.mother.position.x + child.father.position.x) / 2, child.position.y - this.reverse * this.lineTurne, -10)));
-					geom.vertices.push(new THREE.Vertex(new THREE.Vector3((child.mother.position.x + child.father.position.x) / 2, parent.position.y, -10)));
+					geom.vertices.push(new THREE.Vector3((child.mother.position.x + child.father.position.x) / 2, child.position.y - this.reverse * this.lineTurne, -10));
+					geom.vertices.push(new THREE.Vector3((child.mother.position.x + child.father.position.x) / 2, parent.position.y, -10));
 				}
 				if(child.mother && !child.father) {
-					geom.vertices.push(new THREE.Vertex(new THREE.Vector3(child.position.x, child.mother.position.y + this.reverse * this.lineTurne, -10)));
-					geom.vertices.push(new THREE.Vertex(new THREE.Vector3(child.mother.position.x, child.mother.position.y + this.reverse * this.lineTurne, -10)));
-					geom.vertices.push(new THREE.Vertex(new THREE.Vector3(child.mother.position.x, child.mother.position.y, -10)));
+					geom.vertices.push(new THREE.Vector3(child.position.x, child.mother.position.y + this.reverse * this.lineTurne, -10));
+					geom.vertices.push(new THREE.Vector3(child.mother.position.x, child.mother.position.y + this.reverse * this.lineTurne, -10));
+					geom.vertices.push(new THREE.Vector3(child.mother.position.x, child.mother.position.y, -10));
 				}
 				if(!child.mother && child.father) {
-					geom.vertices.push(new THREE.Vertex(new THREE.Vector3(child.position.x, child.father.position.y + this.reverse * this.lineTurne, -10)));
-					geom.vertices.push(new THREE.Vertex(new THREE.Vector3(child.father.position.x, child.father.position.y + this.reverse * this.lineTurne, -10)));
-					geom.vertices.push(new THREE.Vertex(new THREE.Vector3(child.father.position.x, child.father.position.y, -10)));
+					geom.vertices.push(new THREE.Vector3(child.position.x, child.father.position.y + this.reverse * this.lineTurne, -10));
+					geom.vertices.push(new THREE.Vector3(child.father.position.x, child.father.position.y + this.reverse * this.lineTurne, -10));
+					geom.vertices.push(new THREE.Vector3(child.father.position.x, child.father.position.y, -10));
 				}
 			} else {
 		                var lineMat2 = new THREE.LineBasicMaterial({
@@ -492,7 +493,7 @@ define(['collections/TreeCollection', 'models/login_model'], function(TreeCollec
         				opacity : 1,
         				linewidth : 4
         			});
-				geom.vertices.push(new THREE.Vertex(new THREE.Vector3(parent.position.x, parent.position.y, -10)));
+				geom.vertices.push(new THREE.Vector3(parent.position.x, parent.position.y, -10));
 			}
 		            if (!spouse) line = new THREE.Line(geom, lineMat);
 		            if (spouse) line = new THREE.Line(geom, lineMat2);
