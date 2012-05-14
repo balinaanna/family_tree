@@ -2,20 +2,17 @@
 class Api_model extends CI_Model {
 
 	public function __construct() {
+		$this->load->database();
+		
 		if (!defined('PHP_EOL')) {
-    		switch (strtoupper(substr(PHP_OS, 0, 3))) {
-       			 // Windows
-        		case 'WIN':
+    		switch (strtoupper(substr(PHP_OS, 0, 3))) {		 
+        		case 'WIN': // Windows
             		define('PHP_EOL', "\r\n");
-            	break;
-
-		        // Mac
-        		case 'DAR':
+            	break;  
+        		case 'DAR': // Mac
             		define('PHP_EOL', "\r");
             		break;
-
-        		// Unix
-        		default:
+        		default: // Unix
             		define('PHP_EOL', "\n");
     		}
 		}
@@ -391,7 +388,7 @@ class Api_model extends CI_Model {
 	}
 
 
-	function ged_export($array){
+	public function ged_export($array){
 		$head="0 HEAD".PHP_EOL."
 				1 SOUR SoftServeFT".PHP_EOL."
 				2 NAME SoftServeFT".PHP_EOL."
@@ -473,7 +470,7 @@ class Api_model extends CI_Model {
 		return $fam;
 	}
 
-	function replaceSpecialChars($statement) {
+	private function replaceSpecialChars($statement) {
 		// replace umlauts and other special characters. Extend this list, if needed.
 		$statement = str_replace("\xC3\xBC", "\xFC", $statement); //ü
 		$statement = str_replace("\xC3\xB6", "\xF6", $statement); //ö
@@ -485,4 +482,30 @@ class Api_model extends CI_Model {
 		$statement = str_replace("\xC3\x96", "\xD6", $statement); //Ö
 		return $statement;
 	}
+	
+	public function getTree($uid) {
+		$result = $this->db->query('SELECT * FROM profile_data WHERE user_id=? ORDER BY id', array($uid));
+		$db_result = $result->result();
+		foreach ($db_result as $key => $value) {
+			$tree[$key]->id = $value->id;
+			$tree[$key]->l_name = $value->l_name;
+			$tree[$key]->f_name = $value->f_name;
+			$tree[$key]->f_id = $value->f_id;
+			$tree[$key]->m_id = $value->m_id;
+			$tree[$key]->ch_ids = json_decode(stripslashes($value->ch_ids));
+			$tree[$key]->spouse_id = $value->spouse_id;
+			$tree[$key]->b_date = $value->b_date;
+			$tree[$key]->d_date = $value->d_date;
+			$tree[$key]->sex = $value->sex;
+			$tree[$key]->photo_url = $value->photo_url;
+			$tree[$key]->comment = stripslashes($value->comment);
+		}
+		return $tree;
+	}
+	
+	public function getLogin($email, $pass) {
+		$result = $this->db->query('SELECT pass, id, prof_id FROM users WHERE email=? AND pass=? LIMIT 1', array($email, $pass));
+		return $result->result();
+	}
+	
 }
