@@ -1,1 +1,1 @@
-Project was moved to private repository
+Project was moved to private repository https://bitbucket.org/bodya_dnepr/familytree
